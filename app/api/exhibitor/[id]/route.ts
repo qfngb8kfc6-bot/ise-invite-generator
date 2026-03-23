@@ -1,22 +1,77 @@
-import { NextResponse } from "next/server";
-import { exhibitors } from "@/lib/exhibitors";
+import { NextRequest, NextResponse } from 'next/server'
+import { getExhibitorById } from '@/lib/exhibitors'
+
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 export async function GET(
-  _request: Request,
+  _request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await context.params;
-  const exhibitor = exhibitors[id];
+  try {
+    const { id } = await context.params
 
-  if (!exhibitor) {
+    if (!id || id.trim().length === 0) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: 'Missing exhibitor id',
+        },
+        {
+          status: 400,
+          headers: {
+            'Cache-Control': 'no-store',
+          },
+        }
+      )
+    }
+
+    const exhibitor = getExhibitorById(id.trim())
+
+    if (!exhibitor) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: `Exhibitor ${id} not found`,
+        },
+        {
+          status: 404,
+          headers: {
+            'Cache-Control': 'no-store',
+          },
+        }
+      )
+    }
+
     return NextResponse.json(
-      { success: false, message: "Exhibitor not found" },
-      { status: 404 }
-    );
-  }
+      {
+        ok: true,
+        exhibitor,
+      },
+      {
+        status: 200,
+        headers: {
+          'Cache-Control': 'no-store',
+        },
+      }
+    )
+  } catch (error) {
+    console.error('EXHIBITOR ROUTE ERROR:', error)
 
-  return NextResponse.json({
-    success: true,
-    exhibitor,
-  });
+    const message =
+      error instanceof Error ? error.message : 'Failed to load exhibitor'
+
+    return NextResponse.json(
+      {
+        ok: false,
+        error: message,
+      },
+      {
+        status: 500,
+        headers: {
+          'Cache-Control': 'no-store',
+        },
+      }
+    )
+  }
 }
