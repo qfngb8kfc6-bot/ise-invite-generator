@@ -13,6 +13,21 @@ export async function GET(
   _request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: 'Not available in production',
+      },
+      {
+        status: 403,
+        headers: {
+          'Cache-Control': 'no-store',
+        },
+      }
+    )
+  }
+
   try {
     const { id } = await context.params
 
