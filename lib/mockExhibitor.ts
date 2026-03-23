@@ -1,9 +1,11 @@
-import type { Exhibitor } from "@/lib/types";
+import type { EditableInviteData } from '@/lib/types'
 
-export const mockExhibitor: Exhibitor = {
-  companyName: "Example AV Ltd",
-  standNumber: "3A450",
-  invitationCode: "ISE12345",
-  logoUrl: "https://placehold.co/240x100?text=Example+AV",
-  registrationUrl: "https://registration.iseurope.org/?code=ISE12345",
-};
+export const mockExhibitor: EditableInviteData = {
+  companyName: 'Example AV Ltd',
+  standNumber: '3A450',
+  invitationCode: 'ISE12345',
+  logoUrl: '',
+  registrationUrl: 'https://registration.iseurope.org/?code=ISE12345',
+  theme: 'audio',
+  language: 'en',
+}
