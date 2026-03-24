@@ -1,33 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getExhibitorById } from '@/lib/exhibitors'
-import { signExhibitorToken } from '@/lib/jwt'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-
-function trimTrailingSlash(value: string) {
-  return value.endsWith('/') ? value.slice(0, -1) : value
-}
 
 export async function GET(
   _request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
-  if (process.env.NODE_ENV === 'production') {
-    return NextResponse.json(
-      {
-        ok: false,
-        error: 'Not available in production',
-      },
-      {
-        status: 403,
-        headers: {
-          'Cache-Control': 'no-store',
-        },
-      }
-    )
-  }
-
   try {
     const { id } = await context.params
 
@@ -46,7 +26,7 @@ export async function GET(
       )
     }
 
-    const exhibitor = getExhibitorById(id.trim())
+    const exhibitor = await getExhibitorById(id.trim())
 
     if (!exhibitor) {
       return NextResponse.json(
@@ -63,44 +43,28 @@ export async function GET(
       )
     }
 
-    const token = await signExhibitorToken(exhibitor.id)
-
-    const baseUrl = trimTrailingSlash(
-      process.env.NEXT_PUBLIC_APP_URL?.trim() || 'http://localhost:3000'
-    )
-
-    const generatorUrl = `${baseUrl}/generator?token=${encodeURIComponent(token)}`
-
     return NextResponse.json(
       {
         ok: true,
-        exhibitorId: exhibitor.id,
-        token,
-        tokenLength: token.length,
-        generatorUrl,
+        exhibitor,
       },
       {
         status: 200,
         headers: {
-          'Cache-Control': 'no-store, no-cache, must-revalidate',
-          Pragma: 'no-cache',
-          Expires: '0',
+          'Cache-Control': 'no-store',
         },
       }
     )
   } catch (error) {
-    console.error('DEV TOKEN ERROR:', error)
+    console.error('EXHIBITOR ROUTE ERROR:', error)
 
     const message =
-      error instanceof Error ? error.message : 'Unknown token generation error'
+      error instanceof Error ? error.message : 'Failed to load exhibitor'
 
     return NextResponse.json(
       {
         ok: false,
-        error:
-          process.env.NODE_ENV === 'development'
-            ? `Failed to generate token: ${message}`
-            : 'Failed to generate token',
+        error: message,
       },
       {
         status: 500,
@@ -110,11 +74,4 @@ export async function GET(
       }
     )
   }
-}
-
-export async function POST(
-  request: NextRequest,
-  context: { params: Promise<{ id: string }> }
-) {
-  return GET(request, context)
 }

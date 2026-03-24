@@ -79,7 +79,7 @@ async function handleSession(request: NextRequest) {
     }
 
     const payload = await verifyExhibitorToken(token)
-    const exhibitor = getExhibitorById(payload.exhibitorId)
+    const exhibitor = await getExhibitorById(payload.exhibitorId)
 
     if (!exhibitor) {
       return NextResponse.json(
