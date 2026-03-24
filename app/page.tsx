@@ -1,127 +1,58 @@
-"use client";
+import Link from 'next/link'
 
-import { useState } from "react";
-import InvitePreview from "@/components/InvitePreview";
-import { mockExhibitor } from "@/lib/mockExhibitor";
-import type { LanguageKey, ThemeKey } from "@/lib/types";
-
-export default function GeneratorPage() {
-  const [companyName, setCompanyName] = useState(mockExhibitor.companyName);
-  const [standNumber, setStandNumber] = useState(mockExhibitor.standNumber);
-  const [invitationCode, setInvitationCode] = useState(
-    mockExhibitor.invitationCode
-  );
-  const [logoUrl, setLogoUrl] = useState(mockExhibitor.logoUrl);
-  const [registrationUrl, setRegistrationUrl] = useState(
-    mockExhibitor.registrationUrl
-  );
-  const [theme, setTheme] = useState<ThemeKey>("audio");
-  const [language, setLanguage] = useState<LanguageKey>("en");
-
-  function handleGenerate() {
-    const payload = {
-      companyName,
-      standNumber,
-      invitationCode,
-      logoUrl,
-      registrationUrl,
-      theme,
-      language,
-    };
-
-    console.log("Generate payload:", payload);
-    alert(JSON.stringify(payload, null, 2));
-  }
-
+export default function HomePage() {
   return (
-    <main className="min-h-screen bg-gray-50 p-8">
-      <div className="mx-auto max-w-6xl">
-        <h1 className="mb-6 text-3xl font-bold">Invitation Generator</h1>
+    <main className="min-h-screen bg-black px-6 py-10 text-zinc-100">
+      <div className="mx-auto max-w-5xl">
+        <div className="rounded-3xl border border-zinc-800 bg-zinc-950 p-8 shadow-2xl">
+          <h1 className="text-4xl font-semibold text-white">
+            Exhibitor Invitation Generator
+          </h1>
+          <p className="mt-3 max-w-2xl text-base text-zinc-400">
+            Local development home for generating signed exhibitor invitation links
+            and testing the invitation generator flow.
+          </p>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div className="rounded-xl border bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-xl font-semibold">Exhibitor Details</h2>
-
-            <label className="mb-2 block text-sm font-medium">Company Name</label>
-            <input
-              className="mb-4 w-full rounded border px-3 py-2"
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
-            />
-
-            <label className="mb-2 block text-sm font-medium">Stand Number</label>
-            <input
-              className="mb-4 w-full rounded border px-3 py-2"
-              value={standNumber}
-              onChange={(e) => setStandNumber(e.target.value)}
-            />
-
-            <label className="mb-2 block text-sm font-medium">
-              Invitation Code
-            </label>
-            <input
-              className="mb-4 w-full rounded border px-3 py-2"
-              value={invitationCode}
-              onChange={(e) => setInvitationCode(e.target.value)}
-            />
-
-            <label className="mb-2 block text-sm font-medium">Logo URL</label>
-            <input
-              className="mb-4 w-full rounded border px-3 py-2"
-              value={logoUrl}
-              onChange={(e) => setLogoUrl(e.target.value)}
-            />
-
-            <label className="mb-2 block text-sm font-medium">
-              Registration URL
-            </label>
-            <input
-              className="mb-4 w-full rounded border px-3 py-2"
-              value={registrationUrl}
-              onChange={(e) => setRegistrationUrl(e.target.value)}
-            />
-
-            <label className="mb-2 block text-sm font-medium">Theme</label>
-            <select
-              className="mb-4 w-full rounded border px-3 py-2"
-              value={theme}
-              onChange={(e) => setTheme(e.target.value as ThemeKey)}
+          <div className="mt-8 flex flex-wrap gap-4">
+            <Link
+              href="/tools"
+              className="rounded-2xl bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-zinc-200"
             >
-              <option value="audio">Audio</option>
-              <option value="residential">Residential</option>
-              <option value="lighting">Lighting</option>
-            </select>
+              Open Internal Tools
+            </Link>
 
-            <label className="mb-2 block text-sm font-medium">Language</label>
-            <select
-              className="mb-4 w-full rounded border px-3 py-2"
-              value={language}
-              onChange={(e) => setLanguage(e.target.value as LanguageKey)}
+            <Link
+              href="/generator"
+              className="rounded-2xl border border-zinc-700 px-5 py-3 text-sm font-medium text-zinc-200 transition hover:bg-zinc-900"
             >
-              <option value="en">English</option>
-              <option value="es">Spanish</option>
-              <option value="de">German</option>
-            </select>
-
-            <button
-              onClick={handleGenerate}
-              className="mt-2 w-full rounded-lg bg-black px-4 py-3 text-white"
-            >
-              Generate Assets
-            </button>
+              Open Generator
+            </Link>
           </div>
 
-          <InvitePreview
-            companyName={companyName}
-            standNumber={standNumber}
-            invitationCode={invitationCode}
-            logoUrl={logoUrl}
-            registrationUrl={registrationUrl}
-            theme={theme}
-            language={language}
-          />
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+              <h2 className="text-sm font-semibold text-zinc-200">JWT Flow</h2>
+              <p className="mt-2 text-sm text-zinc-400">
+                Signed exhibitor access tokens verified server-side through the session route.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+              <h2 className="text-sm font-semibold text-zinc-200">Mock EBO</h2>
+              <p className="mt-2 text-sm text-zinc-400">
+                The app can now simulate a real EBO-backed payload path without changing the UI.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+              <h2 className="text-sm font-semibold text-zinc-200">Exports</h2>
+              <p className="mt-2 text-sm text-zinc-400">
+                PNG, PDF, and ZIP exports remain available through the generator page.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </main>
-  );
+  )
 }
