@@ -26,7 +26,7 @@ export async function GET(
       )
     }
 
-    const exhibitor = getExhibitorById(id.trim())
+    const exhibitor = await getExhibitorById(id.trim())
 
     if (!exhibitor) {
       return NextResponse.json(
