@@ -2,55 +2,68 @@ import Link from 'next/link'
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-black px-6 py-10 text-zinc-100">
+    <main className="min-h-screen bg-neutral-50 px-6 py-12 text-neutral-900">
       <div className="mx-auto max-w-5xl">
-        <div className="rounded-3xl border border-zinc-800 bg-zinc-950 p-8 shadow-2xl">
-          <h1 className="text-4xl font-semibold text-white">
+        {/* Header */}
+        <div className="mb-10">
+          <h1 className="text-4xl font-bold tracking-tight">
             Exhibitor Invitation Generator
           </h1>
-          <p className="mt-3 max-w-2xl text-base text-zinc-400">
-            Local development home for generating signed exhibitor invitation links
-            and testing the invitation generator flow.
+          <p className="mt-4 max-w-2xl text-lg text-neutral-600">
+            Create branded invitations, export marketing assets, and track exhibitor usage in one place.
           </p>
+        </div>
 
-          <div className="mt-8 flex flex-wrap gap-4">
-            <Link
-              href="/tools"
-              className="rounded-2xl bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-zinc-200"
-            >
-              Open Internal Tools
-            </Link>
-
-            <Link
-              href="/generator"
-              className="rounded-2xl border border-zinc-700 px-5 py-3 text-sm font-medium text-zinc-200 transition hover:bg-zinc-900"
-            >
-              Open Generator
-            </Link>
-          </div>
-
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
-              <h2 className="text-sm font-semibold text-zinc-200">JWT Flow</h2>
-              <p className="mt-2 text-sm text-zinc-400">
-                Signed exhibitor access tokens verified server-side through the session route.
-              </p>
+        {/* Navigation cards */}
+        <div className="grid gap-6 md:grid-cols-3">
+          {/* Generator */}
+          <Link
+            href="/generator"
+            className="group rounded-2xl border bg-white p-6 shadow-sm transition hover:shadow-md"
+          >
+            <h2 className="text-xl font-semibold">Generator</h2>
+            <p className="mt-2 text-sm text-neutral-600">
+              Create and export exhibitor invitation assets.
+            </p>
+            <div className="mt-4 text-sm font-medium text-blue-600 group-hover:underline">
+              Open generator →
             </div>
+          </Link>
 
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
-              <h2 className="text-sm font-semibold text-zinc-200">Mock EBO</h2>
-              <p className="mt-2 text-sm text-zinc-400">
-                The app can now simulate a real EBO-backed payload path without changing the UI.
-              </p>
+          {/* Tools */}
+          <Link
+            href="/tools"
+            className="group rounded-2xl border bg-white p-6 shadow-sm transition hover:shadow-md"
+          >
+            <h2 className="text-xl font-semibold">Tools</h2>
+            <p className="mt-2 text-sm text-neutral-600">
+              Internal tools for testing tokens and exhibitor access.
+            </p>
+            <div className="mt-4 text-sm font-medium text-blue-600 group-hover:underline">
+              Open tools →
             </div>
+          </Link>
 
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
-              <h2 className="text-sm font-semibold text-zinc-200">Exports</h2>
-              <p className="mt-2 text-sm text-zinc-400">
-                PNG, PDF, and ZIP exports remain available through the generator page.
-              </p>
+          {/* Reports */}
+          <Link
+            href="/reports"
+            className="group rounded-2xl border bg-white p-6 shadow-sm transition hover:shadow-md"
+          >
+            <h2 className="text-xl font-semibold">Reports</h2>
+            <p className="mt-2 text-sm text-neutral-600">
+              View analytics and usage by exhibitor.
+            </p>
+            <div className="mt-4 text-sm font-medium text-blue-600 group-hover:underline">
+              View reports →
             </div>
-          </div>
+          </Link>
+        </div>
+
+        {/* Footer info */}
+        <div className="mt-16 text-sm text-neutral-500">
+          <p>
+            This tool is connected to exhibitor data and tracks usage events for reporting.
+          </p>
         </div>
       </div>
     </main>

@@ -2,6 +2,10 @@
 
 import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 import InvitePreview from '@/components/InvitePreview'
+import LanguageSwitcher, {
+  getStoredLanguage,
+  setStoredLanguage,
+} from '@/components/LanguageSwitcher'
 import type { Exhibitor } from '@/lib/exhibitors'
 import {
   exportPdf,
@@ -10,6 +14,7 @@ import {
   makeExportBaseName,
   type ExportFormatKey,
 } from '@/lib/export'
+import { withTrackedExport } from '@/lib/analytics-client'
 import { themes } from '@/lib/themes'
 import { translations } from '@/lib/translations'
 import type { LanguageKey, ThemeKey } from '@/lib/types'
@@ -46,6 +51,21 @@ function fallbackLanguage(value: string): LanguageKey {
   return isLanguageKey(value) ? value : 'en'
 }
 
+function mapPngFormatForAnalytics(format: ExportFormatKey) {
+  switch (format) {
+    case 'linkedin':
+      return 'png-linkedin' as const
+    case 'square':
+      return 'png-square' as const
+    case 'email':
+      return 'png-email' as const
+    case 'print':
+      return 'png-print' as const
+    default:
+      return null
+  }
+}
+
 export default function GeneratorPageClient({
   initialToken,
 }: GeneratorPageClientProps) {
@@ -67,12 +87,14 @@ export default function GeneratorPageClient({
   const [isExporting, setIsExporting] = useState(false)
   const [exportError, setExportError] = useState<string | null>(null)
 
+  const ui = translations[language].ui
+
   useEffect(() => {
     let cancelled = false
 
     async function loadSession() {
       if (!initialToken) {
-        setError('Missing token in URL')
+        setError(translations[getStoredLanguage()].ui.commonMissingTokenInUrl)
         setLoading(false)
         return
       }
@@ -99,6 +121,7 @@ export default function GeneratorPageClient({
 
         if (!cancelled) {
           const exhibitor = data.exhibitor
+          const nextLanguage = fallbackLanguage(exhibitor.language)
 
           setVerifiedExhibitor(exhibitor)
           setCompanyName(exhibitor.companyName ?? '')
@@ -106,7 +129,8 @@ export default function GeneratorPageClient({
           setInvitationCode(exhibitor.invitationCode ?? '')
           setRegistrationUrl(exhibitor.registrationUrl ?? '')
           setTheme(fallbackTheme(exhibitor.theme))
-          setLanguage(fallbackLanguage(exhibitor.language))
+          setLanguage(nextLanguage)
+          setStoredLanguage(nextLanguage)
           setLogoUrl(exhibitor.logoUrl ?? '')
           setLogoFileName('')
         }
@@ -168,15 +192,22 @@ export default function GeneratorPageClient({
       objectUrlRef.current = null
     }
 
+    const nextLanguage = fallbackLanguage(verifiedExhibitor.language)
+
     setCompanyName(verifiedExhibitor.companyName ?? '')
     setStandNumber(verifiedExhibitor.standNumber ?? '')
     setInvitationCode(verifiedExhibitor.invitationCode ?? '')
     setRegistrationUrl(verifiedExhibitor.registrationUrl ?? '')
     setTheme(fallbackTheme(verifiedExhibitor.theme))
-    setLanguage(fallbackLanguage(verifiedExhibitor.language))
+    setLanguage(nextLanguage)
+    setStoredLanguage(nextLanguage)
     setLogoUrl(verifiedExhibitor.logoUrl ?? '')
     setLogoFileName('')
     setExportError(null)
+  }
+
+  function getAnalyticsCompanyName() {
+    return companyName.trim() || verifiedExhibitor?.companyName || 'Unknown Exhibitor'
   }
 
   async function handlePngExport(format: ExportFormatKey) {
@@ -185,12 +216,33 @@ export default function GeneratorPageClient({
       return
     }
 
+    if (!verifiedExhibitor) {
+      setExportError('Verified exhibitor not found')
+      return
+    }
+
+    const analyticsFormat = mapPngFormatForAnalytics(format)
+
+    if (!analyticsFormat) {
+      setExportError('Unsupported PNG export format')
+      return
+    }
+
     try {
       setIsExporting(true)
       setExportError(null)
 
       const baseName = makeExportBaseName(companyName, standNumber)
-      await exportPng(previewRef.current, format, baseName)
+      const previewElement = previewRef.current
+
+      await withTrackedExport({
+        exhibitorId: verifiedExhibitor.id,
+        companyName: getAnalyticsCompanyName(),
+        format: analyticsFormat,
+        run: async () => {
+          await exportPng(previewElement, format, baseName)
+        },
+      })
     } catch (err) {
       setExportError(err instanceof Error ? err.message : 'PNG export failed')
     } finally {
@@ -204,12 +256,26 @@ export default function GeneratorPageClient({
       return
     }
 
+    if (!verifiedExhibitor) {
+      setExportError('Verified exhibitor not found')
+      return
+    }
+
     try {
       setIsExporting(true)
       setExportError(null)
 
       const baseName = makeExportBaseName(companyName, standNumber)
-      await exportPdf(previewRef.current, baseName)
+      const previewElement = previewRef.current
+
+      await withTrackedExport({
+        exhibitorId: verifiedExhibitor.id,
+        companyName: getAnalyticsCompanyName(),
+        format: 'pdf',
+        run: async () => {
+          await exportPdf(previewElement, baseName)
+        },
+      })
     } catch (err) {
       setExportError(err instanceof Error ? err.message : 'PDF export failed')
     } finally {
@@ -223,12 +289,26 @@ export default function GeneratorPageClient({
       return
     }
 
+    if (!verifiedExhibitor) {
+      setExportError('Verified exhibitor not found')
+      return
+    }
+
     try {
       setIsExporting(true)
       setExportError(null)
 
       const baseName = makeExportBaseName(companyName, standNumber)
-      await exportZipPack(previewRef.current, baseName)
+      const previewElement = previewRef.current
+
+      await withTrackedExport({
+        exhibitorId: verifiedExhibitor.id,
+        companyName: getAnalyticsCompanyName(),
+        format: 'zip',
+        run: async () => {
+          await exportZipPack(previewElement, baseName)
+        },
+      })
     } catch (err) {
       setExportError(err instanceof Error ? err.message : 'ZIP export failed')
     } finally {
@@ -240,7 +320,7 @@ export default function GeneratorPageClient({
     return (
       <main className="mx-auto max-w-7xl p-6">
         <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-          <p className="text-sm text-zinc-600">Loading exhibitor session...</p>
+          <p className="text-sm text-zinc-600">{ui.commonLoadingSession}</p>
         </div>
       </main>
     )
@@ -250,7 +330,7 @@ export default function GeneratorPageClient({
     return (
       <main className="mx-auto max-w-7xl p-6">
         <div className="rounded-2xl border border-red-200 bg-red-50 p-6 shadow-sm">
-          <h1 className="text-lg font-semibold text-red-700">Session error</h1>
+          <h1 className="text-lg font-semibold text-red-700">{ui.commonSessionError}</h1>
           <p className="mt-2 text-sm text-red-600">{error}</p>
         </div>
       </main>
@@ -261,7 +341,7 @@ export default function GeneratorPageClient({
     return (
       <main className="mx-auto max-w-7xl p-6">
         <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-          <p className="text-sm text-zinc-600">No exhibitor loaded.</p>
+          <p className="text-sm text-zinc-600">{ui.commonNoExhibitorLoaded}</p>
         </div>
       </main>
     )
@@ -270,15 +350,16 @@ export default function GeneratorPageClient({
   return (
     <main className="mx-auto max-w-7xl p-6">
       <div className="mb-6 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+        <div className="mb-4 flex justify-end">
+          <LanguageSwitcher value={language} onChange={setLanguage} />
+        </div>
+
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-zinc-900">
-              Exhibitor Invitation Generator
-            </h1>
+            <h1 className="text-2xl font-semibold text-zinc-900">{ui.generatorTitle}</h1>
             <p className="mt-1 text-sm text-zinc-600">
-              Verified session loaded for{' '}
-              <strong>{verifiedExhibitor.companyName}</strong> · Stand{' '}
-              <strong>{verifiedExhibitor.standNumber}</strong>
+              {ui.generatorVerifiedPrefix} <strong>{verifiedExhibitor.companyName}</strong> ·{' '}
+              {ui.generatorStand} <strong>{verifiedExhibitor.standNumber}</strong>
             </p>
           </div>
 
@@ -288,7 +369,7 @@ export default function GeneratorPageClient({
               onClick={resetToVerifiedValues}
               className="inline-flex items-center justify-center rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50"
             >
-              Reset
+              {ui.generatorReset}
             </button>
             <button
               type="button"
@@ -296,7 +377,7 @@ export default function GeneratorPageClient({
               disabled={isExporting}
               className="inline-flex items-center justify-center rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              PNG LinkedIn
+              {ui.generatorPngLinkedIn}
             </button>
             <button
               type="button"
@@ -304,7 +385,7 @@ export default function GeneratorPageClient({
               disabled={isExporting}
               className="inline-flex items-center justify-center rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              PNG Square
+              {ui.generatorPngSquare}
             </button>
             <button
               type="button"
@@ -312,7 +393,7 @@ export default function GeneratorPageClient({
               disabled={isExporting}
               className="inline-flex items-center justify-center rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              PNG Email
+              {ui.generatorPngEmail}
             </button>
             <button
               type="button"
@@ -320,7 +401,7 @@ export default function GeneratorPageClient({
               disabled={isExporting}
               className="inline-flex items-center justify-center rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              PNG Print
+              {ui.generatorPngPrint}
             </button>
             <button
               type="button"
@@ -328,7 +409,7 @@ export default function GeneratorPageClient({
               disabled={isExporting}
               className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              PDF
+              {ui.generatorPdf}
             </button>
             <button
               type="button"
@@ -336,7 +417,7 @@ export default function GeneratorPageClient({
               disabled={isExporting}
               className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              ZIP Pack
+              {ui.generatorZipPack}
             </button>
           </div>
         </div>
@@ -350,15 +431,13 @@ export default function GeneratorPageClient({
 
       <div className="grid gap-6 xl:grid-cols-[420px_minmax(0,1fr)]">
         <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <h2 className="text-lg font-semibold text-zinc-900">Generator inputs</h2>
-          <p className="mt-1 text-sm text-zinc-500">
-            These values are prefilled from the verified exhibitor session.
-          </p>
+          <h2 className="text-lg font-semibold text-zinc-900">{ui.generatorInputsTitle}</h2>
+          <p className="mt-1 text-sm text-zinc-500">{ui.generatorInputsDescription}</p>
 
           <div className="mt-6 space-y-5">
             <div>
               <label htmlFor="companyName" className="mb-2 block text-sm font-medium text-zinc-700">
-                Company name
+                {ui.generatorCompanyName}
               </label>
               <input
                 id="companyName"
@@ -371,7 +450,7 @@ export default function GeneratorPageClient({
 
             <div>
               <label htmlFor="standNumber" className="mb-2 block text-sm font-medium text-zinc-700">
-                Stand number
+                {ui.generatorStandNumber}
               </label>
               <input
                 id="standNumber"
@@ -384,7 +463,7 @@ export default function GeneratorPageClient({
 
             <div>
               <label htmlFor="invitationCode" className="mb-2 block text-sm font-medium text-zinc-700">
-                Invitation code
+                {ui.generatorInvitationCode}
               </label>
               <input
                 id="invitationCode"
@@ -397,7 +476,7 @@ export default function GeneratorPageClient({
 
             <div>
               <label htmlFor="registrationUrl" className="mb-2 block text-sm font-medium text-zinc-700">
-                Registration URL
+                {ui.generatorRegistrationUrl}
               </label>
               <input
                 id="registrationUrl"
@@ -410,7 +489,7 @@ export default function GeneratorPageClient({
 
             <div>
               <label htmlFor="logoUpload" className="mb-2 block text-sm font-medium text-zinc-700">
-                Logo upload
+                {ui.generatorLogoUpload}
               </label>
               <input
                 id="logoUpload"
@@ -420,13 +499,15 @@ export default function GeneratorPageClient({
                 className="block w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-700 file:mr-4 file:rounded-lg file:border-0 file:bg-zinc-100 file:px-3 file:py-2 file:text-sm file:font-medium file:text-zinc-700 hover:file:bg-zinc-200"
               />
               {logoFileName ? (
-                <p className="mt-2 text-xs text-zinc-500">Selected: {logoFileName}</p>
+                <p className="mt-2 text-xs text-zinc-500">
+                  {ui.generatorSelectedFile}: {logoFileName}
+                </p>
               ) : null}
             </div>
 
             <div>
               <label htmlFor="theme" className="mb-2 block text-sm font-medium text-zinc-700">
-                Theme
+                {ui.generatorTheme}
               </label>
               <select
                 id="theme"
@@ -444,43 +525,30 @@ export default function GeneratorPageClient({
 
             <div>
               <label htmlFor="language" className="mb-2 block text-sm font-medium text-zinc-700">
-                Language
+                {ui.generatorLanguage}
               </label>
-              <select
-                id="language"
-                value={language}
-                onChange={(event) => setLanguage(event.target.value as LanguageKey)}
-                className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-zinc-400"
-              >
-                {Object.keys(translations).map((key) => (
-                  <option key={key} value={key}>
-                    {key.toUpperCase()}
-                  </option>
-                ))}
-              </select>
+              <LanguageSwitcher value={language} onChange={setLanguage} />
             </div>
           </div>
 
           <div className="mt-6 rounded-2xl bg-zinc-50 p-4">
-            <h3 className="text-sm font-semibold text-zinc-900">Verified source data</h3>
+            <h3 className="text-sm font-semibold text-zinc-900">{ui.generatorVerifiedSourceData}</h3>
             <div className="mt-3 space-y-2 text-xs text-zinc-600">
               <p><strong>ID:</strong> {verifiedExhibitor.id}</p>
-              <p><strong>Company:</strong> {verifiedExhibitor.companyName}</p>
-              <p><strong>Stand:</strong> {verifiedExhibitor.standNumber}</p>
-              <p><strong>Invitation code:</strong> {verifiedExhibitor.invitationCode}</p>
-              <p className="break-all"><strong>Registration URL:</strong> {verifiedExhibitor.registrationUrl}</p>
-              <p><strong>Theme:</strong> {verifiedExhibitor.theme}</p>
-              <p><strong>Language:</strong> {verifiedExhibitor.language}</p>
+              <p><strong>{ui.generatorCompanyName}:</strong> {verifiedExhibitor.companyName}</p>
+              <p><strong>{ui.generatorStandNumber}:</strong> {verifiedExhibitor.standNumber}</p>
+              <p><strong>{ui.generatorInvitationCode}:</strong> {verifiedExhibitor.invitationCode}</p>
+              <p className="break-all"><strong>{ui.generatorRegistrationUrl}:</strong> {verifiedExhibitor.registrationUrl}</p>
+              <p><strong>{ui.generatorTheme}:</strong> {verifiedExhibitor.theme}</p>
+              <p><strong>{ui.generatorLanguage}:</strong> {verifiedExhibitor.language}</p>
             </div>
           </div>
         </section>
 
         <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
           <div className="mb-4">
-            <h2 className="text-lg font-semibold text-zinc-900">Invitation preview</h2>
-            <p className="mt-1 text-sm text-zinc-500">
-              Live preview using the verified session-backed generator data.
-            </p>
+            <h2 className="text-lg font-semibold text-zinc-900">{ui.generatorPreviewTitle}</h2>
+            <p className="mt-1 text-sm text-zinc-500">{ui.generatorPreviewDescription}</p>
           </div>
 
           <div className="overflow-auto rounded-2xl border border-zinc-200 bg-zinc-100 p-4">

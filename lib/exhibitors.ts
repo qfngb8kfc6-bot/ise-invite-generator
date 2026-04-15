@@ -1,3 +1,7 @@
+import 'server-only'
+
+import { env } from '@/lib/env'
+
 export type ThemeName = 'audio' | 'residential' | 'lighting'
 export type LanguageCode = 'en' | 'es' | 'de'
 
@@ -45,12 +49,20 @@ const mockExhibitors: Record<string, Exhibitor> = {
   },
 }
 
-function isThemeName(value: unknown): value is ThemeName {
-  return value === 'audio' || value === 'residential' || value === 'lighting'
+function isDevelopment() {
+  return process.env.NODE_ENV !== 'production'
 }
 
-function isLanguageCode(value: unknown): value is LanguageCode {
-  return value === 'en' || value === 'es' || value === 'de'
+function debugLog(label: string, payload: Record<string, unknown>) {
+  if (!isDevelopment()) {
+    return
+  }
+
+  console.log(`[MYS DEBUG] ${label}`, payload)
+}
+
+function warnLog(label: string, payload: Record<string, unknown>) {
+  console.warn(`[MYS WARN] ${label}`, payload)
 }
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -63,11 +75,11 @@ function getFirstString(record: Record<string, unknown>, keys: string[]): string
   for (const key of keys) {
     const value = record[key]
 
-    if (typeof value === 'string' && value.trim().length > 0) {
+    if (typeof value === 'string' && value.trim()) {
       return value.trim()
     }
 
-    if (typeof value === 'number') {
+    if (typeof value === 'number' && Number.isFinite(value)) {
       return String(value)
     }
   }
@@ -83,32 +95,81 @@ function getFirstNullableString(
   return value || null
 }
 
-function inferTheme(record: Record<string, unknown>): ThemeName {
-  const direct = getFirstString(record, ['theme', 'themeName', 'sectorTheme']).toLowerCase()
-  if (isThemeName(direct)) {
-    return direct
+function getMysPrimaryBoothNumber(record: Record<string, unknown>): string {
+  const booths = record['booths']
+
+  if (!Array.isArray(booths) || booths.length === 0) {
+    return ''
   }
 
-  const sector = getFirstString(record, ['sector', 'category', 'division']).toLowerCase()
-  if (sector.includes('light')) return 'lighting'
-  if (sector.includes('resident')) return 'residential'
-  return 'audio'
+  for (const booth of booths) {
+    const boothRecord = asRecord(booth)
+    if (!boothRecord) continue
+
+    const boothNumber = getFirstString(boothRecord, ['boothnumber', 'boothNumber'])
+
+    if (boothNumber) {
+      return boothNumber
+    }
+  }
+
+  return ''
 }
 
-function inferLanguage(record: Record<string, unknown>): LanguageCode {
-  const direct = getFirstString(record, ['language', 'lang', 'locale']).toLowerCase()
-  if (isLanguageCode(direct)) {
-    return direct
+function getMysCategorySummary(record: Record<string, unknown>): string {
+  const productCategories = record['productcategories']
+
+  if (!Array.isArray(productCategories)) {
+    return ''
   }
 
-  if (direct.startsWith('de')) return 'de'
-  if (direct.startsWith('es')) return 'es'
-  return 'en'
+  const names: string[] = []
+
+  for (const item of productCategories) {
+    const itemRecord = asRecord(item)
+    if (!itemRecord) continue
+
+    const name = getFirstString(itemRecord, [
+      'categorydisplay',
+      'categoryname',
+      'categoryDisplay',
+      'categoryName',
+    ])
+
+    if (name) {
+      names.push(name)
+    }
+  }
+
+  return names.join(' ')
+}
+
+function buildFallbackInvitationCode(exhibitorId: string, standNumber: string): string {
+  const year = new Date().getUTCFullYear()
+  const standPart = standNumber ? standNumber.replace(/\s+/g, '').toUpperCase() : 'INVITE'
+  return `${exhibitorId}-${standPart}-${year}`
+}
+
+function inferThemeFromMys(record: Record<string, unknown>): ThemeName {
+  const categoryText = getMysCategorySummary(record).toLowerCase()
+
+  if (categoryText.includes('light')) return 'lighting'
+
+  if (
+    categoryText.includes('home') ||
+    categoryText.includes('residential') ||
+    categoryText.includes('automation')
+  ) {
+    return 'residential'
+  }
+
+  return 'audio'
 }
 
 function buildRegistrationUrl(
   record: Record<string, unknown>,
-  invitationCode: string
+  invitationCode: string,
+  exhibitorId: string
 ): string {
   const explicit = getFirstString(record, [
     'registrationUrl',
@@ -117,60 +178,48 @@ function buildRegistrationUrl(
     'invite_url',
     'registrationLink',
     'inviteLink',
+    'inviteurl',
   ])
 
   if (explicit) {
     return explicit
   }
 
-  const base = process.env.EBO_REGISTRATION_BASE_URL?.trim()
-  if (base && invitationCode) {
-    const joiner = base.includes('?') ? '&' : '?'
+  const base = env.EBO_REGISTRATION_BASE_URL?.trim() || ''
+  if (!base) {
+    return ''
+  }
+
+  const joiner = base.includes('?') ? '&' : '?'
+
+  if (invitationCode) {
     return `${base}${joiner}code=${encodeURIComponent(invitationCode)}`
   }
 
-  return ''
+  return `${base}${joiner}exhibitorId=${encodeURIComponent(exhibitorId)}`
 }
 
-function normaliseExhibitor(input: unknown): Exhibitor | null {
-  const record = asRecord(input)
+function normaliseMysExhibitor(input: unknown): Exhibitor | null {
+  const outer = asRecord(input)
+  if (!outer) return null
+
+  const record = asRecord(outer.exhibitor) ?? outer
   if (!record) return null
 
-  const id = getFirstString(record, ['id', 'exhibitorId', 'exhibitor_id', 'companyId', 'company_id'])
-  const companyName = getFirstString(record, [
-    'companyName',
-    'company_name',
-    'name',
-    'exhibitorName',
-    'exhibitor_name',
-  ])
-  const standNumber = getFirstString(record, [
-    'standNumber',
-    'stand_number',
-    'stand',
-    'booth',
-    'boothNumber',
-    'booth_number',
-  ])
-  const invitationCode = getFirstString(record, [
-    'invitationCode',
-    'invitation_code',
-    'inviteCode',
-    'invite_code',
-    'code',
-  ])
-  const logoUrl = getFirstNullableString(record, [
-    'logoUrl',
-    'logo_url',
-    'logo',
-    'imageUrl',
-    'image_url',
-  ])
-  const theme = inferTheme(record)
-  const language = inferLanguage(record)
-  const registrationUrl = buildRegistrationUrl(record, invitationCode)
+  const id = getFirstString(record, ['exhid', 'id', 'exhibitorId', 'alt_id'])
+  const companyName = getFirstString(record, ['exhname', 'legal_name', 'companyName', 'name'])
+  const standNumber = getMysPrimaryBoothNumber(record)
 
-  if (!id || !companyName || !standNumber || !invitationCode || !registrationUrl) {
+  const invitationCode =
+    getFirstString(record, ['promocode', 'promoCode', 'invitecode', 'invitationCode']) ||
+    buildFallbackInvitationCode(id, standNumber)
+
+  const registrationUrl = buildRegistrationUrl(record, invitationCode, id)
+
+  const logoUrl =
+    getFirstNullableString(record, ['colorlogo', 'logo', 'logoUrl', 'imageUrl']) || null
+
+  if (!id || !companyName || !standNumber || !registrationUrl) {
     return null
   }
 
@@ -181,74 +230,273 @@ function normaliseExhibitor(input: unknown): Exhibitor | null {
     invitationCode,
     registrationUrl,
     logoUrl,
-    theme,
-    language,
+    theme: inferThemeFromMys(record),
+    language: 'en',
   }
 }
 
-function extractCandidatePayloads(data: unknown): unknown[] {
-  const record = asRecord(data)
-  if (!record) return [data]
+function getTimeoutMs(): number {
+  const raw = Number(env.MYS_API_TIMEOUT_MS || '10000')
 
-  const candidates: unknown[] = [
-    record.exhibitor,
-    record.data,
-    record.result,
-    record.item,
-    data,
-  ]
-
-  const nestedData = asRecord(record.data)
-  if (nestedData) {
-    candidates.push(nestedData.exhibitor, nestedData.item)
+  if (!Number.isFinite(raw) || raw <= 0) {
+    return 10000
   }
 
-  return candidates.filter(Boolean)
+  return raw
 }
 
-async function fetchExhibitorFromEbo(id: string): Promise<Exhibitor | null> {
-  const baseUrl = process.env.EBO_API_BASE_URL?.trim()
-  const apiKey = process.env.EBO_API_KEY?.trim()
-  const timeoutMs = Number(process.env.EBO_API_TIMEOUT_MS || '10000')
+function getMysBaseUrl(): string {
+  const baseUrl = env.MYS_API_BASE_URL?.trim()
 
   if (!baseUrl) {
+    throw new Error('Missing MYS_API_BASE_URL')
+  }
+
+  return baseUrl.replace(/\/+$/, '')
+}
+
+function getMysRequiredCredentials() {
+  const username = env.MYS_API_USERNAME?.trim()
+  const password = env.MYS_API_PASSWORD?.trim()
+  const showCode = env.MYS_SHOWCODE?.trim()
+
+  if (!username || !password || !showCode) {
+    throw new Error('MYS API credentials are not fully configured')
+  }
+
+  return {
+    username,
+    password,
+    showCode,
+  }
+}
+
+async function safeReadText(response: Response): Promise<string> {
+  try {
+    return await response.text()
+  } catch {
+    return ''
+  }
+}
+
+function safeJsonParse(rawText: string): unknown {
+  try {
+    return JSON.parse(rawText)
+  } catch {
     return null
   }
+}
+
+async function authorizeMys(): Promise<string> {
+  const baseUrl = getMysBaseUrl()
+  const { username, password, showCode } = getMysRequiredCredentials()
+  const timeoutMs = getTimeoutMs()
 
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), timeoutMs)
 
   try {
-    const url = `${baseUrl.replace(/\/+$/, '')}/exhibitors/${encodeURIComponent(id)}`
+    const authorizeUrl = new URL(`${baseUrl}/Authorize`)
+    authorizeUrl.searchParams.set('showCode', showCode)
 
-    const response = await fetch(url, {
+    const basicAuth = Buffer.from(`${username}:${password}`).toString('base64')
+
+    debugLog('AUTHORIZE_REQUEST', {
+      url: authorizeUrl.toString(),
+      usernamePresent: Boolean(username),
+      passwordPresent: Boolean(password),
+      showCode,
+    })
+
+    const response = await fetch(authorizeUrl.toString(), {
       method: 'GET',
       headers: {
         Accept: 'application/json',
-        ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
+        Authorization: `Basic ${basicAuth}`,
       },
       cache: 'no-store',
       signal: controller.signal,
     })
 
-    if (response.status === 404) {
-      return null
-    }
+    const rawText = await safeReadText(response)
+
+    debugLog('AUTHORIZE_RESPONSE', {
+      status: response.status,
+      ok: response.ok,
+      bodyPreview: rawText.slice(0, 500),
+    })
 
     if (!response.ok) {
-      throw new Error(`EBO exhibitor fetch failed with status ${response.status}`)
+      throw new Error(`MYS authorize failed with status ${response.status}: ${rawText}`)
     }
 
-    const data = await response.json()
+    const trimmed = rawText.trim()
 
-    for (const candidate of extractCandidatePayloads(data)) {
-      const exhibitor = normaliseExhibitor(candidate)
-      if (exhibitor) {
+    if (!trimmed) {
+      throw new Error('MYS authorize returned an empty response')
+    }
+
+    if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) {
+      const token = trimmed.replace(/^"+|"+$/g, '')
+
+      if (!token) {
+        throw new Error('MYS authorize returned an empty token')
+      }
+
+      debugLog('AUTHORIZE_TOKEN_PARSED', {
+        tokenPresent: true,
+        tokenLength: token.length,
+        source: 'plain-text',
+      })
+
+      return token
+    }
+
+    const parsed = safeJsonParse(trimmed)
+
+    if (!parsed) {
+      throw new Error(`MYS authorize returned unreadable response: ${trimmed}`)
+    }
+
+    const extractToken = (value: unknown): string => {
+      const record = asRecord(value)
+      if (!record) return ''
+
+      return getFirstString(record, [
+        'mysGUID',
+        'mysguid',
+        'MYSGUID',
+        'token',
+        'access_token',
+        'accessToken',
+        'guid',
+        'GUID',
+        'value',
+        'Value',
+      ])
+    }
+
+    if (Array.isArray(parsed)) {
+      for (const item of parsed) {
+        const token = extractToken(item)
+
+        if (token) {
+          debugLog('AUTHORIZE_TOKEN_PARSED', {
+            tokenPresent: true,
+            tokenLength: token.length,
+            source: 'array',
+          })
+
+          return token
+        }
+      }
+    } else {
+      const token = extractToken(parsed)
+
+      if (token) {
+        debugLog('AUTHORIZE_TOKEN_PARSED', {
+          tokenPresent: true,
+          tokenLength: token.length,
+          source: 'object',
+        })
+
+        return token
+      }
+    }
+
+    throw new Error(`MYS authorize returned an invalid response: ${trimmed}`)
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error(`MYS authorize timed out after ${timeoutMs}ms`)
+    }
+
+    throw error
+  } finally {
+    clearTimeout(timeout)
+  }
+}
+
+async function fetchExhibitorFromMys(id: string): Promise<Exhibitor | null> {
+  const baseUrl = getMysBaseUrl()
+  const { showCode } = getMysRequiredCredentials()
+  const timeoutMs = getTimeoutMs()
+
+  const mysGUID = await authorizeMys()
+
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), timeoutMs)
+
+  try {
+    const exhibitorsUrl = new URL(`${baseUrl}/Exhibitors`)
+    exhibitorsUrl.searchParams.set('showCode', showCode)
+    exhibitorsUrl.searchParams.set('mysGUID', mysGUID)
+    exhibitorsUrl.searchParams.set('exhid', id)
+
+    debugLog('EXHIBITORS_REQUEST', {
+      url: exhibitorsUrl.toString(),
+      exhibitorId: id,
+      showCode,
+      mysGuidPresent: Boolean(mysGUID),
+      authorizationHeaderPresent: true,
+    })
+
+    const response = await fetch(exhibitorsUrl.toString(), {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${mysGUID}`,
+      },
+      cache: 'no-store',
+      signal: controller.signal,
+    })
+
+    const rawText = await safeReadText(response)
+
+    debugLog('EXHIBITORS_RESPONSE', {
+      status: response.status,
+      ok: response.ok,
+      exhibitorId: id,
+      bodyPreview: rawText.slice(0, 1000),
+    })
+
+    if (!response.ok) {
+      throw new Error(`Exhibitors fetch failed: ${response.status} - ${rawText}`)
+    }
+
+    const data = safeJsonParse(rawText)
+
+    if (!Array.isArray(data)) {
+      throw new Error(`Exhibitors returned unexpected response: ${rawText.slice(0, 500)}`)
+    }
+
+    for (const item of data) {
+      const exhibitor = normaliseMysExhibitor(item)
+
+      if (exhibitor && exhibitor.id === id) {
+        debugLog('EXHIBITOR_NORMALISED', {
+          exhibitorId: exhibitor.id,
+          companyName: exhibitor.companyName,
+          standNumber: exhibitor.standNumber,
+          registrationUrlPresent: Boolean(exhibitor.registrationUrl),
+          invitationCodePresent: Boolean(exhibitor.invitationCode),
+        })
+
         return exhibitor
       }
     }
 
-    throw new Error('EBO exhibitor payload was invalid')
+    debugLog('EXHIBITOR_NOT_FOUND_IN_RESPONSE', {
+      exhibitorId: id,
+      arrayLength: data.length,
+    })
+
+    return null
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error(`Exhibitors request timed out after ${timeoutMs}ms`)
+    }
+
+    throw error
   } finally {
     clearTimeout(timeout)
   }
@@ -258,32 +506,54 @@ function getMockExhibitorById(id: string): Exhibitor | null {
   return mockExhibitors[id] ?? null
 }
 
+function shouldUseMockFallback() {
+  return isDevelopment()
+}
+
 export async function getExhibitorById(id: string): Promise<Exhibitor | null> {
   const normalisedId = id.trim()
+
   if (!normalisedId) {
     return null
   }
 
-  const source = process.env.EXHIBITOR_DATA_SOURCE?.trim() || 'mock'
+  const source = env.EXHIBITOR_DATA_SOURCE?.trim() || 'mock'
 
-  if (source === 'mock') {
+  if (source !== 'mys') {
     return getMockExhibitorById(normalisedId)
   }
 
   try {
-    const exhibitor = await fetchExhibitorFromEbo(normalisedId)
+    const exhibitor = await fetchExhibitorFromMys(normalisedId)
+
     if (exhibitor) {
       return exhibitor
     }
-  } catch (error) {
-    console.error('EBO EXHIBITOR FETCH ERROR:', error)
 
-    if (process.env.NODE_ENV === 'production') {
-      return null
+    if (shouldUseMockFallback()) {
+      warnLog('FALLBACK_TO_MOCK_AFTER_MYS_NOT_FOUND', {
+        exhibitorId: normalisedId,
+      })
+
+      return getMockExhibitorById(normalisedId)
     }
-  }
 
-  return getMockExhibitorById(normalisedId)
+    return null
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown MYS error'
+
+    warnLog('MYS_FETCH_FAILED', {
+      exhibitorId: normalisedId,
+      message,
+      fallbackToMock: shouldUseMockFallback(),
+    })
+
+    if (shouldUseMockFallback()) {
+      return getMockExhibitorById(normalisedId)
+    }
+
+    return null
+  }
 }
 
 export async function getAllExhibitors(): Promise<Exhibitor[]> {

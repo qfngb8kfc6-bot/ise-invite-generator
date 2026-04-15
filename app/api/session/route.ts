@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getExhibitorById } from '@/lib/exhibitors'
 import { verifyExhibitorToken } from '@/lib/jwt'
+import { logAnalyticsEvent } from '@/lib/analytics'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -95,6 +96,18 @@ async function handleSession(request: NextRequest) {
         }
       )
     }
+
+    await logAnalyticsEvent({
+      exhibitorId: exhibitor.id,
+      companyName: exhibitor.companyName,
+      eventType: 'session_verified',
+    })
+
+    await logAnalyticsEvent({
+      exhibitorId: exhibitor.id,
+      companyName: exhibitor.companyName,
+      eventType: 'generator_opened',
+    })
 
     return NextResponse.json(
       {

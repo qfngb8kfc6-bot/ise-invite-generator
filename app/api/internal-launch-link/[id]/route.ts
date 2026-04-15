@@ -1,17 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getExhibitorById } from '@/lib/exhibitors'
-import { signExhibitorToken } from '@/lib/jwt'
-import { logAnalyticsEvent } from '@/lib/analytics'
+import { signLaunch } from '@/lib/launch-signature'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 function trimTrailingSlash(value: string) {
   return value.endsWith('/') ? value.slice(0, -1) : value
-}
-
-function isProduction(): boolean {
-  return process.env.NODE_ENV === 'production'
 }
 
 function unauthorizedResponse() {
@@ -24,27 +19,12 @@ function unauthorizedResponse() {
   })
 }
 
-function disabledInProductionResponse() {
-  return NextResponse.json(
-    {
-      ok: false,
-      error: 'This route is disabled in production',
-    },
-    {
-      status: 404,
-      headers: {
-        'Cache-Control': 'no-store',
-      },
-    }
-  )
-}
-
 function isAuthorized(request: NextRequest): boolean {
   const expectedUsername = process.env.REPORTS_BASIC_AUTH_USERNAME?.trim()
   const expectedPassword = process.env.REPORTS_BASIC_AUTH_PASSWORD?.trim()
 
   if (!expectedUsername || !expectedPassword) {
-    return false
+    return process.env.NODE_ENV !== 'production'
   }
 
   const authHeader = request.headers.get('authorization')
@@ -54,7 +34,7 @@ function isAuthorized(request: NextRequest): boolean {
   }
 
   try {
-    const base64Credentials = authHeader.slice('Basic '.length).trim()
+    const base64Credentials = authHeader.slice('Basic '.length)
     const decoded = Buffer.from(base64Credentials, 'base64').toString('utf8')
     const separatorIndex = decoded.indexOf(':')
 
@@ -71,14 +51,10 @@ function isAuthorized(request: NextRequest): boolean {
   }
 }
 
-async function handleRequest(
+export async function GET(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
-  if (isProduction()) {
-    return disabledInProductionResponse()
-  }
-
   if (!isAuthorized(request)) {
     return unauthorizedResponse()
   }
@@ -89,16 +65,8 @@ async function handleRequest(
 
     if (!exhibitorId) {
       return NextResponse.json(
-        {
-          ok: false,
-          error: 'Missing exhibitor id',
-        },
-        {
-          status: 400,
-          headers: {
-            'Cache-Control': 'no-store',
-          },
-        }
+        { ok: false, error: 'Missing exhibitor id' },
+        { status: 400, headers: { 'Cache-Control': 'no-store' } }
       )
     }
 
@@ -106,42 +74,27 @@ async function handleRequest(
 
     if (!exhibitor) {
       return NextResponse.json(
-        {
-          ok: false,
-          error: `Exhibitor ${exhibitorId} not found`,
-        },
-        {
-          status: 404,
-          headers: {
-            'Cache-Control': 'no-store',
-          },
-        }
+        { ok: false, error: `Exhibitor ${exhibitorId} not found` },
+        { status: 404, headers: { 'Cache-Control': 'no-store' } }
       )
     }
-
-    const token = await signExhibitorToken(exhibitor.id)
-
-    await logAnalyticsEvent({
-      exhibitorId: exhibitor.id,
-      companyName: exhibitor.companyName,
-      eventType: 'link_generated',
-      metadata: {
-        source: 'dev-token-route',
-      },
-    })
 
     const baseUrl = trimTrailingSlash(
       process.env.NEXT_PUBLIC_APP_URL?.trim() || 'http://localhost:3000'
     )
 
-    const generatorUrl = `${baseUrl}/generator?token=${encodeURIComponent(token)}`
+    const sig = signLaunch(exhibitor.id)
+    const launchUrl = `${baseUrl}/launch/${encodeURIComponent(
+      exhibitor.id
+    )}?sig=${encodeURIComponent(sig)}`
 
     return NextResponse.json(
       {
         ok: true,
         exhibitorId: exhibitor.id,
         companyName: exhibitor.companyName,
-        generatorUrl,
+        standNumber: exhibitor.standNumber,
+        launchUrl,
       },
       {
         status: 200,
@@ -153,55 +106,20 @@ async function handleRequest(
       }
     )
   } catch (error) {
-    console.error('TOKEN GENERATION ERROR:', error)
-
-    const message =
-      error instanceof Error ? error.message : 'Unknown token generation error'
+    console.error('INTERNAL LAUNCH LINK ERROR:', error)
 
     return NextResponse.json(
       {
         ok: false,
-        error: `Failed to generate token: ${message}`,
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to generate launch link',
       },
       {
         status: 500,
-        headers: {
-          'Cache-Control': 'no-store',
-        },
+        headers: { 'Cache-Control': 'no-store' },
       }
     )
   }
-}
-
-export async function GET(
-  request: NextRequest,
-  context: { params: Promise<{ id: string }> }
-) {
-  return handleRequest(request, context)
-}
-
-export async function POST(
-  request: NextRequest,
-  context: { params: Promise<{ id: string }> }
-) {
-  return handleRequest(request, context)
-}
-
-export async function OPTIONS() {
-  if (isProduction()) {
-    return new NextResponse(null, {
-      status: 404,
-      headers: {
-        'Cache-Control': 'no-store',
-      },
-    })
-  }
-
-  return new NextResponse(null, {
-    status: 204,
-    headers: {
-      Allow: 'GET, POST, OPTIONS',
-      'Cache-Control': 'no-store',
-    },
-  })
 }

@@ -28,7 +28,7 @@ export default function InvitePreview({
   const [logoError, setLogoError] = useState(false)
   const [qrDataUrl, setQrDataUrl] = useState('')
 
-  const text = translations[language]
+  const text = translations[language].invite
   const selectedTheme = themes[theme]
 
   useEffect(() => {

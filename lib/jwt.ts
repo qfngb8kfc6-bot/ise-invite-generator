@@ -1,22 +1,13 @@
 import 'server-only'
 
 import { jwtVerify, SignJWT } from 'jose'
+import { env } from '@/lib/env'
 
 const encoder = new TextEncoder()
 
-function getRequiredEnv(name: string): string {
-  const value = process.env[name]
-
-  if (!value || value.trim().length === 0) {
-    throw new Error(`Missing required env var: ${name}`)
-  }
-
-  return value.trim()
-}
-
-const JWT_SECRET = getRequiredEnv('JWT_SECRET')
-const JWT_ISSUER = getRequiredEnv('JWT_ISSUER')
-const JWT_AUDIENCE = getRequiredEnv('JWT_AUDIENCE')
+const JWT_SECRET = env.JWT_SECRET
+const JWT_ISSUER = env.JWT_ISSUER
+const JWT_AUDIENCE = env.JWT_AUDIENCE
 
 if (JWT_SECRET.length < 32) {
   throw new Error('JWT_SECRET must be at least 32 characters long')
@@ -43,7 +34,9 @@ export async function signExhibitorToken(exhibitorId: string): Promise<string> {
     .sign(secret)
 }
 
-export async function verifyExhibitorToken(token: string): Promise<SessionTokenPayload> {
+export async function verifyExhibitorToken(
+  token: string
+): Promise<SessionTokenPayload> {
   if (!token || token.trim().length === 0) {
     throw new Error('Missing token')
   }
