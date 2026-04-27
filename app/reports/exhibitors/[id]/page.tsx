@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import { getAnalyticsSummary } from '@/lib/analytics'
 import ExhibitorReportDetailClient from './ExhibitorReportDetailClient'
 
@@ -33,67 +33,63 @@ function hasCustomDateRange(startDate?: string, endDate?: string): boolean {
 }
 
 export default async function ExhibitorReportDetailPage(props: Props) {
-  const params = await props.params
-  const searchParams = props.searchParams ? await props.searchParams : {}
+  try {
+    const params = await props.params
+    const searchParams = props.searchParams ? await props.searchParams : {}
 
-  const exhibitorId = params?.id?.trim()
-  const range = searchParams?.range ?? 'all'
-  const startDate = searchParams?.startDate?.trim() || undefined
-  const endDate = searchParams?.endDate?.trim() || undefined
+    const exhibitorId = params?.id?.trim()
+    const range = searchParams?.range ?? 'all'
+    const startDate = searchParams?.startDate?.trim() || undefined
+    const endDate = searchParams?.endDate?.trim() || undefined
 
-  if (!exhibitorId) {
-    notFound()
-  }
+    if (!exhibitorId) {
+      throw new Error('Missing exhibitor id')
+    }
 
-  const rangeDays = hasCustomDateRange(startDate, endDate)
-    ? undefined
-    : getRangeDays(range)
+    const rangeDays = hasCustomDateRange(startDate, endDate)
+      ? undefined
+      : getRangeDays(range)
 
-  const summary = await getAnalyticsSummary({
-    rangeDays,
-    exhibitorId,
-    startDate,
-    endDate,
-  })
-
-  let exhibitor = summary.exhibitorSummaries.find(
-    (item) => item.exhibitorId === exhibitorId
-  )
-
-  if (!exhibitor) {
-    const allTimeSummary = await getAnalyticsSummary({
+    const summary = await getAnalyticsSummary({
+      rangeDays,
       exhibitorId,
+      startDate,
+      endDate,
     })
 
-    const allTimeExhibitor = allTimeSummary.exhibitorSummaries.find(
+    const exhibitor = summary.exhibitorSummaries.find(
       (item) => item.exhibitorId === exhibitorId
     )
 
-    if (!allTimeExhibitor) {
-      notFound()
+    if (!exhibitor) {
+      throw new Error(`No analytics found for exhibitor ${exhibitorId}`)
     }
 
-    exhibitor = {
-      exhibitorId: allTimeExhibitor.exhibitorId,
-      companyName: allTimeExhibitor.companyName,
-      totalEvents: 0,
-      linkGeneratedCount: 0,
-      generatorOpenedCount: 0,
-      sessionVerifiedCount: 0,
-      exportClickedCount: 0,
-      exportSucceededCount: 0,
-      exportFailedCount: 0,
-      lastActivityAt: null,
-      formats: {},
-      generatedLinkButNeverExported: false,
-    }
+    return (
+      <ExhibitorReportDetailClient
+        exhibitor={exhibitor}
+        summary={summary}
+        currentRange={range}
+      />
+    )
+  } catch (error) {
+    console.error('EXHIBITOR REPORT DETAIL ERROR:', error)
+
+    return (
+      <main className="min-h-screen bg-neutral-950 px-6 py-10 text-white">
+        <div className="mx-auto max-w-4xl rounded-3xl border border-red-500/20 bg-red-500/10 p-6">
+          <h1 className="text-2xl font-semibold">Exhibitor report unavailable</h1>
+          <p className="mt-3 text-sm text-red-200">
+            This exhibitor detail report could not be loaded. The main reports dashboard is still available.
+          </p>
+          <Link
+            href="/reports"
+            className="mt-6 inline-flex rounded-xl bg-white px-4 py-2 text-sm font-medium text-black"
+          >
+            Back to reports
+          </Link>
+        </div>
+      </main>
+    )
   }
-
-  return (
-    <ExhibitorReportDetailClient
-      exhibitor={exhibitor}
-      summary={summary}
-      currentRange={range}
-    />
-  )
 }
