@@ -71,6 +71,14 @@ type FunnelSummary = {
   starts: number
 }
 
+type AnalyticsInsight = {
+  id: string
+  title: string
+  value: string
+  description: string
+  tone: 'green' | 'blue' | 'amber' | 'red'
+}
+
 type Summary = {
   totalEvents: number
   totalExhibitors: number
@@ -89,6 +97,7 @@ type Summary = {
   appliedStartDate: string | null
   appliedEndDate: string | null
   funnel: FunnelSummary
+  insights?: AnalyticsInsight[]
 }
 
 type Props = {
@@ -591,6 +600,29 @@ function CompactFocusCard({
         </div>
       </div>
     </button>
+  )
+}
+
+function InsightCard({ insight }: { insight: AnalyticsInsight }) {
+  const toneClasses =
+    insight.tone === 'green'
+      ? 'border-emerald-500/25 bg-emerald-500/[0.08] text-emerald-300'
+      : insight.tone === 'blue'
+      ? 'border-blue-500/25 bg-blue-500/[0.08] text-blue-300'
+      : insight.tone === 'amber'
+      ? 'border-amber-500/25 bg-amber-500/[0.08] text-amber-300'
+      : 'border-red-500/25 bg-red-500/[0.08] text-red-300'
+
+  return (
+    <div className={`rounded-3xl border p-5 ${toneClasses}`}>
+      <div className="text-sm font-medium">{insight.title}</div>
+      <div className="mt-3 truncate text-2xl font-semibold text-white">
+        {insight.value}
+      </div>
+      <p className="mt-3 text-sm leading-6 text-neutral-400">
+        {insight.description}
+      </p>
+    </div>
   )
 }
 
@@ -1098,6 +1130,28 @@ export default function ReportsClient({
             Matching available exhibitors: {filteredAvailableExhibitors.length}
           </div>
         </Card>
+
+        {summary.insights && summary.insights.length > 0 ? (
+          <Card className="p-6 sm:p-7">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <h2 className="text-2xl font-semibold text-white">Top insights</h2>
+                <p className="mt-1 text-sm leading-6 text-neutral-400">
+                  Automated highlights from the selected report view.
+                </p>
+              </div>
+              <div className="text-sm text-neutral-500">
+                {summary.insights.length} insights generated
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+              {summary.insights.map((insight) => (
+                <InsightCard key={insight.id} insight={insight} />
+              ))}
+            </div>
+          </Card>
+        ) : null}
 
         <div>
           <h2 className="mb-4 text-xl font-semibold text-white">Overview</h2>
