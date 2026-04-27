@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 
 type Props = {
   params: Promise<{
-    exhibitorId: string
+    id: string
   }>
   searchParams?: Promise<{
     range?: string
@@ -36,7 +36,7 @@ export default async function ExhibitorReportDetailPage(props: Props) {
   const params = await props.params
   const searchParams = props.searchParams ? await props.searchParams : {}
 
-  const exhibitorId = params?.exhibitorId?.trim()
+  const exhibitorId = params?.id?.trim()
   const range = searchParams?.range ?? 'all'
   const startDate = searchParams?.startDate?.trim() || undefined
   const endDate = searchParams?.endDate?.trim() || undefined
