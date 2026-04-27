@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { makeQrDataUrl } from '@/lib/qr'
 import { themes } from '@/lib/themes'
 import { translations } from '@/lib/translations'
@@ -14,6 +14,12 @@ type InvitePreviewProps = {
   registrationUrl: string
   theme: ThemeKey
   language: LanguageKey
+}
+
+const EVENT_YEAR = process.env.NEXT_PUBLIC_EVENT_YEAR?.trim() || '2027'
+
+function replaceYear(text: string, year: string) {
+  return text.replace(/\b20\d{2}\b/g, year)
 }
 
 export default function InvitePreview({
@@ -30,6 +36,24 @@ export default function InvitePreview({
 
   const text = translations[language].invite
   const selectedTheme = themes[theme]
+
+  const headline = useMemo(() => replaceYear(text.headline, EVENT_YEAR), [text.headline])
+  const eventLabel = useMemo(() => `ISE ${EVENT_YEAR}`, [])
+  const subheadline = text.subheadline
+  const freeAccess = text.freeAccess
+  const visitUs = text.visitUs
+  const visitUsPlural = text.visitUsPlural || text.visitUs
+  const codeLabel = text.codeLabel
+
+  const boothList = useMemo(() => {
+    return standNumber
+      .split(/[;,]/)
+      .map((value) => value.trim())
+      .filter(Boolean)
+  }, [standNumber])
+
+  const hasMultipleBooths = boothList.length > 1
+  const boothDisplay = boothList.join(', ')
 
   useEffect(() => {
     async function generateQr() {
@@ -62,13 +86,13 @@ export default function InvitePreview({
           <div className="absolute inset-0 bg-black/45" />
 
           <div className="relative z-10">
-            <p className="mb-2 text-sm uppercase tracking-[0.2em]">ISE 2026</p>
-            <h2 className="mb-3 text-4xl font-bold">{text.headline}</h2>
-            <p className="text-xl">{text.subheadline}</p>
+            <p className="mb-2 text-sm uppercase tracking-[0.2em]">{eventLabel}</p>
+            <h2 className="mb-3 text-4xl font-bold">{headline}</h2>
+            <p className="text-xl">{subheadline}</p>
           </div>
 
           <div className="relative z-10 rounded-xl bg-white/10 p-4 text-sm backdrop-blur-sm">
-            {text.freeAccess}
+            {freeAccess}
           </div>
         </div>
 
@@ -89,11 +113,12 @@ export default function InvitePreview({
           <h3 className="mb-3 text-3xl font-bold">{companyName}</h3>
 
           <p className="mb-2 text-xl">
-            {text.visitUs} <strong>{standNumber}</strong>
+            {hasMultipleBooths ? visitUsPlural : visitUs}{' '}
+            <strong>{boothDisplay || '—'}</strong>
           </p>
 
           <p className="mb-5 text-xl">
-            {text.codeLabel} <strong>{invitationCode}</strong>
+            {codeLabel} <strong>{invitationCode}</strong>
           </p>
 
           {qrDataUrl ? (

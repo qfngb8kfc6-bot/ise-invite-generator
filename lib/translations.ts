@@ -7,6 +7,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
       subheadline: 'Join us in Barcelona',
       freeAccess: 'Free access with invitation code',
       visitUs: 'Visit us at stand',
+      visitUsPlural: 'Visit us at stands',
       codeLabel: 'Code:',
     },
     ui: {
@@ -81,6 +82,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
       subheadline: 'Únase a nosotros en Barcelona',
       freeAccess: 'Acceso gratuito con código de invitación',
       visitUs: 'Visítanos en el stand',
+      visitUsPlural: 'Visítanos en los stands',
       codeLabel: 'Código:',
     },
     ui: {
@@ -155,6 +157,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
       subheadline: 'Treffen Sie uns in Barcelona',
       freeAccess: 'Kostenfreier Zutritt mit Einladungscode',
       visitUs: 'Besuchen Sie uns am Stand',
+      visitUsPlural: 'Besuchen Sie uns an den Ständen',
       codeLabel: 'Code:',
     },
     ui: {
@@ -229,6 +232,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
       subheadline: 'Rejoignez-nous à Barcelone',
       freeAccess: 'Accès gratuit avec code d’invitation',
       visitUs: 'Retrouvez-nous au stand',
+      visitUsPlural: 'Retrouvez-nous sur les stands',
       codeLabel: 'Code :',
     },
     ui: {
@@ -303,6 +307,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
       subheadline: 'Unisciti a noi a Barcellona',
       freeAccess: "Accesso gratuito con codice d'invito",
       visitUs: 'Vieni a trovarci allo stand',
+      visitUsPlural: 'Vieni a trovarci agli stand',
       codeLabel: 'Codice:',
     },
     ui: {
@@ -377,6 +382,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
       subheadline: 'Junte-se a nós em Barcelona',
       freeAccess: 'Acesso gratuito com código de convite',
       visitUs: 'Visite-nos no estande',
+      visitUsPlural: 'Visite-nos nos estandes',
       codeLabel: 'Código:',
     },
     ui: {
@@ -451,6 +457,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
       subheadline: 'Kom naar Barcelona',
       freeAccess: 'Gratis toegang met uitnodigingscode',
       visitUs: 'Bezoek ons op stand',
+      visitUsPlural: 'Bezoek ons op stands',
       codeLabel: 'Code:',
     },
     ui: {
@@ -525,6 +532,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
       subheadline: '与我们相聚巴塞罗那',
       freeAccess: '凭邀请代码免费入场',
       visitUs: '欢迎莅临展位',
+      visitUsPlural: '欢迎莅临各展位',
       codeLabel: '代码：',
     },
     ui: {

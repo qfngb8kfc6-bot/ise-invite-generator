@@ -84,6 +84,112 @@ function parseExhibitorResponse(data: any): ExhibitorLookupResult | null {
   }
 }
 
+function SectionCard({
+  title,
+  description,
+  children,
+}: {
+  title: string
+  description?: string
+  children: React.ReactNode
+}) {
+  return (
+    <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
+      <div className="mb-5">
+        <h2 className="text-xl font-semibold tracking-tight text-white">{title}</h2>
+        {description ? (
+          <p className="mt-1 text-sm leading-6 text-neutral-400">{description}</p>
+        ) : null}
+      </div>
+      {children}
+    </section>
+  )
+}
+
+function FieldLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-neutral-400">
+      {children}
+    </label>
+  )
+}
+
+function Input({
+  className = '',
+  ...props
+}: React.InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <input
+      {...props}
+      className={`w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/20 focus:bg-black/40 ${className}`}
+    />
+  )
+}
+
+function Textarea({
+  className = '',
+  ...props
+}: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
+  return (
+    <textarea
+      {...props}
+      className={`w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/20 focus:bg-black/40 ${className}`}
+    />
+  )
+}
+
+function ActionButton({
+  children,
+  variant = 'secondary',
+  className = '',
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: 'primary' | 'secondary' | 'ghost'
+}) {
+  const styles =
+    variant === 'primary'
+      ? 'bg-white text-black hover:bg-neutral-200'
+      : variant === 'ghost'
+      ? 'bg-transparent text-neutral-300 hover:bg-white/5 border border-white/10'
+      : 'bg-white/5 text-white hover:bg-white/10 border border-white/10'
+
+  return (
+    <button
+      {...props}
+      className={`inline-flex items-center justify-center rounded-2xl px-4 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50 ${styles} ${className}`}
+    >
+      {children}
+    </button>
+  )
+}
+
+function InfoItem({
+  label,
+  value,
+  mono = false,
+  wrap = false,
+}: {
+  label: string
+  value: string
+  mono?: boolean
+  wrap?: boolean
+}) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+      <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-neutral-500">
+        {label}
+      </div>
+      <div
+        className={`mt-2 text-sm text-white ${
+          mono ? 'font-mono' : ''
+        } ${wrap ? 'break-all' : ''}`}
+      >
+        {value || '—'}
+      </div>
+    </div>
+  )
+}
+
 export default function ToolsPage() {
   const [exhibitorId, setExhibitorId] = useState('1001')
   const [bulkInput, setBulkInput] = useState('1001\n1002')
@@ -325,378 +431,383 @@ export default function ToolsPage() {
   }, [bulkResults])
 
   return (
-    <main className="min-h-screen bg-neutral-950 px-6 py-10 text-white">
-      <div className="mx-auto max-w-5xl space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold">Internal Invite Link Generator</h1>
-          <p className="mt-2 text-sm text-neutral-400">
-            Generate production-ready launch links for exhibitors, individually or in bulk.
-          </p>
-        </div>
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#262626_0%,_#0a0a0a_38%,_#000_100%)] px-4 py-6 text-white sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl space-y-6">
+        <header className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <div className="mb-3 inline-flex rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan-300">
+                Internal tools
+              </div>
+              <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                Invite Link Generator
+              </h1>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-neutral-400">
+                Clean internal workspace for exhibitor lookup, launch-link generation,
+                bulk processing, and quick exports.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                <div className="text-[11px] uppercase tracking-[0.14em] text-neutral-500">
+                  Latest lookup
+                </div>
+                <div className="mt-1 text-lg font-semibold text-white">
+                  {lookupResult?.exhibitorId ?? '—'}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                <div className="text-[11px] uppercase tracking-[0.14em] text-neutral-500">
+                  Bulk results
+                </div>
+                <div className="mt-1 text-lg font-semibold text-white">
+                  {bulkSummary.total}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                <div className="text-[11px] uppercase tracking-[0.14em] text-neutral-500">
+                  Session history
+                </div>
+                <div className="mt-1 text-lg font-semibold text-white">
+                  {history.length}
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
 
         {error ? (
-          <div className="rounded-2xl border border-red-900 bg-red-950/40 p-4 text-sm text-red-300">
+          <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-4 text-sm text-red-200">
             {error}
           </div>
         ) : null}
 
-        <section className="grid gap-6 xl:grid-cols-2">
-          <div className="space-y-4 rounded-2xl border border-neutral-800 bg-neutral-900 p-6">
-            <div>
-              <h2 className="text-xl font-semibold">Single launch link</h2>
-              <p className="mt-1 text-sm text-neutral-400">
-                Look up an exhibitor first, then generate the EBO-ready launch URL.
-              </p>
-            </div>
+        <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+          <SectionCard
+            title="Single exhibitor"
+            description="Look up an exhibitor, inspect the returned data, then generate a launch link."
+          >
+            <div className="space-y-5">
+              <div>
+                <FieldLabel>Exhibitor ID</FieldLabel>
+                <Input
+                  value={exhibitorId}
+                  onChange={(e) => setExhibitorId(e.target.value)}
+                  placeholder="e.g. 1001"
+                />
+              </div>
 
-            <div>
-              <label className="mb-2 block text-sm text-neutral-300">Exhibitor ID</label>
-              <input
-                value={exhibitorId}
-                onChange={(e) => setExhibitorId(e.target.value)}
-                className="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3"
-                placeholder="e.g. 1001"
-              />
-            </div>
+              <div className="flex flex-wrap gap-3">
+                <ActionButton
+                  onClick={handleLookupExhibitor}
+                  disabled={loadingLookup}
+                  variant="secondary"
+                >
+                  {loadingLookup ? 'Looking up...' : 'Lookup Exhibitor'}
+                </ActionButton>
 
-            <div className="flex flex-wrap gap-3">
-              <button
-                onClick={handleLookupExhibitor}
-                disabled={loadingLookup}
-                className="rounded-xl border border-neutral-700 px-5 py-3 text-sm font-medium text-neutral-200 transition hover:bg-neutral-800 disabled:opacity-50"
-              >
-                {loadingLookup ? 'Looking up...' : 'Lookup Exhibitor'}
-              </button>
+                <ActionButton
+                  onClick={handleGenerateSingle}
+                  disabled={loadingSingle}
+                  variant="primary"
+                >
+                  {loadingSingle ? 'Generating...' : 'Generate Launch Link'}
+                </ActionButton>
+              </div>
 
-              <button
-                onClick={handleGenerateSingle}
-                disabled={loadingSingle}
-                className="rounded-xl bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-neutral-200 disabled:opacity-50"
-              >
-                {loadingSingle ? 'Generating...' : 'Generate Launch Link'}
-              </button>
-            </div>
-
-            {lookupResult ? (
-              <div className="rounded-2xl border border-neutral-800 bg-neutral-950 p-4">
-                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                  <div>
-                    <div className="text-xs text-neutral-400">Company Name</div>
-                    <div className="mt-1 text-lg font-medium text-white">
-                      {lookupResult.companyName}
+              {lookupResult ? (
+                <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
+                  <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+                    <div className="min-w-0 flex-1">
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <InfoItem label="Company Name" value={lookupResult.companyName} />
+                        <InfoItem label="Exhibitor ID" value={lookupResult.exhibitorId} mono />
+                        <InfoItem
+                          label="Booth / Stand"
+                          value={lookupResult.standNumber ?? '—'}
+                        />
+                        <InfoItem
+                          label="Registration URL"
+                          value={lookupResult.registrationUrl ?? '—'}
+                          wrap
+                        />
+                      </div>
                     </div>
 
-                    <div className="mt-3 text-xs text-neutral-400">Exhibitor ID</div>
-                    <div className="mt-1 text-sm text-neutral-300">
-                      {lookupResult.exhibitorId}
+                    <div className="flex shrink-0 flex-wrap gap-3 xl:w-[220px] xl:flex-col">
+                      <ActionButton
+                        onClick={handleQuickAddToBulk}
+                        variant="secondary"
+                        className="w-full"
+                      >
+                        Add to Bulk List
+                      </ActionButton>
+                      <ActionButton
+                        onClick={() => setExhibitorId(lookupResult.exhibitorId)}
+                        variant="ghost"
+                        className="w-full"
+                      >
+                        Use This ID
+                      </ActionButton>
+                      {lookupResult.registrationUrl ? (
+                        <>
+                          <ActionButton
+                            onClick={() => copy(lookupResult.registrationUrl!)}
+                            variant="ghost"
+                            className="w-full"
+                          >
+                            Copy Registration URL
+                          </ActionButton>
+                          <ActionButton
+                            onClick={() => openLink(lookupResult.registrationUrl!)}
+                            variant="ghost"
+                            className="w-full"
+                          >
+                            Open Registration URL
+                          </ActionButton>
+                        </>
+                      ) : null}
                     </div>
-
-                    {lookupResult.standNumber ? (
-                      <>
-                        <div className="mt-3 text-xs text-neutral-400">Stand Number</div>
-                        <div className="mt-1 text-sm text-neutral-300">
-                          {lookupResult.standNumber}
-                        </div>
-                      </>
-                    ) : null}
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      onClick={handleQuickAddToBulk}
-                      className="rounded-lg border border-neutral-700 px-3 py-2 text-xs font-medium transition hover:bg-neutral-800"
-                    >
-                      Add to Bulk List
-                    </button>
-                    <button
-                      onClick={() => setExhibitorId(lookupResult.exhibitorId)}
-                      className="rounded-lg border border-neutral-700 px-3 py-2 text-xs font-medium transition hover:bg-neutral-800"
-                    >
-                      Use This ID
-                    </button>
                   </div>
                 </div>
+              ) : null}
+            </div>
+          </SectionCard>
+
+          <SectionCard
+            title="Bulk generation"
+            description="Paste one exhibitor ID per line, or separate IDs with commas."
+          >
+            <div className="space-y-5">
+              <div>
+                <FieldLabel>Exhibitor IDs</FieldLabel>
+                <Textarea
+                  value={bulkInput}
+                  onChange={(e) => setBulkInput(e.target.value)}
+                  rows={10}
+                  placeholder={'1001\n1002\n1003'}
+                />
               </div>
-            ) : null}
-          </div>
 
-          <div className="space-y-4 rounded-2xl border border-neutral-800 bg-neutral-900 p-6">
-            <div>
-              <h2 className="text-xl font-semibold">Bulk launch links</h2>
-              <p className="mt-1 text-sm text-neutral-400">
-                Paste one exhibitor ID per line or separate IDs with commas.
-              </p>
+              <div className="flex flex-wrap gap-3">
+                <ActionButton
+                  onClick={handleGenerateBulk}
+                  disabled={loadingBulk}
+                  variant="primary"
+                >
+                  {loadingBulk ? 'Generating Bulk Links...' : 'Generate Bulk Links'}
+                </ActionButton>
+
+                <ActionButton
+                  onClick={handleGenerateAllMock}
+                  disabled={loadingBulk}
+                  type="button"
+                  variant="secondary"
+                >
+                  Generate All Mock Exhibitors
+                </ActionButton>
+
+                <ActionButton
+                  onClick={() => setBulkInput('')}
+                  type="button"
+                  variant="ghost"
+                >
+                  Clear Input
+                </ActionButton>
+              </div>
             </div>
-
-            <div>
-              <label className="mb-2 block text-sm text-neutral-300">Exhibitor IDs</label>
-              <textarea
-                value={bulkInput}
-                onChange={(e) => setBulkInput(e.target.value)}
-                rows={8}
-                className="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3"
-                placeholder={'1001\n1002\n1003'}
-              />
-            </div>
-
-            <div className="flex flex-wrap gap-3">
-              <button
-                onClick={handleGenerateBulk}
-                disabled={loadingBulk}
-                className="rounded-xl bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-neutral-200 disabled:opacity-50"
-              >
-                {loadingBulk ? 'Generating Bulk Links...' : 'Generate Bulk Links'}
-              </button>
-
-              <button
-                onClick={handleGenerateAllMock}
-                disabled={loadingBulk}
-                type="button"
-                className="rounded-xl border border-neutral-700 px-5 py-3 text-sm font-medium text-neutral-200 transition hover:bg-neutral-800 disabled:opacity-50"
-              >
-                Generate All Mock Exhibitors
-              </button>
-
-              <button
-                onClick={() => setBulkInput('')}
-                type="button"
-                className="rounded-xl border border-neutral-700 px-5 py-3 text-sm font-medium text-neutral-200 transition hover:bg-neutral-800"
-              >
-                Clear Input
-              </button>
-            </div>
-          </div>
-        </section>
+          </SectionCard>
+        </div>
 
         {result ? (
-          <section className="space-y-4 rounded-2xl border border-neutral-800 bg-neutral-900 p-6">
-            <h2 className="text-xl font-semibold">Latest generated launch link</h2>
-
-            <div>
-              <div className="mb-1 text-xs text-neutral-400">Exhibitor ID</div>
-              <input
-                value={result.exhibitorId}
-                readOnly
-                className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm"
-              />
+          <SectionCard
+            title="Latest generated launch link"
+            description="Most recent successful launch link generated in this session."
+          >
+            <div className="grid gap-4 lg:grid-cols-2">
+              <InfoItem label="Exhibitor ID" value={result.exhibitorId} mono />
+              <InfoItem label="Company Name" value={result.companyName ?? '—'} />
+              <InfoItem label="Stand Number" value={result.standNumber ?? '—'} />
+              <InfoItem label="Created At" value={formatTimestamp(result.createdAt)} />
             </div>
 
-            {result.companyName ? (
-              <div>
-                <div className="mb-1 text-xs text-neutral-400">Company Name</div>
-                <input
-                  value={result.companyName}
-                  readOnly
-                  className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm"
-                />
+            <div className="mt-4 rounded-2xl border border-white/10 bg-black/20 p-4">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-neutral-500">
+                Launch URL
               </div>
-            ) : null}
-
-            {result.standNumber ? (
-              <div>
-                <div className="mb-1 text-xs text-neutral-400">Stand Number</div>
-                <input
-                  value={result.standNumber}
-                  readOnly
-                  className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm"
-                />
+              <div className="mt-2 break-all font-mono text-sm text-white">
+                {result.launchUrl}
               </div>
-            ) : null}
 
-            <div>
-              <div className="mb-1 text-xs text-neutral-400">Launch URL</div>
-              <div className="flex gap-2">
-                <input
-                  value={result.launchUrl}
-                  readOnly
-                  className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm"
-                />
-                <button
-                  onClick={() => copy(result.launchUrl)}
-                  className="rounded-lg border border-neutral-700 px-3 py-2 text-xs transition hover:bg-neutral-800"
-                >
+              <div className="mt-4 flex flex-wrap gap-3">
+                <ActionButton onClick={() => copy(result.launchUrl)} variant="secondary">
                   Copy
-                </button>
-                <button
-                  onClick={() => openLink(result.launchUrl)}
-                  className="rounded-lg border border-neutral-700 px-3 py-2 text-xs transition hover:bg-neutral-800"
-                >
+                </ActionButton>
+                <ActionButton onClick={() => openLink(result.launchUrl)} variant="ghost">
                   Open
-                </button>
+                </ActionButton>
               </div>
             </div>
-
-            <div>
-              <div className="mb-1 text-xs text-neutral-400">Created At</div>
-              <input
-                value={formatTimestamp(result.createdAt)}
-                readOnly
-                className="w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm"
-              />
-            </div>
-          </section>
+          </SectionCard>
         ) : null}
 
         {bulkResults.length > 0 ? (
-          <section className="space-y-4 rounded-2xl border border-neutral-800 bg-neutral-900 p-6">
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <h2 className="text-xl font-semibold">Bulk generation results</h2>
-                <p className="mt-1 text-sm text-neutral-400">
-                  {bulkSummary.successCount} successful, {bulkSummary.errorCount} failed, {bulkSummary.total} total.
-                </p>
-              </div>
-
+          <SectionCard
+            title="Bulk generation results"
+            description={`${bulkSummary.successCount} successful, ${bulkSummary.errorCount} failed, ${bulkSummary.total} total.`}
+          >
+            <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex flex-wrap gap-3">
-                <button
-                  onClick={handleExportCsv}
-                  className="rounded-xl border border-neutral-700 px-4 py-2 text-sm font-medium transition hover:bg-neutral-800"
-                >
+                <ActionButton onClick={handleExportCsv} variant="secondary">
                   Export CSV
-                </button>
-                <button
-                  onClick={handleClearBulkResults}
-                  className="rounded-xl border border-neutral-700 px-4 py-2 text-sm font-medium transition hover:bg-neutral-800"
-                >
+                </ActionButton>
+                <ActionButton onClick={handleClearBulkResults} variant="ghost">
                   Clear Results
-                </button>
+                </ActionButton>
               </div>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="min-w-full border-collapse text-sm">
-                <thead>
-                  <tr className="border-b border-neutral-800 text-left">
-                    <th className="py-3 pr-4 font-medium">Exhibitor ID</th>
-                    <th className="py-3 pr-4 font-medium">Company</th>
-                    <th className="py-3 pr-4 font-medium">Stand</th>
-                    <th className="py-3 pr-4 font-medium">Status</th>
-                    <th className="py-3 pr-4 font-medium">Launch URL</th>
-                    <th className="py-3 pr-4 font-medium">Error</th>
-                    <th className="py-3 pr-0 font-medium">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {bulkResults.map((item) => (
-                    <tr
-                      key={`${item.exhibitorId}-${item.createdAt}`}
-                      className="border-b border-neutral-900 align-top last:border-b-0"
-                    >
-                      <td className="py-3 pr-4">{item.exhibitorId}</td>
-                      <td className="py-3 pr-4 text-neutral-300">{item.companyName ?? '—'}</td>
-                      <td className="py-3 pr-4 text-neutral-300">{item.standNumber ?? '—'}</td>
-                      <td className="py-3 pr-4">
-                        <span
-                          className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
-                            item.status === 'success'
-                              ? 'bg-emerald-950 text-emerald-300'
-                              : 'bg-red-950 text-red-300'
-                          }`}
-                        >
-                          {item.status}
-                        </span>
-                      </td>
-                      <td className="py-3 pr-4 break-all text-neutral-300">
-                        {item.launchUrl ?? '—'}
-                      </td>
-                      <td className="py-3 pr-4 text-red-300">{item.error ?? '—'}</td>
-                      <td className="py-3 pr-0">
-                        {item.launchUrl ? (
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => copy(item.launchUrl!)}
-                              className="rounded-lg border border-neutral-700 px-3 py-2 text-xs font-medium transition hover:bg-neutral-800"
-                            >
-                              Copy
-                            </button>
-                            <button
-                              onClick={() => openLink(item.launchUrl!)}
-                              className="rounded-lg border border-neutral-700 px-3 py-2 text-xs font-medium transition hover:bg-neutral-800"
-                            >
-                              Open
-                            </button>
-                          </div>
-                        ) : null}
-                      </td>
+            <div className="overflow-hidden rounded-3xl border border-white/10">
+              <div className="overflow-x-auto">
+                <table className="min-w-[980px] w-full border-collapse text-sm">
+                  <thead className="bg-white/[0.04] text-left text-neutral-300">
+                    <tr>
+                      <th className="px-4 py-3 font-medium">Exhibitor ID</th>
+                      <th className="px-4 py-3 font-medium">Company</th>
+                      <th className="px-4 py-3 font-medium">Stand</th>
+                      <th className="px-4 py-3 font-medium">Status</th>
+                      <th className="px-4 py-3 font-medium">Launch URL</th>
+                      <th className="px-4 py-3 font-medium">Error</th>
+                      <th className="px-4 py-3 font-medium">Action</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {bulkResults.map((item) => (
+                      <tr
+                        key={`${item.exhibitorId}-${item.createdAt}`}
+                        className="border-t border-white/5 align-top"
+                      >
+                        <td className="px-4 py-4 font-mono text-white">{item.exhibitorId}</td>
+                        <td className="px-4 py-4 text-neutral-300">{item.companyName ?? '—'}</td>
+                        <td className="px-4 py-4 text-neutral-300">{item.standNumber ?? '—'}</td>
+                        <td className="px-4 py-4">
+                          <span
+                            className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
+                              item.status === 'success'
+                                ? 'bg-emerald-500/15 text-emerald-300'
+                                : 'bg-red-500/15 text-red-300'
+                            }`}
+                          >
+                            {item.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 text-neutral-300">
+                          <div className="max-w-[320px] break-all">
+                            {item.launchUrl ?? '—'}
+                          </div>
+                        </td>
+                        <td className="px-4 py-4 text-red-300">
+                          <div className="max-w-[260px] break-words">{item.error ?? '—'}</div>
+                        </td>
+                        <td className="px-4 py-4">
+                          {item.launchUrl ? (
+                            <div className="flex flex-wrap gap-2">
+                              <ActionButton
+                                onClick={() => copy(item.launchUrl!)}
+                                variant="secondary"
+                                className="px-3 py-2 text-xs"
+                              >
+                                Copy
+                              </ActionButton>
+                              <ActionButton
+                                onClick={() => openLink(item.launchUrl!)}
+                                variant="ghost"
+                                className="px-3 py-2 text-xs"
+                              >
+                                Open
+                              </ActionButton>
+                            </div>
+                          ) : (
+                            <span className="text-neutral-500">—</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </section>
+          </SectionCard>
         ) : null}
 
         {history.length > 0 ? (
-          <section className="space-y-4 rounded-2xl border border-neutral-800 bg-neutral-900 p-6">
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <h2 className="text-xl font-semibold">Recent generated links</h2>
-                <p className="mt-1 text-sm text-neutral-400">
-                  Most recent launch links generated in this browser session.
-                </p>
-              </div>
-
+          <SectionCard
+            title="Recent generated links"
+            description="Most recent launch links generated in this browser session."
+          >
+            <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+              <div />
               <div className="flex flex-wrap gap-3">
-                <button
-                  onClick={handleExportHistoryCsv}
-                  className="rounded-xl border border-neutral-700 px-4 py-2 text-sm font-medium transition hover:bg-neutral-800"
-                >
+                <ActionButton onClick={handleExportHistoryCsv} variant="secondary">
                   Export History CSV
-                </button>
-                <button
-                  onClick={handleClearHistory}
-                  className="rounded-xl border border-neutral-700 px-4 py-2 text-sm font-medium transition hover:bg-neutral-800"
-                >
+                </ActionButton>
+                <ActionButton onClick={handleClearHistory} variant="ghost">
                   Clear History
-                </button>
+                </ActionButton>
               </div>
             </div>
 
-            <div className="space-y-3">
+            <div className="grid gap-4">
               {history.map((item) => (
                 <div
                   key={`${item.exhibitorId}-${item.createdAt}-${item.launchUrl.slice(0, 8)}`}
-                  className="rounded-xl border border-neutral-800 bg-neutral-950 p-4"
+                  className="rounded-3xl border border-white/10 bg-black/20 p-5"
                 >
-                  <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="min-w-0 flex-1">
-                      <div className="font-medium text-white">
+                      <div className="text-base font-semibold text-white">
                         {item.companyName
                           ? `${item.companyName} (${item.exhibitorId})`
                           : item.exhibitorId}
                       </div>
+
                       {item.standNumber ? (
-                        <div className="mt-1 text-xs text-neutral-500">
+                        <div className="mt-1 text-sm text-neutral-400">
                           Stand: {item.standNumber}
                         </div>
                       ) : null}
-                      <div className="mt-1 break-all text-sm text-neutral-400">
+
+                      <div className="mt-3 break-all font-mono text-sm text-neutral-300">
                         {item.launchUrl}
                       </div>
-                      <div className="mt-2 text-xs text-neutral-500">
+
+                      <div className="mt-3 text-xs uppercase tracking-[0.14em] text-neutral-500">
                         {formatTimestamp(item.createdAt)}
                       </div>
                     </div>
 
-                    <div className="flex gap-2">
-                      <button
+                    <div className="flex shrink-0 flex-wrap gap-2">
+                      <ActionButton
                         onClick={() => copy(item.launchUrl)}
-                        className="rounded-lg border border-neutral-700 px-3 py-2 text-xs font-medium transition hover:bg-neutral-800"
+                        variant="secondary"
+                        className="px-3 py-2 text-xs"
                       >
                         Copy Link
-                      </button>
-                      <button
+                      </ActionButton>
+                      <ActionButton
                         onClick={() => openLink(item.launchUrl)}
-                        className="rounded-lg border border-neutral-700 px-3 py-2 text-xs font-medium transition hover:bg-neutral-800"
+                        variant="ghost"
+                        className="px-3 py-2 text-xs"
                       >
                         Open Link
-                      </button>
+                      </ActionButton>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
-          </section>
+          </SectionCard>
         ) : null}
       </div>
     </main>

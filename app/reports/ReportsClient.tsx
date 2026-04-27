@@ -116,6 +116,7 @@ type FocusFilter =
   | 'zeroConversion'
   | 'failedExports'
   | 'topPerformers'
+  | 'activeOnly'
 
 const RANGE_OPTIONS = [
   { label: 'Last 7 days', value: '7d' },
@@ -124,7 +125,7 @@ const RANGE_OPTIONS = [
   { label: 'All time', value: 'all' },
 ] as const
 
-const PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const
+const PAGE_SIZE_OPTIONS = [25, 50, 100, 250] as const
 
 function pad(value: number): string {
   return String(value).padStart(2, '0')
@@ -445,7 +446,7 @@ function getLastActiveStatus(value: string | null): {
   if (!value) {
     return {
       label: 'No activity',
-      className: 'bg-neutral-100 text-neutral-600',
+      className: 'bg-neutral-800 text-neutral-300',
     }
   }
 
@@ -454,7 +455,7 @@ function getLastActiveStatus(value: string | null): {
   if (Number.isNaN(timestamp)) {
     return {
       label: 'Unknown',
-      className: 'bg-neutral-100 text-neutral-600',
+      className: 'bg-neutral-800 text-neutral-300',
     }
   }
 
@@ -466,21 +467,40 @@ function getLastActiveStatus(value: string | null): {
   if (diffMs <= oneDay) {
     return {
       label: 'Active today',
-      className: 'bg-emerald-100 text-emerald-700',
+      className: 'bg-emerald-500/15 text-emerald-300',
     }
   }
 
   if (diffMs <= sevenDays) {
     return {
       label: 'Active this week',
-      className: 'bg-blue-100 text-blue-700',
+      className: 'bg-blue-500/15 text-blue-300',
     }
   }
 
   return {
     label: 'Inactive',
-    className: 'bg-amber-100 text-amber-700',
+    className: 'bg-amber-500/15 text-amber-300',
   }
+}
+
+function Card({
+  children,
+  className = '',
+  id,
+}: {
+  children: ReactNode
+  className?: string
+  id?: string
+}) {
+  return (
+    <div
+      id={id}
+      className={`rounded-3xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur ${className}`}
+    >
+      {children}
+    </div>
+  )
 }
 
 function ChartCard({
@@ -499,11 +519,11 @@ function ChartCard({
   children: ReactNode
 }) {
   return (
-    <div className="min-w-0 rounded-2xl border bg-white p-6 shadow-sm">
-      <h2 className="text-xl font-semibold">{title}</h2>
-      <p className="mt-1 text-sm text-neutral-500">{description}</p>
+    <Card className="min-w-0 p-6">
+      <h2 className="text-xl font-semibold text-white">{title}</h2>
+      <p className="mt-1 text-sm text-neutral-400">{description}</p>
 
-      <div className="mt-6 h-[360px] min-w-0">
+      <div className="mt-5 h-[280px] min-w-0">
         {!hasData ? (
           <div className="flex h-full items-center justify-center text-sm text-neutral-500">
             {emptyMessage}
@@ -516,7 +536,128 @@ function ChartCard({
           <div className="h-full min-w-0">{children}</div>
         )}
       </div>
+    </Card>
+  )
+}
+
+function KpiCard({
+  label,
+  value,
+  sublabel,
+  tone = 'default',
+}: {
+  label: string
+  value: string | number
+  sublabel: string
+  tone?: 'default' | 'green' | 'blue' | 'amber' | 'red'
+}) {
+  const toneClasses =
+    tone === 'green'
+      ? 'border-emerald-500/20 bg-emerald-500/8'
+      : tone === 'blue'
+      ? 'border-blue-500/20 bg-blue-500/8'
+      : tone === 'amber'
+      ? 'border-amber-500/20 bg-amber-500/8'
+      : tone === 'red'
+      ? 'border-red-500/20 bg-red-500/8'
+      : 'border-white/10 bg-white/[0.03]'
+
+  return (
+    <div className={`rounded-3xl border px-5 py-4 ${toneClasses}`}>
+      <div className="text-sm font-medium text-neutral-300">{label}</div>
+      <div className="mt-3 text-4xl font-semibold leading-none text-white">
+        {value}
+      </div>
+      <div className="mt-2 text-xs text-neutral-500">{sublabel}</div>
     </div>
+  )
+}
+
+function CompactFocusCard({
+  title,
+  subtitle,
+  value,
+  onClick,
+  tone,
+}: {
+  title: string
+  subtitle: string
+  value: string
+  onClick: () => void
+  tone: 'red' | 'green' | 'amber' | 'blue'
+}) {
+  const toneClasses =
+    tone === 'red'
+      ? 'border-red-500/20 bg-red-500/8 hover:bg-red-500/12'
+      : tone === 'green'
+      ? 'border-emerald-500/20 bg-emerald-500/8 hover:bg-emerald-500/12'
+      : tone === 'amber'
+      ? 'border-amber-500/20 bg-amber-500/8 hover:bg-amber-500/12'
+      : 'border-blue-500/20 bg-blue-500/8 hover:bg-blue-500/12'
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-3xl border px-5 py-4 text-left transition ${toneClasses}`}
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <div className="text-sm font-medium text-neutral-200">{title}</div>
+          <p className="mt-2 text-sm text-neutral-400">{subtitle}</p>
+        </div>
+        <div className="text-3xl font-semibold leading-none text-white">
+          {value}
+        </div>
+      </div>
+    </button>
+  )
+}
+
+function ToolbarPill({
+  active,
+  children,
+  href,
+}: {
+  active: boolean
+  children: ReactNode
+  href: string
+}) {
+  return (
+    <Link
+      href={href}
+      className={`rounded-2xl border px-4 py-2 text-sm font-medium transition ${
+        active
+          ? 'border-white bg-white text-black'
+          : 'border-white/10 bg-white/5 text-neutral-300 hover:bg-white/10'
+      }`}
+    >
+      {children}
+    </Link>
+  )
+}
+
+function FocusChip({
+  active,
+  children,
+  onClick,
+}: {
+  active: boolean
+  children: ReactNode
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+        active
+          ? 'border-white bg-white text-black'
+          : 'border-white/10 bg-white/5 text-neutral-300 hover:bg-white/10'
+      }`}
+    >
+      {children}
+    </button>
   )
 }
 
@@ -536,19 +677,20 @@ export default function ReportsClient({
 
   const [sortKey, setSortKey] = useState<SortKey>('totalEvents')
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
-  const [pageSize, setPageSize] = useState<number>(25)
+  const [pageSize, setPageSize] = useState<number>(50)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [focusFilter, setFocusFilter] = useState<FocusFilter>('all')
+  const [needsAttentionExpanded, setNeedsAttentionExpanded] = useState(false)
 
   useEffect(() => {
     setChartsReady(true)
   }, [])
 
   const topExhibitorsChartData = useMemo(() => {
-    return summary.exhibitorSummaries.slice(0, 10).map((item) => ({
+    return summary.exhibitorSummaries.slice(0, 12).map((item) => ({
       name:
-        item.companyName.length > 18
-          ? `${item.companyName.slice(0, 18)}…`
+        item.companyName.length > 16
+          ? `${item.companyName.slice(0, 16)}…`
           : item.companyName,
       totalEvents: item.totalEvents,
       opens: item.generatorOpenedCount,
@@ -581,14 +723,6 @@ export default function ReportsClient({
       rateFromStart: step.rateFromStart,
     }))
   }, [summary.funnel.steps])
-
-  const noExportExhibitors = summary.exhibitorSummaries.filter(
-    (item) => item.generatedLinkButNeverExported
-  )
-
-  const failingExhibitors = summary.exhibitorSummaries.filter(
-    (item) => item.exportFailedCount > 0
-  )
 
   const filteredAvailableExhibitors = useMemo(() => {
     const q = search.trim().toLowerCase()
@@ -647,7 +781,9 @@ export default function ReportsClient({
           (item) => item.exportFailedCount > 0
         )
       case 'topPerformers':
-        return leaderboard.slice(0, 10)
+        return leaderboard.slice(0, 50)
+      case 'activeOnly':
+        return summary.exhibitorSummaries.filter((item) => item.totalEvents > 0)
       case 'all':
       default:
         return summary.exhibitorSummaries
@@ -681,6 +817,10 @@ export default function ReportsClient({
     Math.min(currentPage, totalPages) * pageSize,
     sortedExhibitorRows.length
   )
+
+  const visibleNeedsAttentionRows = needsAttentionExpanded
+    ? needsAttention
+    : needsAttention.slice(0, 5)
 
   function handleApplyExhibitorFilter(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -740,658 +880,194 @@ export default function ReportsClient({
 
     if (typeof window !== 'undefined') {
       setTimeout(() => {
-        const tableSection = document.getElementById('usage-by-exhibitor')
+        const tableSection = document.getElementById('exhibitor-explorer')
         tableSection?.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }, 0)
     }
   }
 
-  function focusButtonClasses(filter: FocusFilter) {
-    const isActive = focusFilter === filter
-
-    return `rounded-full border px-3 py-2 text-xs font-medium transition ${
-      isActive
-        ? 'border-neutral-900 bg-neutral-900 text-white'
-        : 'border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-100'
-    }`
-  }
-
   return (
-    <main className="min-h-screen bg-neutral-50 px-6 py-10 text-neutral-900">
-      <div className="mx-auto max-w-7xl space-y-8">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Reports</h1>
-            <p className="mt-2 text-sm text-neutral-600">
-              Reporting by exhibitor for generator usage and exports.
-            </p>
-            <p className="mt-1 text-sm text-neutral-500">
-              Showing:{' '}
-              <span className="font-medium">
-                {summary.appliedStartDate || summary.appliedEndDate
-                  ? 'Custom date range'
-                  : RANGE_OPTIONS.find((item) => item.value === currentRange)?.label ??
-                    'All time'}
-              </span>
-              {summary.appliedStartDate || summary.appliedEndDate ? (
-                <>
-                  {' '}
-                  · Dates:{' '}
-                  <span className="font-medium">
-                    {summary.appliedStartDate ?? 'Open'} →{' '}
-                    {summary.appliedEndDate ?? 'Open'}
-                  </span>
-                </>
-              ) : null}
-              {summary.appliedSearchQuery ? (
-                <>
-                  {' '}
-                  · Search:{' '}
-                  <span className="font-medium">“{summary.appliedSearchQuery}”</span>
-                </>
-              ) : null}
-              {summary.appliedExhibitorName ? (
-                <>
-                  {' '}
-                  · Exhibitor:{' '}
-                  <span className="font-medium">
-                    {summary.appliedExhibitorName} ({summary.appliedExhibitorId})
-                  </span>
-                </>
-              ) : null}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            {RANGE_OPTIONS.map((option) => {
-              const isActive =
-                !summary.appliedStartDate &&
-                !summary.appliedEndDate &&
-                option.value === currentRange
-
-              return (
-                <Link
-                  key={option.value}
-                  href={buildReportsHref({
-                    range: option.value,
-                    exhibitorId: currentExhibitorId,
-                    q: currentSearchQuery,
-                  })}
-                  className={`rounded-xl border px-4 py-2 text-sm font-medium transition ${
-                    isActive
-                      ? 'border-neutral-900 bg-neutral-900 text-white'
-                      : 'border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50'
-                  }`}
-                >
-                  {option.label}
-                </Link>
-              )
-            })}
-
-            <a
-              href={getCsvHref(
-                currentRange,
-                currentExhibitorId,
-                currentSearchQuery,
-                summary.appliedStartDate,
-                summary.appliedEndDate
-              )}
-              className="rounded-xl border border-emerald-600 bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-500"
-            >
-              Download CSV
-            </a>
-
-            <a
-              href={getXlsxHref(
-                currentRange,
-                currentExhibitorId,
-                currentSearchQuery,
-                summary.appliedStartDate,
-                summary.appliedEndDate
-              )}
-              className="rounded-xl border border-blue-600 bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-500"
-            >
-              Download XLSX
-            </a>
-          </div>
-        </div>
-
-        <section className="rounded-2xl border bg-white p-6 shadow-sm">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#262626_0%,_#0a0a0a_38%,_#000_100%)] px-4 py-6 text-white sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl space-y-6">
+        <Card className="p-6">
+          <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
             <div>
-              <h2 className="text-xl font-semibold">Filter by exhibitor</h2>
-              <p className="mt-1 text-sm text-neutral-500">
-                Search server-side by company name or exhibitor ID, then optionally jump directly to one exhibitor.
-              </p>
+              <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                Reports
+              </h1>
+              <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm text-neutral-400">
+                <span>
+                  Range:{' '}
+                  <span className="font-medium text-white">
+                    {summary.appliedStartDate || summary.appliedEndDate
+                      ? 'Custom date range'
+                      : RANGE_OPTIONS.find((item) => item.value === currentRange)?.label ??
+                        'All time'}
+                  </span>
+                </span>
+                <span>
+                  Search:{' '}
+                  <span className="font-medium text-white">
+                    {summary.appliedSearchQuery || '—'}
+                  </span>
+                </span>
+                <span>
+                  Exhibitor:{' '}
+                  <span className="font-medium text-white">
+                    {summary.appliedExhibitorName
+                      ? `${summary.appliedExhibitorName} (${summary.appliedExhibitorId})`
+                      : '—'}
+                  </span>
+                </span>
+                <span>
+                  Dates:{' '}
+                  <span className="font-medium text-white">
+                    {summary.appliedStartDate || summary.appliedEndDate
+                      ? `${summary.appliedStartDate ?? 'Open'} → ${summary.appliedEndDate ?? 'Open'}`
+                      : '—'}
+                  </span>
+                </span>
+              </div>
             </div>
 
             <div className="flex flex-wrap gap-2">
-              {(summary.appliedSearchQuery ||
-                summary.appliedExhibitorId ||
-                summary.appliedStartDate ||
-                summary.appliedEndDate) ? (
-                <Link
-                  href="/reports"
-                  className="rounded-xl border border-neutral-300 bg-white px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-neutral-50"
-                >
-                  Clear all filters
-                </Link>
-              ) : null}
+              {RANGE_OPTIONS.map((option) => {
+                const isActive =
+                  !summary.appliedStartDate &&
+                  !summary.appliedEndDate &&
+                  option.value === currentRange
 
-              {summary.appliedExhibitorId ? (
-                <Link
-                  href={buildReportsHref({
-                    range: currentRange,
-                    q: currentSearchQuery,
-                    startDate: summary.appliedStartDate,
-                    endDate: summary.appliedEndDate,
-                  })}
-                  className="rounded-xl border border-neutral-300 bg-white px-4 py-2 text-sm font-medium text-neutral-700 transition hover:bg-neutral-50"
-                >
-                  Clear exhibitor filter
-                </Link>
-              ) : null}
+                return (
+                  <ToolbarPill
+                    key={option.value}
+                    active={isActive}
+                    href={buildReportsHref({
+                      range: option.value,
+                      exhibitorId: currentExhibitorId,
+                      q: currentSearchQuery,
+                    })}
+                  >
+                    {option.label}
+                  </ToolbarPill>
+                )
+              })}
+
+              <a
+                href={getCsvHref(
+                  currentRange,
+                  currentExhibitorId,
+                  currentSearchQuery,
+                  summary.appliedStartDate,
+                  summary.appliedEndDate
+                )}
+                className="rounded-2xl border border-emerald-600 bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-500"
+              >
+                Download CSV
+              </a>
+
+              <a
+                href={getXlsxHref(
+                  currentRange,
+                  currentExhibitorId,
+                  currentSearchQuery,
+                  summary.appliedStartDate,
+                  summary.appliedEndDate
+                )}
+                className="rounded-2xl border border-blue-600 bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-500"
+              >
+                Download XLSX
+              </a>
             </div>
           </div>
+        </Card>
 
-          <form
-            method="get"
-            action="/reports"
-            className="mt-5 grid gap-3 lg:grid-cols-[minmax(0,1fr)_180px_180px_auto] lg:items-end"
-          >
-            <div>
-              <label htmlFor="report-search" className="mb-2 block text-sm font-medium text-neutral-700">
-                Search exhibitors
-              </label>
-              <input
-                id="report-search"
-                name="q"
-                type="text"
-                placeholder="Search exhibitors by company name or ID"
-                defaultValue={currentSearchQuery}
-                className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition focus:border-neutral-500"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="startDate" className="mb-2 block text-sm font-medium text-neutral-700">
-                Start date
-              </label>
-              <input
-                id="startDate"
-                name="startDate"
-                type="date"
-                defaultValue={summary.appliedStartDate ?? ''}
-                className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition focus:border-neutral-500"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="endDate" className="mb-2 block text-sm font-medium text-neutral-700">
-                End date
-              </label>
-              <input
-                id="endDate"
-                name="endDate"
-                type="date"
-                defaultValue={summary.appliedEndDate ?? ''}
-                className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition focus:border-neutral-500"
-              />
-            </div>
-
-            <div className="flex gap-2">
-              <input type="hidden" name="range" value={currentRange} />
-              {currentExhibitorId ? (
-                <input type="hidden" name="exhibitorId" value={currentExhibitorId} />
-              ) : null}
-              <button
-                type="submit"
-                className="rounded-xl border border-neutral-900 bg-neutral-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-neutral-800"
-              >
-                Apply filters
-              </button>
-            </div>
-          </form>
-
-          <form
-            onSubmit={handleApplyExhibitorFilter}
-            className="mt-5 rounded-2xl border border-neutral-200 bg-neutral-50 p-4"
-          >
-            <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-              <div>
-                <label htmlFor="exhibitor-picker" className="mb-2 block text-sm font-medium text-neutral-700">
-                  Select one exhibitor
-                </label>
-                <input
-                  id="exhibitor-picker"
-                  list="exhibitor-picker-options"
-                  type="text"
-                  value={exhibitorPickerValue}
-                  onChange={(event) => setExhibitorPickerValue(event.target.value)}
-                  placeholder="Start typing company name or exhibitor ID"
-                  className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition focus:border-neutral-500"
-                />
-                <datalist id="exhibitor-picker-options">
-                  {exhibitorOptions.map((item) => (
-                    <option key={item.exhibitorId} value={item.label} />
-                  ))}
-                </datalist>
-                <p className="mt-2 text-xs text-neutral-500">
-                  Type a company name or ID, then choose the matching exhibitor.
-                </p>
-              </div>
-
-              <button
-                type="submit"
-                className="rounded-xl border border-neutral-900 bg-neutral-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-neutral-800"
-              >
-                Apply exhibitor
-              </button>
-            </div>
-          </form>
-
-          <div className="mt-5">
-            <label htmlFor="visible-exhibitor-filter" className="mb-2 block text-sm font-medium text-neutral-700">
-              Filter visible exhibitor list
-            </label>
-            <input
-              id="visible-exhibitor-filter"
-              type="text"
-              placeholder="Filter the exhibitor list below"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              className="w-full max-w-md rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition focus:border-neutral-500"
+        <div>
+          <h2 className="mb-4 text-xl font-semibold text-white">Overview</h2>
+          <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <KpiCard
+              label="Total events"
+              value={summary.totalEvents}
+              sublabel="All tracked activity"
             />
-          </div>
+            <KpiCard
+              label="Exhibitors seen"
+              value={summary.totalExhibitors}
+              sublabel="Unique exhibitors"
+            />
+            <KpiCard
+              label="Generator opens"
+              value={summary.totalGeneratorOpens}
+              sublabel="Sessions opened"
+              tone="blue"
+            />
+            <KpiCard
+              label="Exports succeeded"
+              value={summary.totalExportsSucceeded}
+              sublabel="Successful exports"
+              tone="green"
+            />
+            <KpiCard
+              label="Exports failed"
+              value={summary.totalExportsFailed}
+              sublabel="Failed exports"
+              tone="red"
+            />
+            <KpiCard
+              label="Open → Export"
+              value={summary.conversionRate}
+              sublabel="Conversion rate"
+              tone="amber"
+            />
+          </section>
+        </div>
 
-          <div className="mt-5 rounded-2xl border border-neutral-200">
-            <div className="border-b border-neutral-200 bg-neutral-50 px-4 py-3 text-sm font-medium text-neutral-700">
-              Available exhibitors ({filteredAvailableExhibitors.length})
-            </div>
-
-            <div className="max-h-72 overflow-auto">
-              {filteredAvailableExhibitors.length === 0 ? (
-                <div className="px-4 py-4 text-sm text-neutral-500">
-                  No exhibitors match your current search.
-                </div>
-              ) : (
-                <div className="divide-y divide-neutral-200">
-                  {filteredAvailableExhibitors.map((item) => {
-                    const isActive = item.exhibitorId === summary.appliedExhibitorId
-
-                    return (
-                      <div
-                        key={item.exhibitorId}
-                        className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
-                      >
-                        <div>
-                          <div className="font-medium text-neutral-900">{item.companyName}</div>
-                          <div className="text-sm text-neutral-500">
-                            Exhibitor ID: {item.exhibitorId}
-                          </div>
-                        </div>
-
-                        <div className="flex flex-wrap gap-2">
-                          <Link
-                            href={buildReportsHref({
-                              range: currentRange,
-                              exhibitorId: item.exhibitorId,
-                              q: currentSearchQuery,
-                              startDate: summary.appliedStartDate,
-                              endDate: summary.appliedEndDate,
-                            })}
-                            className={`rounded-lg border px-3 py-2 text-xs font-medium transition ${
-                              isActive
-                                ? 'border-neutral-900 bg-neutral-900 text-white'
-                                : 'border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-100'
-                            }`}
-                          >
-                            {isActive ? 'Selected' : 'Filter reports'}
-                          </Link>
-
-                          <Link
-                            href={buildExhibitorDetailHref(item.exhibitorId, {
-                              range: currentRange,
-                              startDate: summary.appliedStartDate,
-                              endDate: summary.appliedEndDate,
-                            })}
-                            className="rounded-lg border border-neutral-300 bg-white px-3 py-2 text-xs font-medium text-neutral-700 transition hover:bg-neutral-100"
-                          >
-                            View details
-                          </Link>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
-
-        <section className="grid gap-4 md:grid-cols-6">
-          <div className="rounded-2xl border bg-white p-5 shadow-sm">
-            <div className="text-sm text-neutral-500">Total Events</div>
-            <div className="mt-2 text-3xl font-semibold">{summary.totalEvents}</div>
-          </div>
-          <div className="rounded-2xl border bg-white p-5 shadow-sm">
-            <div className="text-sm text-neutral-500">Exhibitors Seen</div>
-            <div className="mt-2 text-3xl font-semibold">{summary.totalExhibitors}</div>
-          </div>
-          <div className="rounded-2xl border bg-white p-5 shadow-sm">
-            <div className="text-sm text-neutral-500">Generator Opens</div>
-            <div className="mt-2 text-3xl font-semibold">{summary.totalGeneratorOpens}</div>
-          </div>
-          <div className="rounded-2xl border bg-white p-5 shadow-sm">
-            <div className="text-sm text-neutral-500">Exports Succeeded</div>
-            <div className="mt-2 text-3xl font-semibold">{summary.totalExportsSucceeded}</div>
-          </div>
-          <div className="rounded-2xl border bg-white p-5 shadow-sm">
-            <div className="text-sm text-neutral-500">Exports Failed</div>
-            <div className="mt-2 text-3xl font-semibold">{summary.totalExportsFailed}</div>
-          </div>
-          <div className="rounded-2xl border bg-white p-5 shadow-sm">
-            <div className="text-sm text-neutral-500">Open → Export</div>
-            <div className="mt-2 text-3xl font-semibold">{summary.conversionRate}</div>
-          </div>
-        </section>
-
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <button
-            type="button"
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-2">
+          <CompactFocusCard
+            title="Needs attention"
+            value={String(needsAttention.length)}
+            subtitle="Engaged exhibitors with no successful exports."
             onClick={() => activateFocusFilter('needsAttention')}
-            className="rounded-2xl border border-red-200 bg-red-50 p-5 text-left shadow-sm transition hover:bg-red-100"
-          >
-            <div className="text-sm font-medium text-red-700">Needs attention</div>
-            <div className="mt-2 text-3xl font-semibold text-red-900">{needsAttention.length}</div>
-            <p className="mt-2 text-sm text-red-700">
-              Exhibitors with engagement but no successful exports.
-            </p>
-          </button>
+            tone="red"
+          />
 
-          <button
-            type="button"
-            onClick={() => activateFocusFilter('topPerformers')}
-            className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-left shadow-sm transition hover:bg-emerald-100"
-          >
-            <div className="text-sm font-medium text-emerald-700">Top conversion</div>
-            <div className="mt-2 text-3xl font-semibold text-emerald-900">
-              {topPerformer
+          <CompactFocusCard
+            title="Top conversion"
+            value={
+              topPerformer
                 ? `${Math.round(
                     getConversionRate(
                       topPerformer.generatorOpenedCount,
                       topPerformer.exportSucceededCount
                     ) * 100
                   )}%`
-                : '0%'}
-            </div>
-            <p className="mt-2 text-sm text-emerald-700">
-              {topPerformer ? topPerformer.companyName : 'No exhibitor data yet.'}
-            </p>
-          </button>
+                : '0%'
+            }
+            subtitle={topPerformer ? topPerformer.companyName : 'No exhibitor data yet.'}
+            onClick={() => activateFocusFilter('topPerformers')}
+            tone="green"
+          />
 
-          <button
-            type="button"
+          <CompactFocusCard
+            title="Zero conversion"
+            value={String(zeroConversionCount)}
+            subtitle="Exhibitors currently at 0% open-to-export conversion."
             onClick={() => activateFocusFilter('zeroConversion')}
-            className="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-left shadow-sm transition hover:bg-amber-100"
-          >
-            <div className="text-sm font-medium text-amber-700">Zero-conversion exhibitors</div>
-            <div className="mt-2 text-3xl font-semibold text-amber-900">{zeroConversionCount}</div>
-            <p className="mt-2 text-sm text-amber-700">
-              Exhibitors currently sitting at 0% conversion.
-            </p>
-          </button>
+            tone="amber"
+          />
 
-          <button
-            type="button"
+          <CompactFocusCard
+            title="Failed exports"
+            value={String(summary.totalExportsFailed)}
+            subtitle="Total failed export events in the selected view."
             onClick={() => activateFocusFilter('failedExports')}
-            className="rounded-2xl border border-blue-200 bg-blue-50 p-5 text-left shadow-sm transition hover:bg-blue-100"
-          >
-            <div className="text-sm font-medium text-blue-700">Failed exports</div>
-            <div className="mt-2 text-3xl font-semibold text-blue-900">{summary.totalExportsFailed}</div>
-            <p className="mt-2 text-sm text-blue-700">
-              Total failed export events in the selected view.
-            </p>
-          </button>
-        </section>
-
-        <section className="grid gap-6 xl:grid-cols-3">
-          <div className="rounded-2xl border bg-white p-6 shadow-sm">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h2 className="text-xl font-semibold">🏆 Top performers</h2>
-                <p className="mt-1 text-sm text-neutral-500">
-                  Ranked by open-to-export conversion rate.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => activateFocusFilter('topPerformers')}
-                className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 transition hover:bg-emerald-100"
-              >
-                Focus table
-              </button>
-            </div>
-
-            <div className="mt-4 space-y-3">
-              {leaderboard.length === 0 ? (
-                <p className="text-sm text-neutral-500">No exhibitor data available yet.</p>
-              ) : (
-                leaderboard.slice(0, 5).map((item, index) => {
-                  const rate = getConversionRate(
-                    item.generatorOpenedCount,
-                    item.exportSucceededCount
-                  )
-
-                  return (
-                    <Link
-                      key={item.exhibitorId}
-                      href={buildExhibitorDetailHref(item.exhibitorId, {
-                        range: currentRange,
-                        startDate: summary.appliedStartDate,
-                        endDate: summary.appliedEndDate,
-                      })}
-                      className="block rounded-xl border border-neutral-200 bg-neutral-50 p-4 transition hover:bg-neutral-100"
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="rounded-full bg-neutral-900 px-2 py-1 text-xs font-semibold text-white">
-                              #{index + 1}
-                            </span>
-                            <span className="font-medium text-neutral-900">{item.companyName}</span>
-                          </div>
-                          <div className="mt-2 text-xs text-neutral-500">
-                            Opens: {item.generatorOpenedCount} · Successful exports:{' '}
-                            {item.exportSucceededCount}
-                          </div>
-                        </div>
-
-                        <div className="text-right">
-                          <div className="text-lg font-semibold text-neutral-900">
-                            {(rate * 100).toFixed(0)}%
-                          </div>
-                          <div className="text-xs text-neutral-500">conversion</div>
-                        </div>
-                      </div>
-                    </Link>
-                  )
-                })
-              )}
-            </div>
-          </div>
-
-          <div className="rounded-2xl border bg-white p-6 shadow-sm">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h2 className="text-xl font-semibold">⚠️ Needs attention</h2>
-                <p className="mt-1 text-sm text-neutral-500">
-                  Exhibitors engaging but not converting.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => activateFocusFilter('needsAttention')}
-                className="rounded-full bg-red-50 px-3 py-1 text-xs font-medium text-red-700 transition hover:bg-red-100"
-              >
-                Focus table
-              </button>
-            </div>
-
-            <div className="mt-4 space-y-3">
-              {needsAttention.length === 0 ? (
-                <p className="text-sm text-neutral-500">No issues detected.</p>
-              ) : (
-                needsAttention.slice(0, 8).map((item) => {
-                  const openedNoExport =
-                    item.generatorOpenedCount > 0 &&
-                    item.exportSucceededCount === 0
-
-                  return (
-                    <Link
-                      key={item.exhibitorId}
-                      href={buildExhibitorDetailHref(item.exhibitorId, {
-                        range: currentRange,
-                        startDate: summary.appliedStartDate,
-                        endDate: summary.appliedEndDate,
-                      })}
-                      className="block rounded-xl border border-red-100 bg-red-50 p-4 transition hover:bg-red-100"
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <div className="font-medium text-red-900">{item.companyName}</div>
-                          <div className="mt-1 text-xs text-red-700">
-                            {openedNoExport
-                              ? 'Opened generator but never completed an export'
-                              : 'Generated a link but no successful exports recorded'}
-                          </div>
-                          <div className="mt-2 text-xs text-red-600">
-                            Links: {item.linkGeneratedCount} · Opens:{' '}
-                            {item.generatorOpenedCount} · Exports:{' '}
-                            {item.exportSucceededCount}
-                          </div>
-                        </div>
-
-                        <div className="rounded-full bg-white px-2 py-1 text-xs font-semibold text-red-700">
-                          Review
-                        </div>
-                      </div>
-                    </Link>
-                  )
-                })
-              )}
-            </div>
-          </div>
-
-          <div className="rounded-2xl border bg-white p-6 shadow-sm">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h2 className="text-xl font-semibold">📊 Conversion distribution</h2>
-                <p className="mt-1 text-sm text-neutral-500">
-                  How exhibitors are spread by conversion performance.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => activateFocusFilter('zeroConversion')}
-                className="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 transition hover:bg-blue-100"
-              >
-                Focus 0%
-              </button>
-            </div>
-
-            <div className="mt-5 space-y-4">
-              {[
-                { label: '0%', value: conversionBuckets.zero, tone: 'bg-neutral-400' },
-                { label: '1–25%', value: conversionBuckets.low, tone: 'bg-neutral-500' },
-                { label: '25–50%', value: conversionBuckets.medium, tone: 'bg-neutral-700' },
-                { label: '50%+', value: conversionBuckets.high, tone: 'bg-emerald-500' },
-              ].map((bucket) => (
-                <div key={bucket.label}>
-                  <div className="mb-1 flex justify-between text-sm">
-                    <span className="text-neutral-600">{bucket.label}</span>
-                    <span className="font-medium text-neutral-900">{bucket.value}</span>
-                  </div>
-                  <div className="h-2 rounded-full bg-neutral-100">
-                    <div
-                      className={`h-2 rounded-full ${bucket.tone}`}
-                      style={{
-                        width: `${
-                          summary.exhibitorSummaries.length
-                            ? (bucket.value / summary.exhibitorSummaries.length) * 100
-                            : 0
-                        }%`,
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="grid gap-6 xl:grid-cols-2">
-          <ChartCard
-            title="Funnel analytics"
-            description="Step-by-step progression through the generator journey."
-            emptyMessage="No funnel activity recorded yet."
-            hasData={!funnelRows.every((item) => item.count === 0)}
-            chartsReady={chartsReady}
-          >
-            <MeasuredChart>
-              {({ width, height }) => (
-                <BarChart
-                  width={width}
-                  height={height}
-                  data={funnelRows}
-                  layout="vertical"
-                  margin={{ top: 8, right: 16, left: 32, bottom: 8 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" allowDecimals={false} />
-                  <YAxis type="category" dataKey="label" width={130} />
-                  <Tooltip />
-                  <Bar dataKey="count" name="Count" isAnimationActive={false} />
-                </BarChart>
-              )}
-            </MeasuredChart>
-          </ChartCard>
-
-          <div className="rounded-2xl border bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-semibold">Funnel step breakdown</h2>
-            <p className="mt-1 text-sm text-neutral-500">
-              Conversion from the previous step in the journey.
-            </p>
-
-            <div className="mt-4 overflow-x-auto">
-              <table className="min-w-full border-collapse text-sm">
-                <thead>
-                  <tr className="border-b text-left">
-                    <th className="py-3 pr-4 font-medium">Step</th>
-                    <th className="py-3 pr-4 font-medium">Count</th>
-                    <th className="py-3 pr-4 font-medium">From previous</th>
-                    <th className="py-3 pr-4 font-medium">From start</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {funnelRows.map((item) => (
-                    <tr key={item.key} className="border-b last:border-b-0">
-                      <td className="py-3 pr-4 font-medium">{item.label}</td>
-                      <td className="py-3 pr-4">{item.count}</td>
-                      <td className="py-3 pr-4">{item.rateFromPrevious}</td>
-                      <td className="py-3 pr-4">{item.rateFromStart}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+            tone="blue"
+          />
         </section>
 
         <section className="grid gap-6 xl:grid-cols-2">
           <ChartCard
             title="Top exhibitors by activity"
-            description="Compare total events, opens, exports, and failures."
+            description="Summary-only chart. Limited to the top exhibitors to keep the view readable."
             emptyMessage="No exhibitor activity to chart."
             hasData={topExhibitorsChartData.length > 0}
             chartsReady={chartsReady}
@@ -1404,20 +1080,28 @@ export default function ReportsClient({
                   data={topExhibitorsChartData}
                   margin={{ top: 8, right: 8, left: 0, bottom: 24 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
                   <XAxis
                     dataKey="name"
-                    angle={-25}
+                    angle={-22}
                     textAnchor="end"
                     height={70}
                     interval={0}
+                    stroke="#a1a1aa"
                   />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="totalEvents" name="Total events" isAnimationActive={false} />
-                  <Bar dataKey="opens" name="Generator opens" isAnimationActive={false} />
-                  <Bar dataKey="exports" name="Exports succeeded" isAnimationActive={false} />
+                  <YAxis stroke="#a1a1aa" />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#111827',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: 16,
+                      color: '#fff',
+                    }}
+                  />
+                  <Legend wrapperStyle={{ paddingTop: 12 }} />
+                  <Bar dataKey="totalEvents" name="Total events" fill="#60a5fa" isAnimationActive={false} />
+                  <Bar dataKey="opens" name="Generator opens" fill="#a78bfa" isAnimationActive={false} />
+                  <Bar dataKey="exports" name="Exports succeeded" fill="#34d399" isAnimationActive={false} />
                 </BarChart>
               )}
             </MeasuredChart>
@@ -1438,17 +1122,26 @@ export default function ReportsClient({
                   data={formatUsageChartData}
                   margin={{ top: 8, right: 8, left: 0, bottom: 24 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
                   <XAxis
                     dataKey="format"
                     angle={-20}
                     textAnchor="end"
                     height={60}
                     interval={0}
+                    stroke="#a1a1aa"
                   />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="count" name="Count" isAnimationActive={false} />
+                  <YAxis stroke="#a1a1aa" />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#111827',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: 16,
+                      color: '#fff',
+                    }}
+                  />
+                  <Legend wrapperStyle={{ paddingTop: 12 }} />
+                  <Bar dataKey="count" name="Count" fill="#f59e0b" isAnimationActive={false} />
                 </BarChart>
               )}
             </MeasuredChart>
@@ -1458,7 +1151,7 @@ export default function ReportsClient({
         <section className="grid gap-6 xl:grid-cols-2">
           <ChartCard
             title="Generator opens over time"
-            description="Daily generator opens and export trends."
+            description="Daily generator opens and successful exports."
             emptyMessage="Select a date range to view daily charts."
             hasData={dailyChartData.length > 0}
             chartsReady={chartsReady}
@@ -1469,17 +1162,25 @@ export default function ReportsClient({
                   width={width}
                   height={height}
                   data={dailyChartData}
-                  margin={{ top: 8, right: 8, left: 0, bottom: 8 }}
+                  margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="label" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
+                  <XAxis dataKey="label" stroke="#a1a1aa" />
+                  <YAxis stroke="#a1a1aa" />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#111827',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: 16,
+                      color: '#fff',
+                    }}
+                  />
+                  <Legend wrapperStyle={{ paddingTop: 12 }} />
                   <Line
                     type="monotone"
                     dataKey="generatorOpened"
                     name="Generator opens"
+                    stroke="#60a5fa"
                     strokeWidth={2}
                     dot={false}
                     isAnimationActive={false}
@@ -1488,6 +1189,7 @@ export default function ReportsClient({
                     type="monotone"
                     dataKey="exportsSucceeded"
                     name="Exports succeeded"
+                    stroke="#34d399"
                     strokeWidth={2}
                     dot={false}
                     isAnimationActive={false}
@@ -1510,17 +1212,25 @@ export default function ReportsClient({
                   width={width}
                   height={height}
                   data={dailyChartData}
-                  margin={{ top: 8, right: 8, left: 0, bottom: 8 }}
+                  margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="label" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
+                  <XAxis dataKey="label" stroke="#a1a1aa" />
+                  <YAxis stroke="#a1a1aa" />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#111827',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: 16,
+                      color: '#fff',
+                    }}
+                  />
+                  <Legend wrapperStyle={{ paddingTop: 12 }} />
                   <Line
                     type="monotone"
                     dataKey="exportsFailed"
                     name="Exports failed"
+                    stroke="#f87171"
                     strokeWidth={2}
                     dot={false}
                     isAnimationActive={false}
@@ -1531,410 +1241,471 @@ export default function ReportsClient({
           </ChartCard>
         </section>
 
-        <section className="grid gap-6 lg:grid-cols-2">
-          <div className="rounded-2xl border bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-semibold">Generated links but never exported</h2>
-            <div className="mt-4 space-y-3">
-              {noExportExhibitors.length === 0 ? (
-                <p className="text-sm text-neutral-500">
-                  No exhibitors currently match this condition.
-                </p>
-              ) : (
-                noExportExhibitors.map((item) => (
-                  <div key={item.exhibitorId} className="rounded-xl border bg-neutral-50 p-4">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="font-medium">{item.companyName}</div>
-                        <div className="text-sm text-neutral-600">
-                          Exhibitor ID: {item.exhibitorId}
-                        </div>
-                        <div className="mt-2 text-sm text-neutral-700">
-                          Links generated: {item.linkGeneratedCount}
-                        </div>
-                      </div>
-
-                      <Link
-                        href={buildExhibitorDetailHref(item.exhibitorId, {
-                          range: currentRange,
-                          startDate: summary.appliedStartDate,
-                          endDate: summary.appliedEndDate,
-                        })}
-                        className="rounded-lg border border-neutral-300 bg-white px-3 py-2 text-xs font-medium text-neutral-700 hover:bg-neutral-100"
-                      >
-                        View details
-                      </Link>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-
-          <div className="rounded-2xl border bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-semibold">Exhibitors with export failures</h2>
-            <div className="mt-4 space-y-3">
-              {failingExhibitors.length === 0 ? (
-                <p className="text-sm text-neutral-500">No export failures recorded yet.</p>
-              ) : (
-                failingExhibitors.map((item) => (
-                  <div key={item.exhibitorId} className="rounded-xl border bg-neutral-50 p-4">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="font-medium">{item.companyName}</div>
-                        <div className="text-sm text-neutral-600">
-                          Exhibitor ID: {item.exhibitorId}
-                        </div>
-                        <div className="mt-2 text-sm text-neutral-700">
-                          Failed exports: {item.exportFailedCount}
-                        </div>
-                      </div>
-
-                      <Link
-                        href={buildExhibitorDetailHref(item.exhibitorId, {
-                          range: currentRange,
-                          startDate: summary.appliedStartDate,
-                          endDate: summary.appliedEndDate,
-                        })}
-                        className="rounded-lg border border-neutral-300 bg-white px-3 py-2 text-xs font-medium text-neutral-700 hover:bg-neutral-100"
-                      >
-                        View details
-                      </Link>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-        </section>
-
-        <section
-          id="usage-by-exhibitor"
-          className="rounded-2xl border bg-white p-6 shadow-sm"
-        >
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <Card className="p-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-xl font-semibold">Usage by exhibitor</h2>
-              <p className="mt-1 text-sm text-neutral-500">
-                Sort the table, page through datasets, and focus on key segments.
+              <div className="flex items-center gap-2">
+                <h2 className="text-2xl font-semibold text-white">Needs attention</h2>
+                <span className="rounded-full bg-red-500/20 px-2 py-1 text-xs font-medium text-red-300">
+                  {needsAttention.length}
+                </span>
+              </div>
+              <p className="mt-1 text-sm text-neutral-400">
+                Exhibitors with engagement but no successful exports.
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <div>
-                <label htmlFor="pageSize" className="mb-2 block text-sm font-medium text-neutral-700">
-                  Rows per page
-                </label>
-                <select
-                  id="pageSize"
-                  value={pageSize}
-                  onChange={(event) => {
-                    setPageSize(Number(event.target.value))
-                    setCurrentPage(1)
-                  }}
-                  className="rounded-xl border border-neutral-300 bg-white px-4 py-3 text-sm text-neutral-900 outline-none transition focus:border-neutral-500"
-                >
-                  {PAGE_SIZE_OPTIONS.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
+            <button
+              type="button"
+              onClick={() => setNeedsAttentionExpanded((prev) => !prev)}
+              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-neutral-300 transition hover:bg-white/10"
+            >
+              {needsAttentionExpanded ? 'Collapse table' : 'Expand table'}
+            </button>
+          </div>
+
+          {needsAttention.length > 0 ? (
+            <div className="mt-5 overflow-hidden rounded-3xl border border-red-500/20">
+              <div className="overflow-x-auto">
+                <table className="min-w-full border-collapse text-sm">
+                  <thead className="bg-red-500/10">
+                    <tr className="border-b border-red-500/20 text-left">
+                      <th className="px-5 py-3 font-medium text-red-100">Company</th>
+                      <th className="px-5 py-3 font-medium text-red-100">Exhibitor ID</th>
+                      <th className="px-5 py-3 font-medium text-red-100">Links</th>
+                      <th className="px-5 py-3 font-medium text-red-100">Opens</th>
+                      <th className="px-5 py-3 font-medium text-red-100">Exports</th>
+                      <th className="px-5 py-3 font-medium text-red-100">Issue</th>
+                      <th className="px-5 py-3 font-medium text-red-100">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {visibleNeedsAttentionRows.map((item) => {
+                      const issueLabel =
+                        item.generatorOpenedCount > 0 && item.exportSucceededCount === 0
+                          ? 'Opened generator but never exported'
+                          : 'Generated links but no successful exports'
+
+                      return (
+                        <tr key={item.exhibitorId} className="border-b border-white/5 last:border-b-0">
+                          <td className="px-5 py-4 text-white">{item.companyName}</td>
+                          <td className="px-5 py-4 text-neutral-300">{item.exhibitorId}</td>
+                          <td className="px-5 py-4 text-neutral-300">{item.linkGeneratedCount}</td>
+                          <td className="px-5 py-4 text-neutral-300">{item.generatorOpenedCount}</td>
+                          <td className="px-5 py-4 text-neutral-300">{item.exportSucceededCount}</td>
+                          <td className="px-5 py-4 text-red-200">{issueLabel}</td>
+                          <td className="px-5 py-4">
+                            <Link
+                              href={buildExhibitorDetailHref(item.exhibitorId, {
+                                range: currentRange,
+                                startDate: summary.appliedStartDate,
+                                endDate: summary.appliedEndDate,
+                              })}
+                              className="inline-flex items-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-neutral-200 transition hover:bg-white/10"
+                            >
+                              View details
+                            </Link>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
               </div>
 
-              <div className="text-sm text-neutral-500">
+              {!needsAttentionExpanded && needsAttention.length > 5 ? (
+                <div className="border-t border-white/5 px-5 py-3 text-sm text-neutral-400">
+                  Showing 5 of {needsAttention.length} exhibitors.
+                </div>
+              ) : null}
+            </div>
+          ) : (
+            <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-neutral-400">
+              No issues detected.
+            </div>
+          )}
+        </Card>
+
+        <Card id="exhibitor-explorer" className="p-6">
+          <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+              <div>
+                <h2 className="text-2xl font-semibold text-white">Exhibitor explorer</h2>
+                <p className="mt-1 text-sm text-neutral-400">
+                  Scalable table with sorting, filtering, and pagination.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-end gap-3">
+                <div>
+                  <label htmlFor="visible-exhibitor-filter" className="mb-2 block text-sm font-medium text-neutral-300">
+                    Filter visible list
+                  </label>
+                  <input
+                    id="visible-exhibitor-filter"
+                    type="text"
+                    placeholder="Filter by name or ID"
+                    value={search}
+                    onChange={(event) => setSearch(event.target.value)}
+                    className="w-full min-w-[280px] rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/20"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="pageSize" className="mb-2 block text-sm font-medium text-neutral-300">
+                    Rows per page
+                  </label>
+                  <select
+                    id="pageSize"
+                    value={pageSize}
+                    onChange={(event) => {
+                      setPageSize(Number(event.target.value))
+                      setCurrentPage(1)
+                    }}
+                    className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition focus:border-white/20"
+                  >
+                    {PAGE_SIZE_OPTIONS.map((option) => (
+                      <option key={option} value={option} className="text-black">
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <FocusChip active={focusFilter === 'all'} onClick={() => activateFocusFilter('all')}>
+                All exhibitors
+              </FocusChip>
+              <FocusChip
+                active={focusFilter === 'activeOnly'}
+                onClick={() => activateFocusFilter('activeOnly')}
+              >
+                Active only
+              </FocusChip>
+              <FocusChip
+                active={focusFilter === 'needsAttention'}
+                onClick={() => activateFocusFilter('needsAttention')}
+              >
+                Needs attention
+              </FocusChip>
+              <FocusChip
+                active={focusFilter === 'zeroConversion'}
+                onClick={() => activateFocusFilter('zeroConversion')}
+              >
+                Zero conversion
+              </FocusChip>
+              <FocusChip
+                active={focusFilter === 'failedExports'}
+                onClick={() => activateFocusFilter('failedExports')}
+              >
+                Failed exports
+              </FocusChip>
+              <FocusChip
+                active={focusFilter === 'topPerformers'}
+                onClick={() => activateFocusFilter('topPerformers')}
+              >
+                Top performers
+              </FocusChip>
+            </div>
+
+            <div className="flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between">
+              <div className="text-neutral-500">
                 Showing {tableStartIndex}-{tableEndIndex} of {sortedExhibitorRows.length}
               </div>
+              <div className="text-neutral-500">
+                Current focus:{' '}
+                <span className="font-medium text-white">
+                  {focusFilter === 'all'
+                    ? 'All exhibitors'
+                    : focusFilter === 'activeOnly'
+                    ? 'Active only'
+                    : focusFilter === 'needsAttention'
+                    ? 'Needs attention'
+                    : focusFilter === 'zeroConversion'
+                    ? 'Zero conversion'
+                    : focusFilter === 'failedExports'
+                    ? 'Failed exports'
+                    : 'Top performers'}
+                </span>
+              </div>
             </div>
-          </div>
 
-          <div className="mt-4 flex flex-wrap gap-2">
-            <button type="button" onClick={() => activateFocusFilter('all')} className={focusButtonClasses('all')}>
-              All exhibitors
-            </button>
-            <button
-              type="button"
-              onClick={() => activateFocusFilter('needsAttention')}
-              className={focusButtonClasses('needsAttention')}
-            >
-              Needs attention
-            </button>
-            <button
-              type="button"
-              onClick={() => activateFocusFilter('zeroConversion')}
-              className={focusButtonClasses('zeroConversion')}
-            >
-              Zero conversion
-            </button>
-            <button
-              type="button"
-              onClick={() => activateFocusFilter('failedExports')}
-              className={focusButtonClasses('failedExports')}
-            >
-              Failed exports
-            </button>
-            <button
-              type="button"
-              onClick={() => activateFocusFilter('topPerformers')}
-              className={focusButtonClasses('topPerformers')}
-            >
-              Top performers
-            </button>
-          </div>
-
-          <div className="mt-3 text-sm text-neutral-500">
-            Current table focus:{' '}
-            <span className="font-medium text-neutral-900">
-              {focusFilter === 'all'
-                ? 'All exhibitors'
-                : focusFilter === 'needsAttention'
-                ? 'Needs attention'
-                : focusFilter === 'zeroConversion'
-                ? 'Zero conversion'
-                : focusFilter === 'failedExports'
-                ? 'Failed exports'
-                : 'Top performers'}
-            </span>
-          </div>
-
-          <div className="mt-4 overflow-x-auto">
-            <table className="min-w-full border-collapse text-sm">
-              <thead>
-                <tr className="border-b text-left">
-                  <th className="py-3 pr-4 font-medium">
-                    <button
-                      type="button"
-                      onClick={() => handleSort('companyName')}
-                      className="font-medium text-neutral-900 hover:underline"
-                    >
-                      Company{sortIndicator('companyName')}
-                    </button>
-                  </th>
-                  <th className="py-3 pr-4 font-medium">
-                    <button
-                      type="button"
-                      onClick={() => handleSort('exhibitorId')}
-                      className="font-medium text-neutral-900 hover:underline"
-                    >
-                      Exhibitor ID{sortIndicator('exhibitorId')}
-                    </button>
-                  </th>
-                  <th className="py-3 pr-4 font-medium">
-                    <button
-                      type="button"
-                      onClick={() => handleSort('totalEvents')}
-                      className="font-medium text-neutral-900 hover:underline"
-                    >
-                      Total Events{sortIndicator('totalEvents')}
-                    </button>
-                  </th>
-                  <th className="py-3 pr-4 font-medium">
-                    <button
-                      type="button"
-                      onClick={() => handleSort('generatorOpenedCount')}
-                      className="font-medium text-neutral-900 hover:underline"
-                    >
-                      Generator Opened{sortIndicator('generatorOpenedCount')}
-                    </button>
-                  </th>
-                  <th className="py-3 pr-4 font-medium">
-                    <button
-                      type="button"
-                      onClick={() => handleSort('exportSucceededCount')}
-                      className="font-medium text-neutral-900 hover:underline"
-                    >
-                      Exports Succeeded{sortIndicator('exportSucceededCount')}
-                    </button>
-                  </th>
-                  <th className="py-3 pr-4 font-medium">
-                    <button
-                      type="button"
-                      onClick={() => handleSort('exportFailedCount')}
-                      className="font-medium text-neutral-900 hover:underline"
-                    >
-                      Exports Failed{sortIndicator('exportFailedCount')}
-                    </button>
-                  </th>
-                  <th className="py-3 pr-4 font-medium">
-                    <button
-                      type="button"
-                      onClick={() => handleSort('conversionRate')}
-                      className="font-medium text-neutral-900 hover:underline"
-                    >
-                      Open → Export{sortIndicator('conversionRate')}
-                    </button>
-                  </th>
-                  <th className="py-3 pr-4 font-medium">
-                    <button
-                      type="button"
-                      onClick={() => handleSort('lastActivityAt')}
-                      className="font-medium text-neutral-900 hover:underline"
-                    >
-                      Last Activity{sortIndicator('lastActivityAt')}
-                    </button>
-                  </th>
-                  <th className="py-3 pr-0 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedExhibitorRows.length === 0 ? (
-                  <tr>
-                    <td className="py-4 text-neutral-500" colSpan={9}>
-                      No exhibitors match your current filters.
-                    </td>
-                  </tr>
-                ) : (
-                  paginatedExhibitorRows.map((item) => {
-                    const status = getLastActiveStatus(item.lastActivityAt)
-
-                    return (
-                      <tr key={item.exhibitorId} className="border-b align-top last:border-b-0">
-                        <td className="py-3 pr-4 font-medium">
-                          <Link
-                            href={buildExhibitorDetailHref(item.exhibitorId, {
-                              range: currentRange,
-                              startDate: summary.appliedStartDate,
-                              endDate: summary.appliedEndDate,
-                            })}
-                            className="text-neutral-900 underline-offset-4 hover:underline"
-                          >
-                            {item.companyName}
-                          </Link>
-                        </td>
-                        <td className="py-3 pr-4">{item.exhibitorId}</td>
-                        <td className="py-3 pr-4">{item.totalEvents}</td>
-                        <td className="py-3 pr-4">{item.generatorOpenedCount}</td>
-                        <td className="py-3 pr-4">{item.exportSucceededCount}</td>
-                        <td className="py-3 pr-4">{item.exportFailedCount}</td>
-                        <td className="py-3 pr-4">
-                          {percentage(item.exportSucceededCount, item.generatorOpenedCount)}
-                        </td>
-                        <td className="py-3 pr-4">
-                          <div className="space-y-2">
-                            <div>
-                              <span
-                                className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${status.className}`}
-                              >
-                                {status.label}
-                              </span>
-                            </div>
-                            <div className="text-xs text-neutral-500">
-                              {formatDate(item.lastActivityAt)}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="py-3 pr-0">
-                          <Link
-                            href={buildExhibitorDetailHref(item.exhibitorId, {
-                              range: currentRange,
-                              startDate: summary.appliedStartDate,
-                              endDate: summary.appliedEndDate,
-                            })}
-                            className="rounded-lg border border-neutral-300 bg-white px-3 py-2 text-xs font-medium text-neutral-700 hover:bg-neutral-100"
-                          >
-                            View details
-                          </Link>
+            <div className="overflow-hidden rounded-3xl border border-white/10">
+              <div className="overflow-x-auto">
+                <table className="min-w-[1120px] w-full border-collapse text-sm">
+                  <thead className="bg-white/[0.04]">
+                    <tr className="border-b border-white/10 text-left">
+                      <th className="px-5 py-4 font-medium text-neutral-300">
+                        <button
+                          type="button"
+                          onClick={() => handleSort('companyName')}
+                          className="font-medium hover:underline"
+                        >
+                          Company{sortIndicator('companyName')}
+                        </button>
+                      </th>
+                      <th className="px-5 py-4 font-medium text-neutral-300">
+                        <button
+                          type="button"
+                          onClick={() => handleSort('exhibitorId')}
+                          className="font-medium hover:underline"
+                        >
+                          Exhibitor ID{sortIndicator('exhibitorId')}
+                        </button>
+                      </th>
+                      <th className="px-5 py-4 font-medium text-neutral-300">
+                        <button
+                          type="button"
+                          onClick={() => handleSort('totalEvents')}
+                          className="font-medium hover:underline"
+                        >
+                          Total events{sortIndicator('totalEvents')}
+                        </button>
+                      </th>
+                      <th className="px-5 py-4 font-medium text-neutral-300">
+                        <button
+                          type="button"
+                          onClick={() => handleSort('generatorOpenedCount')}
+                          className="font-medium hover:underline"
+                        >
+                          Opens{sortIndicator('generatorOpenedCount')}
+                        </button>
+                      </th>
+                      <th className="px-5 py-4 font-medium text-neutral-300">
+                        <button
+                          type="button"
+                          onClick={() => handleSort('exportSucceededCount')}
+                          className="font-medium hover:underline"
+                        >
+                          Successful exports{sortIndicator('exportSucceededCount')}
+                        </button>
+                      </th>
+                      <th className="px-5 py-4 font-medium text-neutral-300">
+                        <button
+                          type="button"
+                          onClick={() => handleSort('exportFailedCount')}
+                          className="font-medium hover:underline"
+                        >
+                          Failed exports{sortIndicator('exportFailedCount')}
+                        </button>
+                      </th>
+                      <th className="px-5 py-4 font-medium text-neutral-300">
+                        <button
+                          type="button"
+                          onClick={() => handleSort('conversionRate')}
+                          className="font-medium hover:underline"
+                        >
+                          Open → Export{sortIndicator('conversionRate')}
+                        </button>
+                      </th>
+                      <th className="px-5 py-4 font-medium text-neutral-300">
+                        <button
+                          type="button"
+                          onClick={() => handleSort('lastActivityAt')}
+                          className="font-medium hover:underline"
+                        >
+                          Last activity{sortIndicator('lastActivityAt')}
+                        </button>
+                      </th>
+                      <th className="px-5 py-4 font-medium text-neutral-300">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginatedExhibitorRows.length === 0 ? (
+                      <tr>
+                        <td className="px-5 py-6 text-neutral-500" colSpan={9}>
+                          No exhibitors match your current filters.
                         </td>
                       </tr>
-                    )
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
+                    ) : (
+                      paginatedExhibitorRows.map((item) => {
+                        const status = getLastActiveStatus(item.lastActivityAt)
 
-          {sortedExhibitorRows.length > 0 ? (
-            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="text-sm text-neutral-500">
-                Page {Math.min(currentPage, totalPages)} of {totalPages}
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => setCurrentPage(1)}
-                  disabled={currentPage <= 1}
-                  className="rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-700 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  First
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                  disabled={currentPage <= 1}
-                  className="rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-700 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  Previous
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-                  disabled={currentPage >= totalPages}
-                  className="rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-700 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  Next
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCurrentPage(totalPages)}
-                  disabled={currentPage >= totalPages}
-                  className="rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-700 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  Last
-                </button>
+                        return (
+                          <tr key={item.exhibitorId} className="border-b border-white/5 align-top last:border-b-0">
+                            <td className="px-5 py-4">
+                              <Link
+                                href={buildExhibitorDetailHref(item.exhibitorId, {
+                                  range: currentRange,
+                                  startDate: summary.appliedStartDate,
+                                  endDate: summary.appliedEndDate,
+                                })}
+                                className="font-medium text-white underline-offset-4 hover:underline"
+                              >
+                                {item.companyName}
+                              </Link>
+                            </td>
+                            <td className="px-5 py-4 text-neutral-300">{item.exhibitorId}</td>
+                            <td className="px-5 py-4 text-neutral-300">{item.totalEvents}</td>
+                            <td className="px-5 py-4 text-neutral-300">{item.generatorOpenedCount}</td>
+                            <td className="px-5 py-4 text-neutral-300">{item.exportSucceededCount}</td>
+                            <td className="px-5 py-4 text-neutral-300">{item.exportFailedCount}</td>
+                            <td className="px-5 py-4 text-neutral-300">
+                              {percentage(item.exportSucceededCount, item.generatorOpenedCount)}
+                            </td>
+                            <td className="px-5 py-4">
+                              <div className="space-y-2">
+                                <div>
+                                  <span
+                                    className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${status.className}`}
+                                  >
+                                    {status.label}
+                                  </span>
+                                </div>
+                                <div className="text-xs text-neutral-500">
+                                  {formatDate(item.lastActivityAt)}
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-5 py-4">
+                              <Link
+                                href={buildExhibitorDetailHref(item.exhibitorId, {
+                                  range: currentRange,
+                                  startDate: summary.appliedStartDate,
+                                  endDate: summary.appliedEndDate,
+                                })}
+                                className="inline-flex min-w-[110px] items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-neutral-200 transition hover:bg-white/10"
+                              >
+                                View details
+                              </Link>
+                            </td>
+                          </tr>
+                        )
+                      })
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
-          ) : null}
-        </section>
 
-        <section className="rounded-2xl border bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold">Recent events</h2>
-          <div className="mt-4 overflow-x-auto">
-            <table className="min-w-full border-collapse text-sm">
-              <thead>
-                <tr className="border-b text-left">
-                  <th className="py-3 pr-4 font-medium">Timestamp</th>
-                  <th className="py-3 pr-4 font-medium">Company</th>
-                  <th className="py-3 pr-4 font-medium">Exhibitor ID</th>
-                  <th className="py-3 pr-4 font-medium">Event</th>
-                  <th className="py-3 pr-4 font-medium">Format</th>
-                  <th className="py-3 pr-4 font-medium">Environment</th>
-                </tr>
-              </thead>
-              <tbody>
-                {summary.recentEvents.length === 0 ? (
-                  <tr>
-                    <td className="py-4 text-neutral-500" colSpan={6}>
-                      No events recorded yet.
-                    </td>
-                  </tr>
-                ) : (
-                  summary.recentEvents.map((event) => (
-                    <tr key={event.id} className="border-b last:border-b-0">
-                      <td className="py-3 pr-4">{formatDate(event.timestamp)}</td>
-                      <td className="py-3 pr-4">
-                        <Link
-                          href={buildExhibitorDetailHref(event.exhibitorId, {
-                            range: currentRange,
-                            startDate: summary.appliedStartDate,
-                            endDate: summary.appliedEndDate,
-                          })}
-                          className="text-neutral-900 underline-offset-4 hover:underline"
-                        >
-                          {event.companyName}
-                        </Link>
-                      </td>
-                      <td className="py-3 pr-4">{event.exhibitorId}</td>
-                      <td className="py-3 pr-4">{event.eventType}</td>
-                      <td className="py-3 pr-4">
-                        {event.format ? formatFormatLabel(event.format) : '—'}
-                      </td>
-                      <td className="py-3 pr-4">{event.environment}</td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+            {sortedExhibitorRows.length > 0 ? (
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="text-sm text-neutral-500">
+                  Page {Math.min(currentPage, totalPages)} of {totalPages}
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage(1)}
+                    disabled={currentPage <= 1}
+                    className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    First
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                    disabled={currentPage <= 1}
+                    className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    Previous
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage >= totalPages}
+                    className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage(totalPages)}
+                    disabled={currentPage >= totalPages}
+                    className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    Last
+                  </button>
+                </div>
+              </div>
+            ) : null}
           </div>
+        </Card>
+
+        <section className="grid gap-6 xl:grid-cols-2">
+          <Card className="p-6">
+            <h2 className="text-xl font-semibold text-white">Funnel analytics</h2>
+            <p className="mt-1 text-sm text-neutral-400">
+              Step-by-step progression through the generator journey.
+            </p>
+
+            <div className="mt-4 overflow-x-auto">
+              <table className="min-w-full border-collapse text-sm">
+                <thead>
+                  <tr className="border-b border-white/10 text-left">
+                    <th className="py-3 pr-4 font-medium text-neutral-300">Step</th>
+                    <th className="py-3 pr-4 font-medium text-neutral-300">Count</th>
+                    <th className="py-3 pr-4 font-medium text-neutral-300">From previous</th>
+                    <th className="py-3 pr-4 font-medium text-neutral-300">From start</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {funnelRows.map((item) => (
+                    <tr key={item.key} className="border-b border-white/5 last:border-b-0">
+                      <td className="py-3 pr-4 font-medium text-white">{item.label}</td>
+                      <td className="py-3 pr-4 text-neutral-300">{item.count}</td>
+                      <td className="py-3 pr-4 text-neutral-300">{item.rateFromPrevious}</td>
+                      <td className="py-3 pr-4 text-neutral-300">{item.rateFromStart}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+
+          <Card className="p-6">
+            <h2 className="text-xl font-semibold text-white">Recent events</h2>
+            <p className="mt-1 text-sm text-neutral-400">
+              Latest analytics events in the current filtered view.
+            </p>
+
+            <div className="mt-4 overflow-x-auto">
+              <table className="min-w-full border-collapse text-sm">
+                <thead>
+                  <tr className="border-b border-white/10 text-left">
+                    <th className="py-3 pr-4 font-medium text-neutral-300">Timestamp</th>
+                    <th className="py-3 pr-4 font-medium text-neutral-300">Company</th>
+                    <th className="py-3 pr-4 font-medium text-neutral-300">Event</th>
+                    <th className="py-3 pr-4 font-medium text-neutral-300">Format</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {summary.recentEvents.length === 0 ? (
+                    <tr>
+                      <td className="py-4 text-neutral-500" colSpan={4}>
+                        No events recorded yet.
+                      </td>
+                    </tr>
+                  ) : (
+                    summary.recentEvents.slice(0, 12).map((event) => (
+                      <tr key={event.id} className="border-b border-white/5 last:border-b-0">
+                        <td className="py-3 pr-4 text-neutral-300">{formatDate(event.timestamp)}</td>
+                        <td className="py-3 pr-4">
+                          <Link
+                            href={buildExhibitorDetailHref(event.exhibitorId, {
+                              range: currentRange,
+                              startDate: summary.appliedStartDate,
+                              endDate: summary.appliedEndDate,
+                            })}
+                            className="text-white underline-offset-4 hover:underline"
+                          >
+                            {event.companyName}
+                          </Link>
+                        </td>
+                        <td className="py-3 pr-4 text-neutral-300">{event.eventType}</td>
+                        <td className="py-3 pr-4 text-neutral-300">
+                          {event.format ? formatFormatLabel(event.format) : '—'}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </Card>
         </section>
       </div>
     </main>

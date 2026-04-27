@@ -49,6 +49,109 @@ const mockExhibitors: Record<string, Exhibitor> = {
   },
 }
 
+const EXHIBITOR_CACHE_TTL_MS = 15 * 60 * 1000
+const EXHIBITOR_LIST_CACHE_TTL_MS = 10 * 60 * 1000
+
+type ExhibitorCacheEntry = {
+  exhibitor: Exhibitor | null
+  cachedAt: number
+}
+
+type ExhibitorListCacheEntry = {
+  exhibitors: Exhibitor[]
+  cachedAt: number
+}
+
+declare global {
+  // eslint-disable-next-line no-var
+  var __mysExhibitorCache: Map<string, ExhibitorCacheEntry> | undefined
+
+  // eslint-disable-next-line no-var
+  var __mysAllExhibitorsCache: ExhibitorListCacheEntry | undefined
+}
+
+function getExhibitorCache(): Map<string, ExhibitorCacheEntry> {
+  if (!global.__mysExhibitorCache) {
+    global.__mysExhibitorCache = new Map()
+  }
+
+  return global.__mysExhibitorCache
+}
+
+function getCachedExhibitor(id: string): Exhibitor | null | undefined {
+  const cache = getExhibitorCache()
+  const entry = cache.get(id)
+
+  if (!entry) {
+    return undefined
+  }
+
+  const isExpired = Date.now() - entry.cachedAt > EXHIBITOR_CACHE_TTL_MS
+
+  if (isExpired) {
+    cache.delete(id)
+    return undefined
+  }
+
+  debugLog('CACHE_HIT', {
+    exhibitorId: id,
+    cachedAt: new Date(entry.cachedAt).toISOString(),
+  })
+
+  return entry.exhibitor
+}
+
+function setCachedExhibitor(id: string, exhibitor: Exhibitor | null): void {
+  const cache = getExhibitorCache()
+
+  cache.set(id, {
+    exhibitor,
+    cachedAt: Date.now(),
+  })
+
+  debugLog('CACHE_SET', {
+    exhibitorId: id,
+    found: Boolean(exhibitor),
+  })
+}
+
+function getCachedAllExhibitors(): Exhibitor[] | undefined {
+  const entry = global.__mysAllExhibitorsCache
+
+  if (!entry) {
+    return undefined
+  }
+
+  const isExpired = Date.now() - entry.cachedAt > EXHIBITOR_LIST_CACHE_TTL_MS
+
+  if (isExpired) {
+    global.__mysAllExhibitorsCache = undefined
+    return undefined
+  }
+
+  debugLog('ALL_EXHIBITORS_CACHE_HIT', {
+    count: entry.exhibitors.length,
+    cachedAt: new Date(entry.cachedAt).toISOString(),
+  })
+
+  return entry.exhibitors
+}
+
+function setCachedAllExhibitors(exhibitors: Exhibitor[]): void {
+  global.__mysAllExhibitorsCache = {
+    exhibitors,
+    cachedAt: Date.now(),
+  }
+
+  debugLog('ALL_EXHIBITORS_CACHE_SET', {
+    count: exhibitors.length,
+  })
+
+  for (const exhibitor of exhibitors) {
+    setCachedExhibitor(exhibitor.id, exhibitor)
+  }
+}
+
 function isDevelopment() {
   return process.env.NODE_ENV !== 'production'
 }
@@ -102,6 +205,8 @@ function getMysPrimaryBoothNumber(record: Record<string, unknown>): string {
     return ''
   }
 
+  const values: string[] = []
+
   for (const booth of booths) {
     const boothRecord = asRecord(booth)
     if (!boothRecord) continue
@@ -109,11 +214,11 @@ function getMysPrimaryBoothNumber(record: Record<string, unknown>): string {
     const boothNumber = getFirstString(boothRecord, ['boothnumber', 'boothNumber'])
 
     if (boothNumber) {
-      return boothNumber
+      values.push(boothNumber)
     }
   }
 
-  return ''
+  return values.join('; ')
 }
 
 function getMysCategorySummary(record: Record<string, unknown>): string {
@@ -206,7 +311,7 @@ function normaliseMysExhibitor(input: unknown): Exhibitor | null {
   const record = asRecord(outer.exhibitor) ?? outer
   if (!record) return null
 
-  const id = getFirstString(record, ['exhid', 'id', 'exhibitorId', 'alt_id'])
+  const id = getFirstString(record, ['exhid', 'exhID', 'id', 'exhibitorId', 'alt_id'])
   const companyName = getFirstString(record, ['exhname', 'legal_name', 'companyName', 'name'])
   const standNumber = getMysPrimaryBoothNumber(record)
 
@@ -343,12 +448,6 @@ async function authorizeMys(): Promise<string> {
         throw new Error('MYS authorize returned an empty token')
       }
 
-      debugLog('AUTHORIZE_TOKEN_PARSED', {
-        tokenPresent: true,
-        tokenLength: token.length,
-        source: 'plain-text',
-      })
-
       return token
     }
 
@@ -416,12 +515,175 @@ async function authorizeMys(): Promise<string> {
   }
 }
 
-async function fetchExhibitorFromMys(id: string): Promise<Exhibitor | null> {
+type MysIdRow = {
+  exhibitorId: string
+}
+
+function extractExhibitorIdsFromArray(items: unknown[]): MysIdRow[] {
+  const rows: MysIdRow[] = []
+
+  for (const item of items) {
+    if (typeof item === 'string' || typeof item === 'number') {
+      const exhibitorId = String(item).trim()
+      if (exhibitorId) {
+        rows.push({ exhibitorId })
+      }
+      continue
+    }
+
+    const record = asRecord(item)
+    if (!record) continue
+
+    const exhibitorId = getFirstString(record, [
+      'exhid',
+      'exhID',
+      'id',
+      'exhibitorId',
+      'exhibitorid',
+      'ExhibitorID',
+      'value',
+    ])
+
+    if (exhibitorId) {
+      rows.push({ exhibitorId })
+      continue
+    }
+
+    const nestedCandidates: unknown[] = [
+      record['exhibitorIDList'],
+      record['exhibitorIdList'],
+      record['ExhibitorIDList'],
+      record['ids'],
+      record['IDs'],
+      record['items'],
+      record['Items'],
+      record['data'],
+      record['Data'],
+      record['results'],
+      record['Results'],
+    ]
+
+    for (const nested of nestedCandidates) {
+      if (Array.isArray(nested)) {
+        rows.push(...extractExhibitorIdsFromArray(nested))
+      }
+    }
+  }
+
+  return rows
+}
+
+function extractExhibitorIds(parsed: unknown): MysIdRow[] {
+  if (Array.isArray(parsed)) {
+    return extractExhibitorIdsFromArray(parsed)
+  }
+
+  const record = asRecord(parsed)
+  if (!record) {
+    return []
+  }
+
+  const nestedCandidates: unknown[] = [
+    record['exhibitorIDList'],
+    record['exhibitorIdList'],
+    record['ExhibitorIDList'],
+    record['exhibitors'],
+    record['Exhibitors'],
+    record['data'],
+    record['Data'],
+    record['results'],
+    record['Results'],
+    record['items'],
+    record['Items'],
+    record['ids'],
+    record['IDs'],
+  ]
+
+  for (const nested of nestedCandidates) {
+    if (Array.isArray(nested)) {
+      return extractExhibitorIdsFromArray(nested)
+    }
+  }
+
+  return []
+}
+
+async function fetchMysExhibitorIdList(mysGUID: string): Promise<MysIdRow[]> {
   const baseUrl = getMysBaseUrl()
   const { showCode } = getMysRequiredCredentials()
   const timeoutMs = getTimeoutMs()
 
-  const mysGUID = await authorizeMys()
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), timeoutMs)
+
+  const candidatePaths = ['/ExhibitorIDList', '/Exhibitors/ExhibitorIDList']
+
+  try {
+    for (const path of candidatePaths) {
+      const url = new URL(`${baseUrl}${path}`)
+      url.searchParams.set('showCode', showCode)
+      url.searchParams.set('mysGUID', mysGUID)
+
+      debugLog('EXHIBITOR_ID_LIST_REQUEST', {
+        path,
+        url: url.toString(),
+        showCode,
+        mysGuidPresent: Boolean(mysGUID),
+      })
+
+      const response = await fetch(url.toString(), {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${mysGUID}`,
+        },
+        cache: 'no-store',
+        signal: controller.signal,
+      })
+
+      const rawText = await safeReadText(response)
+
+      debugLog('EXHIBITOR_ID_LIST_RESPONSE', {
+        path,
+        status: response.status,
+        ok: response.ok,
+        bodyPreview: rawText.slice(0, 1000),
+      })
+
+      if (!response.ok) {
+        continue
+      }
+
+      const parsed = safeJsonParse(rawText)
+      const rows = extractExhibitorIds(parsed)
+
+      debugLog('EXHIBITOR_ID_LIST_PARSED', {
+        path,
+        parsedType: Array.isArray(parsed) ? 'array' : typeof parsed,
+        rowCount: rows.length,
+      })
+
+      if (rows.length > 0) {
+        return rows
+      }
+    }
+
+    return []
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error(`ExhibitorIDList request timed out after ${timeoutMs}ms`)
+    }
+
+    throw error
+  } finally {
+    clearTimeout(timeout)
+  }
+}
+
+async function fetchMysExhibitorFromApi(id: string, mysGUID: string): Promise<Exhibitor | null> {
+  const baseUrl = getMysBaseUrl()
+  const { showCode } = getMysRequiredCredentials()
+  const timeoutMs = getTimeoutMs()
 
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), timeoutMs)
@@ -502,12 +764,74 @@ async function fetchExhibitorFromMys(id: string): Promise<Exhibitor | null> {
   }
 }
 
+async function runWithConcurrency<TInput, TOutput>(
+  items: TInput[],
+  concurrency: number,
+  worker: (item: TInput) => Promise<TOutput>
+): Promise<TOutput[]> {
+  const results: TOutput[] = new Array(items.length)
+  let nextIndex = 0
+
+  async function consume() {
+    while (nextIndex < items.length) {
+      const current = nextIndex
+      nextIndex += 1
+      results[current] = await worker(items[current])
+    }
+  }
+
+  const workers = Array.from(
+    { length: Math.min(concurrency, items.length || 1) },
+    () => consume()
+  )
+
+  await Promise.all(workers)
+  return results
+}
+
 function getMockExhibitorById(id: string): Exhibitor | null {
   return mockExhibitors[id] ?? null
 }
 
-function shouldUseMockFallback() {
-  return isDevelopment()
+function isMockFallbackAllowed(): boolean {
+  return env.ALLOW_MOCK_FALLBACK
+}
+
+async function fetchAllExhibitorsFromMys(): Promise<Exhibitor[]> {
+  const cached = getCachedAllExhibitors()
+
+  if (cached) {
+    return cached
+  }
+
+  const mysGUID = await authorizeMys()
+  const idRows = await fetchMysExhibitorIdList(mysGUID)
+
+  if (idRows.length === 0) {
+    debugLog('ALL_EXHIBITORS_EMPTY_ID_LIST', {})
+    return []
+  }
+
+  debugLog('ALL_EXHIBITORS_ID_LIST_SUCCESS', {
+    idCount: idRows.length,
+  })
+
+  const details = await runWithConcurrency(idRows, 8, async (row) => {
+    return await fetchMysExhibitorFromApi(row.exhibitorId, mysGUID)
+  })
+
+  const exhibitors = details.filter((item): item is Exhibitor => Boolean(item))
+
+  debugLog('ALL_EXHIBITORS_FETCH_COMPLETE', {
+    requested: idRows.length,
+    valid: exhibitors.length,
+  })
+
+  if (exhibitors.length > 0) {
+    setCachedAllExhibitors(exhibitors)
+  }
+
+  return exhibitors
 }
 
 export async function getExhibitorById(id: string): Promise<Exhibitor | null> {
@@ -523,14 +847,31 @@ export async function getExhibitorById(id: string): Promise<Exhibitor | null> {
     return getMockExhibitorById(normalisedId)
   }
 
+  const cached = getCachedExhibitor(normalisedId)
+
+  if (cached !== undefined) {
+    return cached
+  }
+
   try {
-    const exhibitor = await fetchExhibitorFromMys(normalisedId)
+    const allCached = getCachedAllExhibitors()
+
+    if (allCached) {
+      const fromList = allCached.find((item) => item.id === normalisedId) ?? null
+      setCachedExhibitor(normalisedId, fromList)
+      return fromList
+    }
+
+    const mysGUID = await authorizeMys()
+    const exhibitor = await fetchMysExhibitorFromApi(normalisedId, mysGUID)
+
+    setCachedExhibitor(normalisedId, exhibitor)
 
     if (exhibitor) {
       return exhibitor
     }
 
-    if (shouldUseMockFallback()) {
+    if (isMockFallbackAllowed()) {
       warnLog('FALLBACK_TO_MOCK_AFTER_MYS_NOT_FOUND', {
         exhibitorId: normalisedId,
       })
@@ -545,17 +886,49 @@ export async function getExhibitorById(id: string): Promise<Exhibitor | null> {
     warnLog('MYS_FETCH_FAILED', {
       exhibitorId: normalisedId,
       message,
-      fallbackToMock: shouldUseMockFallback(),
+      fallbackToMock: isMockFallbackAllowed(),
     })
 
-    if (shouldUseMockFallback()) {
+    if (isMockFallbackAllowed()) {
       return getMockExhibitorById(normalisedId)
     }
 
-    return null
+    throw error
   }
 }
 
 export async function getAllExhibitors(): Promise<Exhibitor[]> {
-  return Object.values(mockExhibitors)
+  const source = env.EXHIBITOR_DATA_SOURCE?.trim() || 'mock'
+
+  if (source !== 'mys') {
+    return Object.values(mockExhibitors)
+  }
+
+  try {
+    const exhibitors = await fetchAllExhibitorsFromMys()
+
+    if (exhibitors.length > 0) {
+      return exhibitors
+    }
+
+    if (isMockFallbackAllowed()) {
+      warnLog('FALLBACK_TO_MOCK_AFTER_EMPTY_MYS_LIST', {})
+      return Object.values(mockExhibitors)
+    }
+
+    return []
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown MYS error'
+
+    warnLog('MYS_ALL_FETCH_FAILED', {
+      message,
+      fallbackToMock: isMockFallbackAllowed(),
+    })
+
+    if (isMockFallbackAllowed()) {
+      return Object.values(mockExhibitors)
+    }
+
+    throw error
+  }
 }

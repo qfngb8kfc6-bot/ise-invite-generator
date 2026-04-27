@@ -73,6 +73,7 @@ export const config = {
     '/tools/:path*',
     '/api/dev-token/:path*',
     '/api/internal-launch-link/:path*',
+    '/api/admin/:path*',
     '/admin/:path*',
   ],
 }

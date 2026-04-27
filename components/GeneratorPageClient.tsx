@@ -66,11 +66,174 @@ function mapPngFormatForAnalytics(format: ExportFormatKey) {
   }
 }
 
+function getBoothList(value?: string | null): string[] {
+  if (!value) {
+    return []
+  }
+
+  return value
+    .split(/[;,]/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+}
+
+function normalizeStandNumber(value?: string | null): string {
+  return getBoothList(value).join(', ')
+}
+
+function hasMultipleBooths(value?: string | null): boolean {
+  return getBoothList(value).length > 1
+}
+
+function getStandLabel(value?: string | null): string {
+  return hasMultipleBooths(value) ? 'Booths' : 'Booth'
+}
+
+function getThemeBadgeClasses(theme: ThemeKey): string {
+  switch (theme) {
+    case 'lighting':
+      return 'border-amber-400/40 bg-amber-500/10 text-amber-200'
+    case 'residential':
+      return 'border-emerald-400/40 bg-emerald-500/10 text-emerald-200'
+    case 'audio':
+    default:
+      return 'border-blue-400/40 bg-blue-500/10 text-blue-200'
+  }
+}
+
+function BoothBadges({
+  standNumber,
+  theme,
+}: {
+  standNumber?: string | null
+  theme: ThemeKey
+}) {
+  const booths = getBoothList(standNumber)
+
+  if (booths.length === 0) {
+    return <span className="text-neutral-500">—</span>
+  }
+
+  const badgeClasses = getThemeBadgeClasses(theme)
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {booths.map((booth) => (
+        <span
+          key={booth}
+          className={`inline-flex rounded-full border px-3 py-1 text-xs font-medium ${badgeClasses}`}
+        >
+          {booth}
+        </span>
+      ))}
+    </div>
+  )
+}
+
+function ShellCard({
+  title,
+  description,
+  children,
+}: {
+  title: string
+  description?: string
+  children: React.ReactNode
+}) {
+  return (
+    <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
+      <div className="mb-5">
+        <h2 className="text-xl font-semibold tracking-tight text-white">{title}</h2>
+        {description ? (
+          <p className="mt-1 text-sm leading-6 text-neutral-400">{description}</p>
+        ) : null}
+      </div>
+      {children}
+    </section>
+  )
+}
+
+function FieldLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <label className="mb-2 block text-sm font-medium text-neutral-300">{children}</label>
+  )
+}
+
+function Input({
+  className = '',
+  ...props
+}: React.InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <input
+      {...props}
+      className={`w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/20 focus:bg-black/40 ${className}`}
+    />
+  )
+}
+
+function Select({
+  className = '',
+  ...props
+}: React.SelectHTMLAttributes<HTMLSelectElement>) {
+  return (
+    <select
+      {...props}
+      className={`w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition focus:border-white/20 focus:bg-black/40 ${className}`}
+    />
+  )
+}
+
+function ActionButton({
+  children,
+  variant = 'secondary',
+  className = '',
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: 'primary' | 'secondary' | 'ghost' | 'blue' | 'green'
+}) {
+  const styles =
+    variant === 'primary'
+      ? 'bg-white text-black hover:bg-neutral-200'
+      : variant === 'blue'
+      ? 'bg-blue-600 text-white hover:bg-blue-500'
+      : variant === 'green'
+      ? 'bg-emerald-600 text-white hover:bg-emerald-500'
+      : variant === 'ghost'
+      ? 'border border-white/10 bg-transparent text-neutral-300 hover:bg-white/5'
+      : 'border border-white/10 bg-white/5 text-white hover:bg-white/10'
+
+  return (
+    <button
+      {...props}
+      className={`inline-flex items-center justify-center rounded-2xl px-4 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ${styles} ${className}`}
+    >
+      {children}
+    </button>
+  )
+}
+
+function StatBox({
+  label,
+  children,
+}: {
+  label: string
+  children: React.ReactNode
+}) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+      <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-neutral-500">
+        {label}
+      </div>
+      <div className="mt-2">{children}</div>
+    </div>
+  )
+}
+
 export default function GeneratorPageClient({
   initialToken,
 }: GeneratorPageClientProps) {
-  const previewRef = useRef<HTMLDivElement | null>(null)
+  const exportPreviewRef = useRef<HTMLDivElement | null>(null)
   const objectUrlRef = useRef<string | null>(null)
+  const copyMessageTimeoutRef = useRef<number | null>(null)
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -86,8 +249,14 @@ export default function GeneratorPageClient({
   const [logoFileName, setLogoFileName] = useState('')
   const [isExporting, setIsExporting] = useState(false)
   const [exportError, setExportError] = useState<string | null>(null)
+  const [copyMessage, setCopyMessage] = useState<string | null>(null)
+  const [isFullPreviewOpen, setIsFullPreviewOpen] = useState(false)
 
   const ui = translations[language].ui
+  const displayStandNumber = normalizeStandNumber(standNumber)
+  const verifiedDisplayStandNumber = normalizeStandNumber(
+    verifiedExhibitor?.standNumber
+  )
 
   useEffect(() => {
     let cancelled = false
@@ -125,7 +294,7 @@ export default function GeneratorPageClient({
 
           setVerifiedExhibitor(exhibitor)
           setCompanyName(exhibitor.companyName ?? '')
-          setStandNumber(exhibitor.standNumber ?? '')
+          setStandNumber(normalizeStandNumber(exhibitor.standNumber ?? ''))
           setInvitationCode(exhibitor.invitationCode ?? '')
           setRegistrationUrl(exhibitor.registrationUrl ?? '')
           setTheme(fallbackTheme(exhibitor.theme))
@@ -161,8 +330,61 @@ export default function GeneratorPageClient({
       if (objectUrlRef.current) {
         URL.revokeObjectURL(objectUrlRef.current)
       }
+
+      if (copyMessageTimeoutRef.current) {
+        window.clearTimeout(copyMessageTimeoutRef.current)
+      }
     }
   }, [])
+
+  useEffect(() => {
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setIsFullPreviewOpen(false)
+      }
+    }
+
+    if (isFullPreviewOpen) {
+      window.addEventListener('keydown', handleEscape)
+      document.body.style.overflow = 'hidden'
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleEscape)
+      document.body.style.overflow = ''
+    }
+  }, [isFullPreviewOpen])
+
+  function showCopyMessage(message: string) {
+    setCopyMessage(message)
+
+    if (copyMessageTimeoutRef.current) {
+      window.clearTimeout(copyMessageTimeoutRef.current)
+    }
+
+    copyMessageTimeoutRef.current = window.setTimeout(() => {
+      setCopyMessage(null)
+      copyMessageTimeoutRef.current = null
+    }, 2500)
+  }
+
+  async function copyText(value: string, successMessage: string) {
+    try {
+      await navigator.clipboard.writeText(value)
+      showCopyMessage(successMessage)
+    } catch {
+      setExportError('Failed to copy to clipboard')
+    }
+  }
+
+  function openRegistrationPage() {
+    if (!registrationUrl.trim()) {
+      setExportError('Registration URL is missing')
+      return
+    }
+
+    window.open(registrationUrl, '_blank', 'noopener,noreferrer')
+  }
 
   function handleLogoUpload(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
@@ -195,7 +417,7 @@ export default function GeneratorPageClient({
     const nextLanguage = fallbackLanguage(verifiedExhibitor.language)
 
     setCompanyName(verifiedExhibitor.companyName ?? '')
-    setStandNumber(verifiedExhibitor.standNumber ?? '')
+    setStandNumber(normalizeStandNumber(verifiedExhibitor.standNumber ?? ''))
     setInvitationCode(verifiedExhibitor.invitationCode ?? '')
     setRegistrationUrl(verifiedExhibitor.registrationUrl ?? '')
     setTheme(fallbackTheme(verifiedExhibitor.theme))
@@ -204,6 +426,7 @@ export default function GeneratorPageClient({
     setLogoUrl(verifiedExhibitor.logoUrl ?? '')
     setLogoFileName('')
     setExportError(null)
+    setCopyMessage(null)
   }
 
   function getAnalyticsCompanyName() {
@@ -211,7 +434,7 @@ export default function GeneratorPageClient({
   }
 
   async function handlePngExport(format: ExportFormatKey) {
-    if (!previewRef.current) {
+    if (!exportPreviewRef.current) {
       setExportError('Preview element not found')
       return
     }
@@ -232,8 +455,8 @@ export default function GeneratorPageClient({
       setIsExporting(true)
       setExportError(null)
 
-      const baseName = makeExportBaseName(companyName, standNumber)
-      const previewElement = previewRef.current
+      const baseName = makeExportBaseName(companyName, displayStandNumber)
+      const previewElement = exportPreviewRef.current
 
       await withTrackedExport({
         exhibitorId: verifiedExhibitor.id,
@@ -251,7 +474,7 @@ export default function GeneratorPageClient({
   }
 
   async function handlePdfExport() {
-    if (!previewRef.current) {
+    if (!exportPreviewRef.current) {
       setExportError('Preview element not found')
       return
     }
@@ -265,8 +488,8 @@ export default function GeneratorPageClient({
       setIsExporting(true)
       setExportError(null)
 
-      const baseName = makeExportBaseName(companyName, standNumber)
-      const previewElement = previewRef.current
+      const baseName = makeExportBaseName(companyName, displayStandNumber)
+      const previewElement = exportPreviewRef.current
 
       await withTrackedExport({
         exhibitorId: verifiedExhibitor.id,
@@ -284,7 +507,7 @@ export default function GeneratorPageClient({
   }
 
   async function handleZipExport() {
-    if (!previewRef.current) {
+    if (!exportPreviewRef.current) {
       setExportError('Preview element not found')
       return
     }
@@ -298,8 +521,8 @@ export default function GeneratorPageClient({
       setIsExporting(true)
       setExportError(null)
 
-      const baseName = makeExportBaseName(companyName, standNumber)
-      const previewElement = previewRef.current
+      const baseName = makeExportBaseName(companyName, displayStandNumber)
+      const previewElement = exportPreviewRef.current
 
       await withTrackedExport({
         exhibitorId: verifiedExhibitor.id,
@@ -318,9 +541,9 @@ export default function GeneratorPageClient({
 
   if (loading) {
     return (
-      <main className="mx-auto max-w-7xl p-6">
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-          <p className="text-sm text-zinc-600">{ui.commonLoadingSession}</p>
+      <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#262626_0%,_#0a0a0a_38%,_#000_100%)] px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <p className="text-sm text-neutral-300">{ui.commonLoadingSession}</p>
         </div>
       </main>
     )
@@ -328,10 +551,10 @@ export default function GeneratorPageClient({
 
   if (error) {
     return (
-      <main className="mx-auto max-w-7xl p-6">
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-6 shadow-sm">
-          <h1 className="text-lg font-semibold text-red-700">{ui.commonSessionError}</h1>
-          <p className="mt-2 text-sm text-red-600">{error}</p>
+      <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#262626_0%,_#0a0a0a_38%,_#000_100%)] px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl rounded-3xl border border-red-500/20 bg-red-500/10 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <h1 className="text-lg font-semibold text-red-200">{ui.commonSessionError}</h1>
+          <p className="mt-2 text-sm text-red-300">{error}</p>
         </div>
       </main>
     )
@@ -339,223 +562,476 @@ export default function GeneratorPageClient({
 
   if (!verifiedExhibitor) {
     return (
-      <main className="mx-auto max-w-7xl p-6">
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-          <p className="text-sm text-zinc-600">{ui.commonNoExhibitorLoaded}</p>
+      <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#262626_0%,_#0a0a0a_38%,_#000_100%)] px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <p className="text-sm text-neutral-300">{ui.commonNoExhibitorLoaded}</p>
         </div>
       </main>
     )
   }
 
   return (
-    <main className="mx-auto max-w-7xl p-6">
-      <div className="mb-6 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-        <div className="mb-4 flex justify-end">
-          <LanguageSwitcher value={language} onChange={setLanguage} />
+    <>
+      <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#262626_0%,_#0a0a0a_38%,_#000_100%)] px-4 py-6 text-white sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl space-y-6">
+          <header className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
+            <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
+              <div className="min-w-0 flex-1">
+                <div className="mb-3 inline-flex rounded-full border border-blue-400/20 bg-blue-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-300">
+                  Verified exhibitor session
+                </div>
+
+                <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                  {ui.generatorTitle}
+                </h1>
+
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-neutral-400">
+                  {ui.generatorVerifiedPrefix}{' '}
+                  <strong className="text-white">{verifiedExhibitor.companyName}</strong>
+                </p>
+
+                <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                  <StatBox label={getStandLabel(displayStandNumber)}>
+                    <BoothBadges standNumber={displayStandNumber} theme={theme} />
+                  </StatBox>
+
+                  <StatBox label={ui.generatorInvitationCode}>
+                    <div className="space-y-3">
+                      <div className="break-all text-sm font-medium text-white">
+                        {invitationCode || '—'}
+                      </div>
+                      {invitationCode ? (
+                        <ActionButton
+                          type="button"
+                          onClick={() => copyText(invitationCode, 'Invitation code copied.')}
+                          variant="ghost"
+                          className="px-3 py-2 text-xs"
+                        >
+                          Copy
+                        </ActionButton>
+                      ) : null}
+                    </div>
+                  </StatBox>
+
+                  <StatBox label={ui.generatorRegistrationUrl}>
+                    <div className="space-y-3">
+                      <div className="break-all text-sm text-neutral-300">
+                        {registrationUrl || '—'}
+                      </div>
+                      {registrationUrl ? (
+                        <div className="flex flex-wrap gap-2">
+                          <ActionButton
+                            type="button"
+                            onClick={() =>
+                              copyText(registrationUrl, 'Registration URL copied.')
+                            }
+                            variant="ghost"
+                            className="px-3 py-2 text-xs"
+                          >
+                            Copy URL
+                          </ActionButton>
+                          <ActionButton
+                            type="button"
+                            onClick={openRegistrationPage}
+                            variant="ghost"
+                            className="px-3 py-2 text-xs"
+                          >
+                            Open URL
+                          </ActionButton>
+                        </div>
+                      ) : null}
+                    </div>
+                  </StatBox>
+                </div>
+              </div>
+
+              <div className="shrink-0 xl:w-[360px]">
+                <div className="mb-3 flex justify-end">
+                  <LanguageSwitcher value={language} onChange={setLanguage} />
+                </div>
+
+                <div className="rounded-3xl border border-white/10 bg-black/20 p-4">
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <ActionButton
+                      type="button"
+                      onClick={resetToVerifiedValues}
+                      variant="ghost"
+                      className="sm:col-span-2"
+                    >
+                      {ui.generatorReset}
+                    </ActionButton>
+
+                    <ActionButton
+                      type="button"
+                      onClick={() => handlePngExport('linkedin')}
+                      disabled={isExporting}
+                      variant="secondary"
+                    >
+                      {ui.generatorPngLinkedIn}
+                    </ActionButton>
+
+                    <ActionButton
+                      type="button"
+                      onClick={() => handlePngExport('square')}
+                      disabled={isExporting}
+                      variant="secondary"
+                    >
+                      {ui.generatorPngSquare}
+                    </ActionButton>
+
+                    <ActionButton
+                      type="button"
+                      onClick={() => handlePngExport('email')}
+                      disabled={isExporting}
+                      variant="secondary"
+                    >
+                      {ui.generatorPngEmail}
+                    </ActionButton>
+
+                    <ActionButton
+                      type="button"
+                      onClick={() => handlePngExport('print')}
+                      disabled={isExporting}
+                      variant="secondary"
+                    >
+                      {ui.generatorPngPrint}
+                    </ActionButton>
+
+                    <ActionButton
+                      type="button"
+                      onClick={handlePdfExport}
+                      disabled={isExporting}
+                      variant="blue"
+                    >
+                      {ui.generatorPdf}
+                    </ActionButton>
+
+                    <ActionButton
+                      type="button"
+                      onClick={handleZipExport}
+                      disabled={isExporting}
+                      variant="green"
+                    >
+                      {ui.generatorZipPack}
+                    </ActionButton>
+
+                    <ActionButton
+                      type="button"
+                      onClick={() => setIsFullPreviewOpen(true)}
+                      variant="primary"
+                      className="sm:col-span-2"
+                    >
+                      Full Preview
+                    </ActionButton>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {copyMessage ? (
+              <div className="mt-5 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
+                {copyMessage}
+              </div>
+            ) : null}
+
+            {exportError ? (
+              <div className="mt-5 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                {exportError}
+              </div>
+            ) : null}
+          </header>
+
+          <div className="grid items-start gap-6 xl:grid-cols-[440px_minmax(0,1fr)]">
+            <ShellCard
+              title={ui.generatorInputsTitle}
+              description={ui.generatorInputsDescription}
+            >
+              <div className="space-y-5">
+                <div>
+                  <FieldLabel>{ui.generatorCompanyName}</FieldLabel>
+                  <Input
+                    id="companyName"
+                    type="text"
+                    value={companyName}
+                    onChange={(event) => setCompanyName(event.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <FieldLabel>
+                    {hasMultipleBooths(standNumber) ? 'Booth Numbers' : ui.generatorStandNumber}
+                  </FieldLabel>
+                  <Input
+                    id="standNumber"
+                    type="text"
+                    value={standNumber}
+                    onChange={(event) => setStandNumber(event.target.value)}
+                  />
+                  {getBoothList(standNumber).length > 0 ? (
+                    <div className="mt-3">
+                      <BoothBadges standNumber={standNumber} theme={theme} />
+                    </div>
+                  ) : null}
+                </div>
+
+                <div>
+                  <FieldLabel>{ui.generatorInvitationCode}</FieldLabel>
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    <Input
+                      id="invitationCode"
+                      type="text"
+                      value={invitationCode}
+                      onChange={(event) => setInvitationCode(event.target.value)}
+                      className="flex-1"
+                    />
+                    <ActionButton
+                      type="button"
+                      onClick={() => copyText(invitationCode, 'Invitation code copied.')}
+                      variant="ghost"
+                    >
+                      Copy
+                    </ActionButton>
+                  </div>
+                </div>
+
+                <div>
+                  <FieldLabel>{ui.generatorRegistrationUrl}</FieldLabel>
+                  <div className="space-y-3">
+                    <Input
+                      id="registrationUrl"
+                      type="url"
+                      value={registrationUrl}
+                      onChange={(event) => setRegistrationUrl(event.target.value)}
+                    />
+                    <div className="flex flex-wrap gap-3">
+                      <ActionButton
+                        type="button"
+                        onClick={() => copyText(registrationUrl, 'Registration URL copied.')}
+                        variant="ghost"
+                      >
+                        Copy URL
+                      </ActionButton>
+                      <ActionButton
+                        type="button"
+                        onClick={openRegistrationPage}
+                        variant="ghost"
+                      >
+                        Open URL
+                      </ActionButton>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <FieldLabel>{ui.generatorLogoUpload}</FieldLabel>
+                  <input
+                    id="logoUpload"
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml"
+                    onChange={handleLogoUpload}
+                    className="block w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-neutral-300 file:mr-4 file:rounded-xl file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-white/15"
+                  />
+                  {logoFileName ? (
+                    <p className="mt-2 text-xs text-neutral-500">
+                      {ui.generatorSelectedFile}: {logoFileName}
+                    </p>
+                  ) : null}
+                </div>
+
+                <div>
+                  <FieldLabel>{ui.generatorTheme}</FieldLabel>
+                  <Select
+                    id="theme"
+                    value={theme}
+                    onChange={(event) => setTheme(event.target.value as ThemeKey)}
+                  >
+                    {Object.keys(themes).map((key) => (
+                      <option key={key} value={key} className="text-black">
+                        {themes[key as ThemeKey].label}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+
+                <div>
+                  <FieldLabel>{ui.generatorLanguage}</FieldLabel>
+                  <LanguageSwitcher value={language} onChange={setLanguage} />
+                </div>
+              </div>
+
+              <div className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5">
+                <h3 className="text-sm font-semibold text-white">
+                  {ui.generatorVerifiedSourceData}
+                </h3>
+
+                <div className="mt-4 space-y-4 text-sm text-neutral-300">
+                  <StatBox label="ID">
+                    <div className="font-mono text-sm text-white">
+                      {verifiedExhibitor.id}
+                    </div>
+                  </StatBox>
+
+                  <StatBox label={ui.generatorCompanyName}>
+                    <div className="break-words text-sm font-medium text-white">
+                      {verifiedExhibitor.companyName}
+                    </div>
+                  </StatBox>
+
+                  <StatBox label={getStandLabel(verifiedDisplayStandNumber)}>
+                    <BoothBadges standNumber={verifiedDisplayStandNumber} theme={theme} />
+                  </StatBox>
+
+                  <StatBox label={ui.generatorInvitationCode}>
+                    <div className="space-y-3">
+                      <div className="break-all text-sm font-medium text-white">
+                        {verifiedExhibitor.invitationCode}
+                      </div>
+                      <ActionButton
+                        type="button"
+                        onClick={() =>
+                          copyText(
+                            verifiedExhibitor.invitationCode,
+                            'Verified invitation code copied.'
+                          )
+                        }
+                        variant="ghost"
+                        className="px-3 py-2 text-xs"
+                      >
+                        Copy
+                      </ActionButton>
+                    </div>
+                  </StatBox>
+
+                  <StatBox label={ui.generatorRegistrationUrl}>
+                    <div className="space-y-3">
+                      <div className="break-all text-sm text-neutral-300">
+                        {verifiedExhibitor.registrationUrl}
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <ActionButton
+                          type="button"
+                          onClick={() =>
+                            copyText(
+                              verifiedExhibitor.registrationUrl,
+                              'Verified registration URL copied.'
+                            )
+                          }
+                          variant="ghost"
+                          className="px-3 py-2 text-xs"
+                        >
+                          Copy URL
+                        </ActionButton>
+                        <ActionButton
+                          type="button"
+                          onClick={() =>
+                            window.open(
+                              verifiedExhibitor.registrationUrl,
+                              '_blank',
+                              'noopener,noreferrer'
+                            )
+                          }
+                          variant="ghost"
+                          className="px-3 py-2 text-xs"
+                        >
+                          Open URL
+                        </ActionButton>
+                      </div>
+                    </div>
+                  </StatBox>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <StatBox label={ui.generatorTheme}>
+                      <div className="text-sm font-medium text-white">
+                        {verifiedExhibitor.theme}
+                      </div>
+                    </StatBox>
+
+                    <StatBox label={ui.generatorLanguage}>
+                      <div className="text-sm font-medium text-white">
+                        {verifiedExhibitor.language}
+                      </div>
+                    </StatBox>
+                  </div>
+                </div>
+              </div>
+            </ShellCard>
+
+            <ShellCard
+              title={ui.generatorPreviewTitle}
+              description={ui.generatorPreviewDescription}
+            >
+              <div className="sticky top-6">
+                <div className="rounded-3xl border border-white/10 bg-black/20 p-4">
+                  <div className="overflow-auto rounded-2xl border border-white/10 bg-neutral-950 p-4">
+                    <div className="w-full overflow-x-auto">
+                      <div className="min-w-[760px] origin-top-left scale-[0.62] sm:scale-[0.68] lg:scale-[0.72]">
+                        <InvitePreview
+                          companyName={companyName}
+                          standNumber={displayStandNumber}
+                          invitationCode={invitationCode}
+                          logoUrl={logoUrl}
+                          registrationUrl={registrationUrl}
+                          theme={theme}
+                          language={language}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    <ActionButton
+                      type="button"
+                      onClick={() => setIsFullPreviewOpen(true)}
+                      variant="primary"
+                    >
+                      Open Full Preview
+                    </ActionButton>
+                  </div>
+                </div>
+              </div>
+            </ShellCard>
+          </div>
         </div>
+      </main>
 
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold text-zinc-900">{ui.generatorTitle}</h1>
-            <p className="mt-1 text-sm text-zinc-600">
-              {ui.generatorVerifiedPrefix} <strong>{verifiedExhibitor.companyName}</strong> ·{' '}
-              {ui.generatorStand} <strong>{verifiedExhibitor.standNumber}</strong>
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={resetToVerifiedValues}
-              className="inline-flex items-center justify-center rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50"
-            >
-              {ui.generatorReset}
-            </button>
-            <button
-              type="button"
-              onClick={() => handlePngExport('linkedin')}
-              disabled={isExporting}
-              className="inline-flex items-center justify-center rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {ui.generatorPngLinkedIn}
-            </button>
-            <button
-              type="button"
-              onClick={() => handlePngExport('square')}
-              disabled={isExporting}
-              className="inline-flex items-center justify-center rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {ui.generatorPngSquare}
-            </button>
-            <button
-              type="button"
-              onClick={() => handlePngExport('email')}
-              disabled={isExporting}
-              className="inline-flex items-center justify-center rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {ui.generatorPngEmail}
-            </button>
-            <button
-              type="button"
-              onClick={() => handlePngExport('print')}
-              disabled={isExporting}
-              className="inline-flex items-center justify-center rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {ui.generatorPngPrint}
-            </button>
-            <button
-              type="button"
-              onClick={handlePdfExport}
-              disabled={isExporting}
-              className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {ui.generatorPdf}
-            </button>
-            <button
-              type="button"
-              onClick={handleZipExport}
-              disabled={isExporting}
-              className="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {ui.generatorZipPack}
-            </button>
-          </div>
+      <div className="pointer-events-none absolute -left-[99999px] top-0">
+        <div ref={exportPreviewRef}>
+          <InvitePreview
+            companyName={companyName}
+            standNumber={displayStandNumber}
+            invitationCode={invitationCode}
+            logoUrl={logoUrl}
+            registrationUrl={registrationUrl}
+            theme={theme}
+            language={language}
+          />
         </div>
-
-        {exportError ? (
-          <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-            {exportError}
-          </div>
-        ) : null}
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[420px_minmax(0,1fr)]">
-        <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <h2 className="text-lg font-semibold text-zinc-900">{ui.generatorInputsTitle}</h2>
-          <p className="mt-1 text-sm text-zinc-500">{ui.generatorInputsDescription}</p>
-
-          <div className="mt-6 space-y-5">
-            <div>
-              <label htmlFor="companyName" className="mb-2 block text-sm font-medium text-zinc-700">
-                {ui.generatorCompanyName}
-              </label>
-              <input
-                id="companyName"
-                type="text"
-                value={companyName}
-                onChange={(event) => setCompanyName(event.target.value)}
-                className="w-full rounded-xl border border-zinc-300 px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-zinc-400"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="standNumber" className="mb-2 block text-sm font-medium text-zinc-700">
-                {ui.generatorStandNumber}
-              </label>
-              <input
-                id="standNumber"
-                type="text"
-                value={standNumber}
-                onChange={(event) => setStandNumber(event.target.value)}
-                className="w-full rounded-xl border border-zinc-300 px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-zinc-400"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="invitationCode" className="mb-2 block text-sm font-medium text-zinc-700">
-                {ui.generatorInvitationCode}
-              </label>
-              <input
-                id="invitationCode"
-                type="text"
-                value={invitationCode}
-                onChange={(event) => setInvitationCode(event.target.value)}
-                className="w-full rounded-xl border border-zinc-300 px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-zinc-400"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="registrationUrl" className="mb-2 block text-sm font-medium text-zinc-700">
-                {ui.generatorRegistrationUrl}
-              </label>
-              <input
-                id="registrationUrl"
-                type="url"
-                value={registrationUrl}
-                onChange={(event) => setRegistrationUrl(event.target.value)}
-                className="w-full rounded-xl border border-zinc-300 px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-zinc-400"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="logoUpload" className="mb-2 block text-sm font-medium text-zinc-700">
-                {ui.generatorLogoUpload}
-              </label>
-              <input
-                id="logoUpload"
-                type="file"
-                accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml"
-                onChange={handleLogoUpload}
-                className="block w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-700 file:mr-4 file:rounded-lg file:border-0 file:bg-zinc-100 file:px-3 file:py-2 file:text-sm file:font-medium file:text-zinc-700 hover:file:bg-zinc-200"
-              />
-              {logoFileName ? (
-                <p className="mt-2 text-xs text-zinc-500">
-                  {ui.generatorSelectedFile}: {logoFileName}
+      {isFullPreviewOpen ? (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-4 py-6 backdrop-blur-sm">
+          <div className="relative max-h-[95vh] w-full max-w-[1320px] rounded-3xl border border-white/10 bg-[#0b0b0b] p-4 shadow-2xl">
+            <div className="mb-4 flex items-center justify-between gap-4">
+              <div>
+                <h3 className="text-lg font-semibold text-white">Full Invitation Preview</h3>
+                <p className="text-sm text-neutral-400">
+                  Full-size view of the current invitation.
                 </p>
-              ) : null}
-            </div>
+              </div>
 
-            <div>
-              <label htmlFor="theme" className="mb-2 block text-sm font-medium text-zinc-700">
-                {ui.generatorTheme}
-              </label>
-              <select
-                id="theme"
-                value={theme}
-                onChange={(event) => setTheme(event.target.value as ThemeKey)}
-                className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-zinc-400"
+              <ActionButton
+                type="button"
+                onClick={() => setIsFullPreviewOpen(false)}
+                variant="ghost"
               >
-                {Object.keys(themes).map((key) => (
-                  <option key={key} value={key}>
-                    {themes[key as ThemeKey].label}
-                  </option>
-                ))}
-              </select>
+                Close
+              </ActionButton>
             </div>
 
-            <div>
-              <label htmlFor="language" className="mb-2 block text-sm font-medium text-zinc-700">
-                {ui.generatorLanguage}
-              </label>
-              <LanguageSwitcher value={language} onChange={setLanguage} />
-            </div>
-          </div>
-
-          <div className="mt-6 rounded-2xl bg-zinc-50 p-4">
-            <h3 className="text-sm font-semibold text-zinc-900">{ui.generatorVerifiedSourceData}</h3>
-            <div className="mt-3 space-y-2 text-xs text-zinc-600">
-              <p><strong>ID:</strong> {verifiedExhibitor.id}</p>
-              <p><strong>{ui.generatorCompanyName}:</strong> {verifiedExhibitor.companyName}</p>
-              <p><strong>{ui.generatorStandNumber}:</strong> {verifiedExhibitor.standNumber}</p>
-              <p><strong>{ui.generatorInvitationCode}:</strong> {verifiedExhibitor.invitationCode}</p>
-              <p className="break-all"><strong>{ui.generatorRegistrationUrl}:</strong> {verifiedExhibitor.registrationUrl}</p>
-              <p><strong>{ui.generatorTheme}:</strong> {verifiedExhibitor.theme}</p>
-              <p><strong>{ui.generatorLanguage}:</strong> {verifiedExhibitor.language}</p>
-            </div>
-          </div>
-        </section>
-
-        <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <div className="mb-4">
-            <h2 className="text-lg font-semibold text-zinc-900">{ui.generatorPreviewTitle}</h2>
-            <p className="mt-1 text-sm text-zinc-500">{ui.generatorPreviewDescription}</p>
-          </div>
-
-          <div className="overflow-auto rounded-2xl border border-zinc-200 bg-zinc-100 p-4">
-            <div ref={previewRef} className="inline-block">
+            <div className="max-h-[calc(95vh-96px)] overflow-auto rounded-2xl border border-white/10 bg-black p-4">
               <InvitePreview
                 companyName={companyName}
-                standNumber={standNumber}
+                standNumber={displayStandNumber}
                 invitationCode={invitationCode}
                 logoUrl={logoUrl}
                 registrationUrl={registrationUrl}
@@ -564,8 +1040,8 @@ export default function GeneratorPageClient({
               />
             </div>
           </div>
-        </section>
-      </div>
-    </main>
+        </div>
+      ) : null}
+    </>
   )
 }

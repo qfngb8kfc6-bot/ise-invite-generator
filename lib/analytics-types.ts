@@ -1,10 +1,11 @@
 export type AnalyticsEventType =
-  | "link_generated"
-  | "generator_opened"
-  | "session_verified"
-  | "export_clicked"
-  | "export_succeeded"
-  | "export_failed";
+  | 'link_generated'
+  | 'generator_opened'
+  | 'session_verified'
+  | 'export_clicked'
+  | 'export_succeeded'
+  | 'export_failed'
+  | 'mys_sso_login'
 
 export type AnalyticsEnvironment = "development" | "preview" | "production" | "test";
 

@@ -13,6 +13,7 @@ export type Env = {
   ANALYTICS_DATABASE_URL: string
 
   EXHIBITOR_DATA_SOURCE: 'mys' | 'mock'
+  ALLOW_MOCK_FALLBACK: boolean
 
   MYS_API_BASE_URL: string
   MYS_API_USERNAME: string
@@ -42,6 +43,24 @@ function getOptionalEnv(name: keyof NodeJS.ProcessEnv): string {
   return process.env[name]?.trim() || ''
 }
 
+function getBooleanEnv(name: keyof NodeJS.ProcessEnv, defaultValue: boolean): boolean {
+  const raw = process.env[name]?.trim().toLowerCase()
+
+  if (!raw) {
+    return defaultValue
+  }
+
+  if (raw === 'true' || raw === '1' || raw === 'yes' || raw === 'on') {
+    return true
+  }
+
+  if (raw === 'false' || raw === '0' || raw === 'no' || raw === 'off') {
+    return false
+  }
+
+  throw new Error(`${String(name)} must be a boolean-like value (true/false)`)
+}
+
 const exhibitorDataSource = (process.env.EXHIBITOR_DATA_SOURCE?.trim() ||
   'mock') as 'mys' | 'mock'
 
@@ -62,6 +81,7 @@ export const env: Env = {
   ANALYTICS_DATABASE_URL: getRequiredEnv('ANALYTICS_DATABASE_URL'),
 
   EXHIBITOR_DATA_SOURCE: exhibitorDataSource,
+  ALLOW_MOCK_FALLBACK: getBooleanEnv('ALLOW_MOCK_FALLBACK', false),
 
   MYS_API_BASE_URL: getOptionalEnv('MYS_API_BASE_URL'),
   MYS_API_USERNAME: getOptionalEnv('MYS_API_USERNAME'),

@@ -30,6 +30,7 @@ export type InviteTranslationSet = {
   subheadline: string
   freeAccess: string
   visitUs: string
+  visitUsPlural?: string
   codeLabel: string
 }
 
