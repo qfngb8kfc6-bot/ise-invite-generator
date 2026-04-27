@@ -58,7 +58,7 @@ function createSqlTag(): SqlTag {
 const sqlTag = createSqlTag()
 
 export function isAnalyticsDbEnabled(): boolean {
-  return Boolean(getConnectionString().trim())
+  return false
 }
 
 export function getAnalyticsDb(): SqlTag | null {
