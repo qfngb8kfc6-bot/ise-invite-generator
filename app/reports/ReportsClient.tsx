@@ -127,6 +127,16 @@ const RANGE_OPTIONS = [
 
 const PAGE_SIZE_OPTIONS = [25, 50, 100, 250] as const
 
+const CHART_COLORS = {
+  blue: '#60a5fa',
+  violet: '#a78bfa',
+  green: '#34d399',
+  amber: '#f59e0b',
+  red: '#f87171',
+  grid: '#3f3f46',
+  axis: '#a1a1aa',
+}
+
 function pad(value: number): string {
   return String(value).padStart(2, '0')
 }
@@ -206,26 +216,17 @@ function buildReportsHref(args: {
   const startDate = args.startDate?.trim()
   const endDate = args.endDate?.trim()
 
-  if (startDate) {
-    params.set('startDate', startDate)
-  }
-
-  if (endDate) {
-    params.set('endDate', endDate)
-  }
+  if (startDate) params.set('startDate', startDate)
+  if (endDate) params.set('endDate', endDate)
 
   if (!startDate && !endDate && args.range && args.range !== 'all') {
     params.set('range', args.range)
   }
 
-  if (args.exhibitorId) {
-    params.set('exhibitorId', args.exhibitorId)
-  }
+  if (args.exhibitorId) params.set('exhibitorId', args.exhibitorId)
 
   const searchQuery = args.q?.trim()
-  if (searchQuery) {
-    params.set('q', searchQuery)
-  }
+  if (searchQuery) params.set('q', searchQuery)
 
   const query = params.toString()
   return query ? `/reports?${query}` : '/reports'
@@ -244,13 +245,8 @@ function buildExhibitorDetailHref(
   const startDate = args?.startDate?.trim()
   const endDate = args?.endDate?.trim()
 
-  if (startDate) {
-    params.set('startDate', startDate)
-  }
-
-  if (endDate) {
-    params.set('endDate', endDate)
-  }
+  if (startDate) params.set('startDate', startDate)
+  if (endDate) params.set('endDate', endDate)
 
   if (!startDate && !endDate && args?.range && args.range !== 'all') {
     params.set('range', args.range)
@@ -274,26 +270,17 @@ function getCsvHref(
   const normalizedStartDate = startDate?.trim()
   const normalizedEndDate = endDate?.trim()
 
-  if (normalizedStartDate) {
-    params.set('startDate', normalizedStartDate)
-  }
-
-  if (normalizedEndDate) {
-    params.set('endDate', normalizedEndDate)
-  }
+  if (normalizedStartDate) params.set('startDate', normalizedStartDate)
+  if (normalizedEndDate) params.set('endDate', normalizedEndDate)
 
   if (!normalizedStartDate && !normalizedEndDate && range && range !== 'all') {
     params.set('range', range)
   }
 
-  if (exhibitorId) {
-    params.set('exhibitorId', exhibitorId)
-  }
+  if (exhibitorId) params.set('exhibitorId', exhibitorId)
 
   const searchQuery = q?.trim()
-  if (searchQuery) {
-    params.set('q', searchQuery)
-  }
+  if (searchQuery) params.set('q', searchQuery)
 
   const query = params.toString()
   return query ? `/api/reports/csv?${query}` : '/api/reports/csv'
@@ -311,26 +298,17 @@ function getXlsxHref(
   const normalizedStartDate = startDate?.trim()
   const normalizedEndDate = endDate?.trim()
 
-  if (normalizedStartDate) {
-    params.set('startDate', normalizedStartDate)
-  }
-
-  if (normalizedEndDate) {
-    params.set('endDate', normalizedEndDate)
-  }
+  if (normalizedStartDate) params.set('startDate', normalizedStartDate)
+  if (normalizedEndDate) params.set('endDate', normalizedEndDate)
 
   if (!normalizedStartDate && !normalizedEndDate && range && range !== 'all') {
     params.set('range', range)
   }
 
-  if (exhibitorId) {
-    params.set('exhibitorId', exhibitorId)
-  }
+  if (exhibitorId) params.set('exhibitorId', exhibitorId)
 
   const searchQuery = q?.trim()
-  if (searchQuery) {
-    params.set('q', searchQuery)
-  }
+  if (searchQuery) params.set('q', searchQuery)
 
   const query = params.toString()
   return query ? `/api/reports/xlsx?${query}` : '/api/reports/xlsx'
@@ -392,14 +370,10 @@ function buildLeaderboard(rows: ExhibitorSummary[]) {
       ),
     }))
     .sort((a, b) => {
-      if (b.conversion !== a.conversion) {
-        return b.conversion - a.conversion
-      }
-
+      if (b.conversion !== a.conversion) return b.conversion - a.conversion
       if (b.exportSucceededCount !== a.exportSucceededCount) {
         return b.exportSucceededCount - a.exportSucceededCount
       }
-
       return a.companyName.localeCompare(b.companyName)
     })
 }
@@ -494,12 +468,12 @@ function Card({
   id?: string
 }) {
   return (
-    <div
+    <section
       id={id}
-      className={`rounded-3xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur ${className}`}
+      className={`rounded-3xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.055),rgba(255,255,255,0.025))] shadow-[0_20px_80px_rgba(0,0,0,0.42)] backdrop-blur ${className}`}
     >
       {children}
-    </div>
+    </section>
   )
 }
 
@@ -519,21 +493,25 @@ function ChartCard({
   children: ReactNode
 }) {
   return (
-    <Card className="min-w-0 p-6">
-      <h2 className="text-xl font-semibold text-white">{title}</h2>
-      <p className="mt-1 text-sm text-neutral-400">{description}</p>
+    <Card className="min-w-0 p-6 sm:p-7">
+      <div className="space-y-1">
+        <h2 className="text-xl font-semibold text-white">{title}</h2>
+        <p className="text-sm leading-6 text-neutral-400">{description}</p>
+      </div>
 
-      <div className="mt-5 h-[280px] min-w-0">
+      <div className="mt-8 h-[360px] min-w-0">
         {!hasData ? (
-          <div className="flex h-full items-center justify-center text-sm text-neutral-500">
+          <div className="flex h-full items-center justify-center rounded-2xl border border-white/10 bg-black/20 text-sm text-neutral-500">
             {emptyMessage}
           </div>
         ) : !chartsReady ? (
-          <div className="flex h-full items-center justify-center text-sm text-neutral-500">
+          <div className="flex h-full items-center justify-center rounded-2xl border border-white/10 bg-black/20 text-sm text-neutral-500">
             Loading chart…
           </div>
         ) : (
-          <div className="h-full min-w-0">{children}</div>
+          <div className="h-full min-w-0 rounded-2xl border border-white/5 bg-black/10 p-2">
+            {children}
+          </div>
         )}
       </div>
     </Card>
@@ -553,22 +531,22 @@ function KpiCard({
 }) {
   const toneClasses =
     tone === 'green'
-      ? 'border-emerald-500/20 bg-emerald-500/8'
+      ? 'border-emerald-500/25 bg-emerald-500/[0.08]'
       : tone === 'blue'
-      ? 'border-blue-500/20 bg-blue-500/8'
+      ? 'border-blue-500/25 bg-blue-500/[0.08]'
       : tone === 'amber'
-      ? 'border-amber-500/20 bg-amber-500/8'
+      ? 'border-amber-500/25 bg-amber-500/[0.08]'
       : tone === 'red'
-      ? 'border-red-500/20 bg-red-500/8'
-      : 'border-white/10 bg-white/[0.03]'
+      ? 'border-red-500/25 bg-red-500/[0.08]'
+      : 'border-white/10 bg-white/[0.035]'
 
   return (
-    <div className={`rounded-3xl border px-5 py-4 ${toneClasses}`}>
+    <div className={`rounded-3xl border px-5 py-5 ${toneClasses}`}>
       <div className="text-sm font-medium text-neutral-300">{label}</div>
-      <div className="mt-3 text-4xl font-semibold leading-none text-white">
+      <div className="mt-4 text-4xl font-semibold leading-none text-white">
         {value}
       </div>
-      <div className="mt-2 text-xs text-neutral-500">{sublabel}</div>
+      <div className="mt-3 text-xs leading-5 text-neutral-500">{sublabel}</div>
     </div>
   )
 }
@@ -588,25 +566,27 @@ function CompactFocusCard({
 }) {
   const toneClasses =
     tone === 'red'
-      ? 'border-red-500/20 bg-red-500/8 hover:bg-red-500/12'
+      ? 'border-red-500/25 bg-red-500/[0.08] hover:bg-red-500/[0.12]'
       : tone === 'green'
-      ? 'border-emerald-500/20 bg-emerald-500/8 hover:bg-emerald-500/12'
+      ? 'border-emerald-500/25 bg-emerald-500/[0.08] hover:bg-emerald-500/[0.12]'
       : tone === 'amber'
-      ? 'border-amber-500/20 bg-amber-500/8 hover:bg-amber-500/12'
-      : 'border-blue-500/20 bg-blue-500/8 hover:bg-blue-500/12'
+      ? 'border-amber-500/25 bg-amber-500/[0.08] hover:bg-amber-500/[0.12]'
+      : 'border-blue-500/25 bg-blue-500/[0.08] hover:bg-blue-500/[0.12]'
 
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-3xl border px-5 py-4 text-left transition ${toneClasses}`}
+      className={`rounded-3xl border px-5 py-5 text-left transition ${toneClasses}`}
     >
       <div className="flex items-start justify-between gap-4">
-        <div>
+        <div className="min-w-0">
           <div className="text-sm font-medium text-neutral-200">{title}</div>
-          <p className="mt-2 text-sm text-neutral-400">{subtitle}</p>
+          <p className="mt-2 line-clamp-2 text-sm leading-6 text-neutral-400">
+            {subtitle}
+          </p>
         </div>
-        <div className="text-3xl font-semibold leading-none text-white">
+        <div className="shrink-0 text-3xl font-semibold leading-none text-white">
           {value}
         </div>
       </div>
@@ -658,6 +638,30 @@ function FocusChip({
     >
       {children}
     </button>
+  )
+}
+
+function ExportButton({
+  href,
+  children,
+  tone,
+}: {
+  href: string
+  children: ReactNode
+  tone: 'green' | 'blue'
+}) {
+  const className =
+    tone === 'green'
+      ? 'border-emerald-500 bg-emerald-600 text-white hover:bg-emerald-500'
+      : 'border-blue-500 bg-blue-600 text-white hover:bg-blue-500'
+
+  return (
+    <a
+      href={href}
+      className={`rounded-2xl border px-4 py-2 text-sm font-medium transition ${className}`}
+    >
+      {children}
+    </a>
   )
 }
 
@@ -724,6 +728,19 @@ export default function ReportsClient({
     }))
   }, [summary.funnel.steps])
 
+  const filteredAvailableExhibitors = useMemo(() => {
+    const q = search.trim().toLowerCase()
+
+    if (!q) return summary.availableExhibitors
+
+    return summary.availableExhibitors.filter((item) => {
+      return (
+        item.companyName.toLowerCase().includes(q) ||
+        item.exhibitorId.toLowerCase().includes(q)
+      )
+    })
+  }, [search, summary.availableExhibitors])
+
   const exhibitorOptions = useMemo(() => {
     return summary.availableExhibitors.map((item) => ({
       ...item,
@@ -746,25 +763,10 @@ export default function ReportsClient({
   const topPerformer = leaderboard[0] ?? null
   const zeroConversionCount = conversionBuckets.zero
 
-  const searchedExhibitorRows = useMemo(() => {
-    const q = search.trim().toLowerCase()
-
-    if (!q) {
-      return summary.exhibitorSummaries
-    }
-
-    return summary.exhibitorSummaries.filter((item) => {
-      return (
-        item.companyName.toLowerCase().includes(q) ||
-        item.exhibitorId.toLowerCase().includes(q)
-      )
-    })
-  }, [search, summary.exhibitorSummaries])
-
   const focusedExhibitorRows = useMemo(() => {
     switch (focusFilter) {
       case 'needsAttention':
-        return searchedExhibitorRows.filter((item) => {
+        return summary.exhibitorSummaries.filter((item) => {
           const opens = item.generatorOpenedCount
           const exports = item.exportSucceededCount
           return (
@@ -773,20 +775,22 @@ export default function ReportsClient({
           )
         })
       case 'zeroConversion':
-        return searchedExhibitorRows.filter(
+        return summary.exhibitorSummaries.filter(
           (item) => conversionRateValue(item) === 0
         )
       case 'failedExports':
-        return searchedExhibitorRows.filter((item) => item.exportFailedCount > 0)
+        return summary.exhibitorSummaries.filter(
+          (item) => item.exportFailedCount > 0
+        )
       case 'topPerformers':
-        return buildLeaderboard(searchedExhibitorRows).slice(0, 50)
+        return leaderboard.slice(0, 50)
       case 'activeOnly':
-        return searchedExhibitorRows.filter((item) => item.totalEvents > 0)
+        return summary.exhibitorSummaries.filter((item) => item.totalEvents > 0)
       case 'all':
       default:
-        return searchedExhibitorRows
+        return summary.exhibitorSummaries
     }
-  }, [focusFilter, searchedExhibitorRows])
+  }, [focusFilter, summary.exhibitorSummaries, leaderboard])
 
   const sortedExhibitorRows = useMemo(() => {
     const copy = [...focusedExhibitorRows]
@@ -828,7 +832,7 @@ export default function ReportsClient({
     if (!normalized) {
       window.location.href = buildReportsHref({
         range: currentRange,
-        q: search,
+        q: currentSearchQuery,
         startDate: summary.appliedStartDate,
         endDate: summary.appliedEndDate,
       })
@@ -843,26 +847,12 @@ export default function ReportsClient({
       )
     })
 
-    if (!matchedExhibitor) {
-      return
-    }
+    if (!matchedExhibitor) return
 
     window.location.href = buildReportsHref({
       range: currentRange,
       exhibitorId: matchedExhibitor.exhibitorId,
-      q: search,
-      startDate: summary.appliedStartDate,
-      endDate: summary.appliedEndDate,
-    })
-  }
-
-  function handleSearchSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-
-    window.location.href = buildReportsHref({
-      range: currentRange,
-      exhibitorId: currentExhibitorId,
-      q: search,
+      q: currentSearchQuery,
       startDate: summary.appliedStartDate,
       endDate: summary.appliedEndDate,
     })
@@ -897,15 +887,15 @@ export default function ReportsClient({
   }
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#262626_0%,_#0a0a0a_38%,_#000_100%)] px-4 py-6 text-white sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl space-y-6">
-        <Card className="p-6">
-          <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#262626_0%,_#090909_42%,_#000_100%)] px-4 py-6 text-white sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl space-y-10">
+        <div className="sticky top-0 z-30 -mx-4 border-b border-white/10 bg-black/70 px-4 py-4 backdrop-blur-xl sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+          <div className="mx-auto flex max-w-7xl flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
             <div>
               <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
                 Reports
               </h1>
-              <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm text-neutral-400">
+              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-sm text-neutral-400">
                 <span>
                   Range:{' '}
                   <span className="font-medium text-white">
@@ -918,7 +908,7 @@ export default function ReportsClient({
                 <span>
                   Search:{' '}
                   <span className="font-medium text-white">
-                    {summary.appliedSearchQuery || search || '—'}
+                    {summary.appliedSearchQuery || '—'}
                   </span>
                 </span>
                 <span>
@@ -954,7 +944,7 @@ export default function ReportsClient({
                     href={buildReportsHref({
                       range: option.value,
                       exhibitorId: currentExhibitorId,
-                      q: search || currentSearchQuery,
+                      q: currentSearchQuery,
                     })}
                   >
                     {option.label}
@@ -962,123 +952,151 @@ export default function ReportsClient({
                 )
               })}
 
-              <a
+              <ExportButton
+                tone="green"
                 href={getCsvHref(
                   currentRange,
                   currentExhibitorId,
-                  search || currentSearchQuery,
+                  currentSearchQuery,
                   summary.appliedStartDate,
                   summary.appliedEndDate
                 )}
-                className="rounded-2xl border border-emerald-600 bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-500"
               >
                 Download CSV
-              </a>
+              </ExportButton>
 
-              <a
+              <ExportButton
+                tone="blue"
                 href={getXlsxHref(
                   currentRange,
                   currentExhibitorId,
-                  search || currentSearchQuery,
+                  currentSearchQuery,
                   summary.appliedStartDate,
                   summary.appliedEndDate
                 )}
-                className="rounded-2xl border border-blue-600 bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-500"
               >
                 Download XLSX
-              </a>
+              </ExportButton>
             </div>
           </div>
+        </div>
 
-          <div className="mt-6 grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(320px,420px)] xl:items-end">
-            <form onSubmit={handleSearchSubmit}>
-              <label
-                htmlFor="top-report-search"
-                className="mb-2 block text-sm font-medium text-neutral-300"
-              >
-                Search exhibitors
-              </label>
-              <div className="flex flex-col gap-2 sm:flex-row">
-                <input
-                  id="top-report-search"
-                  type="text"
-                  placeholder="Search by company name or exhibitor ID"
-                  value={search}
-                  onChange={(event) => setSearch(event.target.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/20"
-                />
-                <button
-                  type="submit"
-                  className="rounded-2xl border border-white bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-neutral-200"
-                >
-                  Apply search
-                </button>
-              </div>
-              <p className="mt-2 text-xs text-neutral-500">
-                This filters the explorer instantly and can also be applied to the full report URL.
+        <Card className="p-6 sm:p-7">
+          <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
+            <div>
+              <h2 className="text-2xl font-semibold text-white">Search exhibitors</h2>
+              <p className="mt-1 text-sm leading-6 text-neutral-400">
+                Find one exhibitor quickly, filter the whole report, or jump into a detail view.
               </p>
-            </form>
+            </div>
 
-            <form onSubmit={handleApplyExhibitorFilter}>
-              <label
-                htmlFor="top-exhibitor-picker"
-                className="mb-2 block text-sm font-medium text-neutral-300"
-              >
-                Jump to one exhibitor
-              </label>
-              <div className="flex flex-col gap-2 sm:flex-row">
-                <input
-                  id="top-exhibitor-picker"
-                  list="exhibitor-picker-options"
-                  type="text"
-                  value={exhibitorPickerValue}
-                  onChange={(event) => setExhibitorPickerValue(event.target.value)}
-                  placeholder="Type company name or ID"
-                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/20"
-                />
-                <datalist id="exhibitor-picker-options">
-                  {exhibitorOptions.map((item) => (
-                    <option key={item.exhibitorId} value={item.label} />
-                  ))}
-                </datalist>
-                <button
-                  type="submit"
-                  className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-neutral-200 transition hover:bg-white/10"
-                >
-                  Apply
-                </button>
-              </div>
-            </form>
-          </div>
-
-          {(summary.appliedSearchQuery ||
-            summary.appliedExhibitorId ||
-            summary.appliedStartDate ||
-            summary.appliedEndDate ||
-            search) ? (
-            <div className="mt-5 flex flex-wrap gap-2">
+            {(summary.appliedSearchQuery ||
+              summary.appliedExhibitorId ||
+              summary.appliedStartDate ||
+              summary.appliedEndDate) ? (
               <Link
                 href="/reports"
-                className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-neutral-300 transition hover:bg-white/10"
+                className="inline-flex w-fit rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-neutral-300 transition hover:bg-white/10"
               >
                 Clear all filters
               </Link>
+            ) : null}
+          </div>
 
-              {summary.appliedExhibitorId ? (
-                <Link
-                  href={buildReportsHref({
-                    range: currentRange,
-                    q: search || currentSearchQuery,
-                    startDate: summary.appliedStartDate,
-                    endDate: summary.appliedEndDate,
-                  })}
-                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-neutral-300 transition hover:bg-white/10"
-                >
-                  Clear exhibitor
-                </Link>
-              ) : null}
+          <form
+            method="get"
+            action="/reports"
+            className="mt-6 grid gap-3 lg:grid-cols-[minmax(0,1fr)_180px_180px_auto] lg:items-end"
+          >
+            <div>
+              <label htmlFor="report-search" className="mb-2 block text-sm font-medium text-neutral-300">
+                Company name or exhibitor ID
+              </label>
+              <input
+                id="report-search"
+                name="q"
+                type="text"
+                placeholder="Search across reports"
+                defaultValue={currentSearchQuery}
+                className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/25"
+              />
             </div>
-          ) : null}
+
+            <div>
+              <label htmlFor="startDate" className="mb-2 block text-sm font-medium text-neutral-300">
+                Start date
+              </label>
+              <input
+                id="startDate"
+                name="startDate"
+                type="date"
+                defaultValue={summary.appliedStartDate ?? ''}
+                className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition focus:border-white/25"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="endDate" className="mb-2 block text-sm font-medium text-neutral-300">
+                End date
+              </label>
+              <input
+                id="endDate"
+                name="endDate"
+                type="date"
+                defaultValue={summary.appliedEndDate ?? ''}
+                className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition focus:border-white/25"
+              />
+            </div>
+
+            <div>
+              <input type="hidden" name="range" value={currentRange} />
+              {currentExhibitorId ? (
+                <input type="hidden" name="exhibitorId" value={currentExhibitorId} />
+              ) : null}
+              <button
+                type="submit"
+                className="w-full rounded-2xl border border-white bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-neutral-200 lg:w-auto"
+              >
+                Apply filters
+              </button>
+            </div>
+          </form>
+
+          <form
+            onSubmit={handleApplyExhibitorFilter}
+            className="mt-4 grid gap-3 rounded-3xl border border-white/10 bg-white/[0.03] p-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end"
+          >
+            <div>
+              <label htmlFor="exhibitor-picker" className="mb-2 block text-sm font-medium text-neutral-300">
+                Select one exhibitor
+              </label>
+              <input
+                id="exhibitor-picker"
+                list="exhibitor-picker-options"
+                type="text"
+                value={exhibitorPickerValue}
+                onChange={(event) => setExhibitorPickerValue(event.target.value)}
+                placeholder="Start typing company name or exhibitor ID"
+                className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/25"
+              />
+              <datalist id="exhibitor-picker-options">
+                {exhibitorOptions.map((item) => (
+                  <option key={item.exhibitorId} value={item.label} />
+                ))}
+              </datalist>
+            </div>
+
+            <button
+              type="submit"
+              className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-neutral-200 transition hover:bg-white/10"
+            >
+              Apply exhibitor
+            </button>
+          </form>
+
+          <div className="mt-4 text-sm text-neutral-500">
+            Matching available exhibitors: {filteredAvailableExhibitors.length}
+          </div>
         </Card>
 
         <div>
@@ -1121,7 +1139,7 @@ export default function ReportsClient({
           </section>
         </div>
 
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-2">
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <CompactFocusCard
             title="Needs attention"
             value={String(needsAttention.length)}
@@ -1164,7 +1182,7 @@ export default function ReportsClient({
           />
         </section>
 
-        <section className="grid gap-6 xl:grid-cols-2">
+        <section className="grid gap-10 xl:grid-cols-2">
           <ChartCard
             title="Top exhibitors by activity"
             description="Summary-only chart. Limited to the top exhibitors to keep the view readable."
@@ -1178,18 +1196,18 @@ export default function ReportsClient({
                   width={width}
                   height={height}
                   data={topExhibitorsChartData}
-                  margin={{ top: 8, right: 8, left: 0, bottom: 24 }}
+                  margin={{ top: 12, right: 12, left: 0, bottom: 72 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
+                  <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
                   <XAxis
                     dataKey="name"
-                    angle={-22}
+                    angle={-24}
                     textAnchor="end"
-                    height={70}
+                    height={84}
                     interval={0}
-                    stroke="#a1a1aa"
+                    stroke={CHART_COLORS.axis}
                   />
-                  <YAxis stroke="#a1a1aa" />
+                  <YAxis stroke={CHART_COLORS.axis} />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: '#111827',
@@ -1198,10 +1216,10 @@ export default function ReportsClient({
                       color: '#fff',
                     }}
                   />
-                  <Legend wrapperStyle={{ paddingTop: 12 }} />
-                  <Bar dataKey="totalEvents" name="Total events" fill="#60a5fa" isAnimationActive={false} />
-                  <Bar dataKey="opens" name="Generator opens" fill="#a78bfa" isAnimationActive={false} />
-                  <Bar dataKey="exports" name="Exports succeeded" fill="#34d399" isAnimationActive={false} />
+                  <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: 20 }} />
+                  <Bar dataKey="exports" name="Exports succeeded" fill={CHART_COLORS.green} isAnimationActive={false} />
+                  <Bar dataKey="opens" name="Generator opens" fill={CHART_COLORS.violet} isAnimationActive={false} />
+                  <Bar dataKey="totalEvents" name="Total events" fill={CHART_COLORS.blue} isAnimationActive={false} />
                 </BarChart>
               )}
             </MeasuredChart>
@@ -1220,18 +1238,18 @@ export default function ReportsClient({
                   width={width}
                   height={height}
                   data={formatUsageChartData}
-                  margin={{ top: 8, right: 8, left: 0, bottom: 24 }}
+                  margin={{ top: 12, right: 12, left: 0, bottom: 72 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
+                  <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
                   <XAxis
                     dataKey="format"
-                    angle={-20}
+                    angle={-22}
                     textAnchor="end"
-                    height={60}
+                    height={84}
                     interval={0}
-                    stroke="#a1a1aa"
+                    stroke={CHART_COLORS.axis}
                   />
-                  <YAxis stroke="#a1a1aa" />
+                  <YAxis stroke={CHART_COLORS.axis} />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: '#111827',
@@ -1240,15 +1258,15 @@ export default function ReportsClient({
                       color: '#fff',
                     }}
                   />
-                  <Legend wrapperStyle={{ paddingTop: 12 }} />
-                  <Bar dataKey="count" name="Count" fill="#f59e0b" isAnimationActive={false} />
+                  <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: 20 }} />
+                  <Bar dataKey="count" name="Count" fill={CHART_COLORS.amber} isAnimationActive={false} />
                 </BarChart>
               )}
             </MeasuredChart>
           </ChartCard>
         </section>
 
-        <section className="grid gap-6 xl:grid-cols-2">
+        <section className="grid gap-10 xl:grid-cols-2">
           <ChartCard
             title="Generator opens over time"
             description="Daily generator opens and successful exports."
@@ -1262,11 +1280,11 @@ export default function ReportsClient({
                   width={width}
                   height={height}
                   data={dailyChartData}
-                  margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
+                  margin={{ top: 12, right: 16, left: 0, bottom: 44 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
-                  <XAxis dataKey="label" stroke="#a1a1aa" />
-                  <YAxis stroke="#a1a1aa" />
+                  <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
+                  <XAxis dataKey="label" stroke={CHART_COLORS.axis} />
+                  <YAxis stroke={CHART_COLORS.axis} />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: '#111827',
@@ -1275,21 +1293,21 @@ export default function ReportsClient({
                       color: '#fff',
                     }}
                   />
-                  <Legend wrapperStyle={{ paddingTop: 12 }} />
+                  <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: 20 }} />
                   <Line
                     type="monotone"
-                    dataKey="generatorOpened"
-                    name="Generator opens"
-                    stroke="#60a5fa"
+                    dataKey="exportsSucceeded"
+                    name="Exports succeeded"
+                    stroke={CHART_COLORS.green}
                     strokeWidth={2}
                     dot={false}
                     isAnimationActive={false}
                   />
                   <Line
                     type="monotone"
-                    dataKey="exportsSucceeded"
-                    name="Exports succeeded"
-                    stroke="#34d399"
+                    dataKey="generatorOpened"
+                    name="Generator opens"
+                    stroke={CHART_COLORS.blue}
                     strokeWidth={2}
                     dot={false}
                     isAnimationActive={false}
@@ -1312,11 +1330,11 @@ export default function ReportsClient({
                   width={width}
                   height={height}
                   data={dailyChartData}
-                  margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
+                  margin={{ top: 12, right: 16, left: 0, bottom: 44 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
-                  <XAxis dataKey="label" stroke="#a1a1aa" />
-                  <YAxis stroke="#a1a1aa" />
+                  <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
+                  <XAxis dataKey="label" stroke={CHART_COLORS.axis} />
+                  <YAxis stroke={CHART_COLORS.axis} />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: '#111827',
@@ -1325,12 +1343,12 @@ export default function ReportsClient({
                       color: '#fff',
                     }}
                   />
-                  <Legend wrapperStyle={{ paddingTop: 12 }} />
+                  <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: 20 }} />
                   <Line
                     type="monotone"
                     dataKey="exportsFailed"
                     name="Exports failed"
-                    stroke="#f87171"
+                    stroke={CHART_COLORS.red}
                     strokeWidth={2}
                     dot={false}
                     isAnimationActive={false}
@@ -1341,7 +1359,7 @@ export default function ReportsClient({
           </ChartCard>
         </section>
 
-        <Card className="p-6">
+        <Card className="p-6 sm:p-7">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <div className="flex items-center gap-2">
@@ -1350,7 +1368,7 @@ export default function ReportsClient({
                   {needsAttention.length}
                 </span>
               </div>
-              <p className="mt-1 text-sm text-neutral-400">
+              <p className="mt-1 text-sm leading-6 text-neutral-400">
                 Exhibitors with engagement but no successful exports.
               </p>
             </div>
@@ -1365,7 +1383,7 @@ export default function ReportsClient({
           </div>
 
           {needsAttention.length > 0 ? (
-            <div className="mt-5 overflow-hidden rounded-3xl border border-red-500/20">
+            <div className="mt-6 overflow-hidden rounded-3xl border border-red-500/20">
               <div className="overflow-x-auto">
                 <table className="min-w-full border-collapse text-sm">
                   <thead className="bg-red-500/10">
@@ -1420,41 +1438,57 @@ export default function ReportsClient({
               ) : null}
             </div>
           ) : (
-            <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-neutral-400">
+            <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-neutral-400">
               No issues detected.
             </div>
           )}
         </Card>
 
-        <Card id="exhibitor-explorer" className="p-6">
-          <div className="flex flex-col gap-5">
+        <Card id="exhibitor-explorer" className="p-6 sm:p-7">
+          <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
               <div>
                 <h2 className="text-2xl font-semibold text-white">Exhibitor explorer</h2>
-                <p className="mt-1 text-sm text-neutral-400">
+                <p className="mt-1 text-sm leading-6 text-neutral-400">
                   Scalable table with sorting, filtering, and pagination.
                 </p>
               </div>
 
-              <div>
-                <label htmlFor="pageSize" className="mb-2 block text-sm font-medium text-neutral-300">
-                  Rows per page
-                </label>
-                <select
-                  id="pageSize"
-                  value={pageSize}
-                  onChange={(event) => {
-                    setPageSize(Number(event.target.value))
-                    setCurrentPage(1)
-                  }}
-                  className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition focus:border-white/20"
-                >
-                  {PAGE_SIZE_OPTIONS.map((option) => (
-                    <option key={option} value={option} className="text-black">
-                      {option}
-                    </option>
-                  ))}
-                </select>
+              <div className="flex flex-wrap items-end gap-3">
+                <div>
+                  <label htmlFor="visible-exhibitor-filter" className="mb-2 block text-sm font-medium text-neutral-300">
+                    Filter visible list
+                  </label>
+                  <input
+                    id="visible-exhibitor-filter"
+                    type="text"
+                    placeholder="Filter by name or ID"
+                    value={search}
+                    onChange={(event) => setSearch(event.target.value)}
+                    className="w-full min-w-[280px] rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/25"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="pageSize" className="mb-2 block text-sm font-medium text-neutral-300">
+                    Rows per page
+                  </label>
+                  <select
+                    id="pageSize"
+                    value={pageSize}
+                    onChange={(event) => {
+                      setPageSize(Number(event.target.value))
+                      setCurrentPage(1)
+                    }}
+                    className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition focus:border-white/25"
+                  >
+                    {PAGE_SIZE_OPTIONS.map((option) => (
+                      <option key={option} value={option} className="text-black">
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
 
@@ -1638,7 +1672,7 @@ export default function ReportsClient({
                                     {status.label}
                                   </span>
                                 </div>
-                                <div className="text-xs text-neutral-500">
+                                <div className="text-xs leading-5 text-neutral-500">
                                   {formatDate(item.lastActivityAt)}
                                 </div>
                               </div>
@@ -1709,85 +1743,89 @@ export default function ReportsClient({
           </div>
         </Card>
 
-        <section className="grid gap-6 xl:grid-cols-2">
-          <Card className="p-6">
+        <section className="grid gap-10 xl:grid-cols-2">
+          <Card className="p-6 sm:p-7">
             <h2 className="text-xl font-semibold text-white">Funnel analytics</h2>
-            <p className="mt-1 text-sm text-neutral-400">
+            <p className="mt-1 text-sm leading-6 text-neutral-400">
               Step-by-step progression through the generator journey.
             </p>
 
-            <div className="mt-4 overflow-x-auto">
-              <table className="min-w-full border-collapse text-sm">
-                <thead>
-                  <tr className="border-b border-white/10 text-left">
-                    <th className="py-3 pr-4 font-medium text-neutral-300">Step</th>
-                    <th className="py-3 pr-4 font-medium text-neutral-300">Count</th>
-                    <th className="py-3 pr-4 font-medium text-neutral-300">From previous</th>
-                    <th className="py-3 pr-4 font-medium text-neutral-300">From start</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {funnelRows.map((item) => (
-                    <tr key={item.key} className="border-b border-white/5 last:border-b-0">
-                      <td className="py-3 pr-4 font-medium text-white">{item.label}</td>
-                      <td className="py-3 pr-4 text-neutral-300">{item.count}</td>
-                      <td className="py-3 pr-4 text-neutral-300">{item.rateFromPrevious}</td>
-                      <td className="py-3 pr-4 text-neutral-300">{item.rateFromStart}</td>
+            <div className="mt-6 overflow-hidden rounded-3xl border border-white/10">
+              <div className="overflow-x-auto">
+                <table className="min-w-full border-collapse text-sm">
+                  <thead className="bg-white/[0.04]">
+                    <tr className="border-b border-white/10 text-left">
+                      <th className="px-5 py-3 font-medium text-neutral-300">Step</th>
+                      <th className="px-5 py-3 font-medium text-neutral-300">Count</th>
+                      <th className="px-5 py-3 font-medium text-neutral-300">From previous</th>
+                      <th className="px-5 py-3 font-medium text-neutral-300">From start</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {funnelRows.map((item) => (
+                      <tr key={item.key} className="border-b border-white/5 last:border-b-0">
+                        <td className="px-5 py-4 font-medium text-white">{item.label}</td>
+                        <td className="px-5 py-4 text-neutral-300">{item.count}</td>
+                        <td className="px-5 py-4 text-neutral-300">{item.rateFromPrevious}</td>
+                        <td className="px-5 py-4 text-neutral-300">{item.rateFromStart}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </Card>
 
-          <Card className="p-6">
+          <Card className="p-6 sm:p-7">
             <h2 className="text-xl font-semibold text-white">Recent events</h2>
-            <p className="mt-1 text-sm text-neutral-400">
+            <p className="mt-1 text-sm leading-6 text-neutral-400">
               Latest analytics events in the current filtered view.
             </p>
 
-            <div className="mt-4 overflow-x-auto">
-              <table className="min-w-full border-collapse text-sm">
-                <thead>
-                  <tr className="border-b border-white/10 text-left">
-                    <th className="py-3 pr-4 font-medium text-neutral-300">Timestamp</th>
-                    <th className="py-3 pr-4 font-medium text-neutral-300">Company</th>
-                    <th className="py-3 pr-4 font-medium text-neutral-300">Event</th>
-                    <th className="py-3 pr-4 font-medium text-neutral-300">Format</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {summary.recentEvents.length === 0 ? (
-                    <tr>
-                      <td className="py-4 text-neutral-500" colSpan={4}>
-                        No events recorded yet.
-                      </td>
+            <div className="mt-6 overflow-hidden rounded-3xl border border-white/10">
+              <div className="overflow-x-auto">
+                <table className="min-w-full border-collapse text-sm">
+                  <thead className="bg-white/[0.04]">
+                    <tr className="border-b border-white/10 text-left">
+                      <th className="px-5 py-3 font-medium text-neutral-300">Timestamp</th>
+                      <th className="px-5 py-3 font-medium text-neutral-300">Company</th>
+                      <th className="px-5 py-3 font-medium text-neutral-300">Event</th>
+                      <th className="px-5 py-3 font-medium text-neutral-300">Format</th>
                     </tr>
-                  ) : (
-                    summary.recentEvents.slice(0, 12).map((event) => (
-                      <tr key={event.id} className="border-b border-white/5 last:border-b-0">
-                        <td className="py-3 pr-4 text-neutral-300">{formatDate(event.timestamp)}</td>
-                        <td className="py-3 pr-4">
-                          <Link
-                            href={buildExhibitorDetailHref(event.exhibitorId, {
-                              range: currentRange,
-                              startDate: summary.appliedStartDate,
-                              endDate: summary.appliedEndDate,
-                            })}
-                            className="text-white underline-offset-4 hover:underline"
-                          >
-                            {event.companyName}
-                          </Link>
-                        </td>
-                        <td className="py-3 pr-4 text-neutral-300">{event.eventType}</td>
-                        <td className="py-3 pr-4 text-neutral-300">
-                          {event.format ? formatFormatLabel(event.format) : '—'}
+                  </thead>
+                  <tbody>
+                    {summary.recentEvents.length === 0 ? (
+                      <tr>
+                        <td className="px-5 py-5 text-neutral-500" colSpan={4}>
+                          No events recorded yet.
                         </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+                    ) : (
+                      summary.recentEvents.slice(0, 12).map((event) => (
+                        <tr key={event.id} className="border-b border-white/5 last:border-b-0">
+                          <td className="px-5 py-4 text-neutral-300">{formatDate(event.timestamp)}</td>
+                          <td className="px-5 py-4">
+                            <Link
+                              href={buildExhibitorDetailHref(event.exhibitorId, {
+                                range: currentRange,
+                                startDate: summary.appliedStartDate,
+                                endDate: summary.appliedEndDate,
+                              })}
+                              className="text-white underline-offset-4 hover:underline"
+                            >
+                              {event.companyName}
+                            </Link>
+                          </td>
+                          <td className="px-5 py-4 text-neutral-300">{event.eventType}</td>
+                          <td className="px-5 py-4 text-neutral-300">
+                            {event.format ? formatFormatLabel(event.format) : '—'}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </Card>
         </section>
