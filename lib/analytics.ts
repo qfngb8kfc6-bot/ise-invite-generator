@@ -42,14 +42,17 @@ type FunnelSummary = {
   starts: number
 }
 
-function getEnvironment(): AnalyticsEnvironment {
-  if (process.env.NODE_ENV === 'test') {
-    return 'test'
-  }
+type AnalyticsInsight = {
+  id: string
+  title: string
+  value: string
+  description: string
+  tone: 'green' | 'blue' | 'amber' | 'red'
+}
 
-  if (process.env.VERCEL_ENV === 'preview') {
-    return 'preview'
-  }
+function getEnvironment(): AnalyticsEnvironment {
+  if (process.env.NODE_ENV === 'test') return 'test'
+  if (process.env.VERCEL_ENV === 'preview') return 'preview'
 
   if (
     process.env.NODE_ENV === 'development' ||
@@ -65,6 +68,7 @@ function getMemoryStore(): AnalyticsEvent[] {
   if (!global.__inviteAnalyticsEvents) {
     global.__inviteAnalyticsEvents = []
   }
+
   return global.__inviteAnalyticsEvents
 }
 
@@ -219,15 +223,10 @@ function filterEventsByExhibitor(
   events: AnalyticsEvent[],
   exhibitorId?: string
 ): AnalyticsEvent[] {
-  if (!exhibitorId) {
-    return events
-  }
+  if (!exhibitorId) return events
 
   const normalized = exhibitorId.trim()
-
-  if (!normalized) {
-    return events
-  }
+  if (!normalized) return events
 
   return events.filter((event) => event.exhibitorId === normalized)
 }
@@ -238,9 +237,7 @@ function filterEventsBySearchQuery(
 ): AnalyticsEvent[] {
   const normalized = normalizeSearchQuery(query)?.toLowerCase()
 
-  if (!normalized) {
-    return events
-  }
+  if (!normalized) return events
 
   return events.filter((event) => {
     const companyName = event.companyName.toLowerCase()
@@ -408,6 +405,86 @@ function buildFunnelSummary(events: AnalyticsEvent[]): FunnelSummary {
   }
 }
 
+function buildInsights(args: {
+  exhibitorSummaries: ExhibitorAnalyticsSummary[]
+  formatUsage: Record<string, number>
+  totalExportsFailed: number
+  totalExportsSucceeded: number
+  totalGeneratorOpens: number
+}): AnalyticsInsight[] {
+  const {
+    exhibitorSummaries,
+    formatUsage,
+    totalExportsFailed,
+    totalExportsSucceeded,
+    totalGeneratorOpens,
+  } = args
+
+  const needsAttention = exhibitorSummaries.filter(
+    (item) =>
+      (item.generatorOpenedCount > 0 && item.exportSucceededCount === 0) ||
+      (item.linkGeneratedCount > 0 && item.exportSucceededCount === 0)
+  )
+
+  const topPerformer = [...exhibitorSummaries]
+    .filter((item) => item.generatorOpenedCount > 0)
+    .sort((a, b) => {
+      const aRate = a.exportSucceededCount / a.generatorOpenedCount
+      const bRate = b.exportSucceededCount / b.generatorOpenedCount
+
+      if (bRate !== aRate) return bRate - aRate
+      return b.exportSucceededCount - a.exportSucceededCount
+    })[0]
+
+  const topFormat = Object.entries(formatUsage).sort((a, b) => b[1] - a[1])[0]
+
+  const conversionRate = totalGeneratorOpens
+    ? Math.round((totalExportsSucceeded / totalGeneratorOpens) * 100)
+    : 0
+
+  return [
+    {
+      id: 'conversion-rate',
+      title: 'Open → Export conversion',
+      value: `${conversionRate}%`,
+      description: `${totalExportsSucceeded} successful exports from ${totalGeneratorOpens} generator opens.`,
+      tone: conversionRate >= 50 ? 'green' : conversionRate >= 20 ? 'amber' : 'red',
+    },
+    {
+      id: 'needs-attention',
+      title: 'Needs attention',
+      value: String(needsAttention.length),
+      description: 'Exhibitors with engagement but no successful export yet.',
+      tone: needsAttention.length > 0 ? 'red' : 'green',
+    },
+    {
+      id: 'top-performer',
+      title: 'Top performer',
+      value: topPerformer ? topPerformer.companyName : '—',
+      description: topPerformer
+        ? `${topPerformer.exportSucceededCount} exports from ${topPerformer.generatorOpenedCount} opens.`
+        : 'No active exhibitor conversion data yet.',
+      tone: 'blue',
+    },
+    {
+      id: 'top-format',
+      title: 'Most used format',
+      value: topFormat ? topFormat[0] : '—',
+      description: topFormat
+        ? `${topFormat[1]} exports recorded for this format.`
+        : 'No export format usage recorded yet.',
+      tone: 'amber',
+    },
+    {
+      id: 'failed-exports',
+      title: 'Failed exports',
+      value: String(totalExportsFailed),
+      description: 'Export attempts that failed in the selected view.',
+      tone: totalExportsFailed > 0 ? 'red' : 'green',
+    },
+  ]
+}
+
 async function logAnalyticsEventToDb(event: AnalyticsEvent): Promise<void> {
   const sql = getAnalyticsDb()
 
@@ -415,10 +492,7 @@ async function logAnalyticsEventToDb(event: AnalyticsEvent): Promise<void> {
     throw new Error('Analytics database is not configured')
   }
 
-  await withTimeout(
-    ensureAnalyticsTable(),
-    'Ensuring analytics table'
-  )
+  await withTimeout(ensureAnalyticsTable(), 'Ensuring analytics table')
 
   await withTimeout(
     sql`
@@ -454,10 +528,7 @@ async function readAnalyticsEventsFromDb(): Promise<AnalyticsEvent[]> {
     return []
   }
 
-  await withTimeout(
-    ensureAnalyticsTable(),
-    'Ensuring analytics table'
-  )
+  await withTimeout(ensureAnalyticsTable(), 'Ensuring analytics table')
 
   const rows = await withTimeout(
     sql<{
@@ -504,10 +575,7 @@ async function persistAnalyticsFallback(event: AnalyticsEvent): Promise<void> {
   getMemoryStore().push(event)
 
   try {
-    await withTimeout(
-      appendToLocalFile(event),
-      'Writing analytics fallback file'
-    )
+    await withTimeout(appendToLocalFile(event), 'Writing analytics fallback file')
   } catch (error) {
     logAnalyticsWarning('Failed to append analytics event to local file fallback', error)
   }
@@ -588,6 +656,7 @@ export async function getAnalyticsSummary(options?: {
     totalGeneratorOpens: number
     conversionRate: string
     funnel: FunnelSummary
+    insights: AnalyticsInsight[]
   }
 > {
   const allEvents = await readAnalyticsEvents()
@@ -623,11 +692,13 @@ export async function getAnalyticsSummary(options?: {
     }
   }
 
-  const availableExhibitors = Array.from(availableExhibitorsMap.values()).sort((a, b) => {
-    const companyCompare = a.companyName.localeCompare(b.companyName)
-    if (companyCompare !== 0) return companyCompare
-    return a.exhibitorId.localeCompare(b.exhibitorId)
-  })
+  const availableExhibitors = Array.from(availableExhibitorsMap.values()).sort(
+    (a, b) => {
+      const companyCompare = a.companyName.localeCompare(b.companyName)
+      if (companyCompare !== 0) return companyCompare
+      return a.exhibitorId.localeCompare(b.exhibitorId)
+    }
+  )
 
   const eventsMatchingSearch = filterEventsBySearchQuery(
     eventsInRange,
@@ -708,6 +779,7 @@ export async function getAnalyticsSummary(options?: {
       if (b.totalEvents !== a.totalEvents) {
         return b.totalEvents - a.totalEvents
       }
+
       return a.companyName.localeCompare(b.companyName)
     })
 
@@ -758,5 +830,12 @@ export async function getAnalyticsSummary(options?: {
     totalGeneratorOpens,
     conversionRate,
     funnel: buildFunnelSummary(events),
+    insights: buildInsights({
+      exhibitorSummaries,
+      formatUsage,
+      totalExportsFailed,
+      totalExportsSucceeded,
+      totalGeneratorOpens,
+    }),
   }
 }
