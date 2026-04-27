@@ -11,13 +11,33 @@ let pool: Pool | null = null
 let tableEnsured = false
 
 function getConnectionString(): string {
-  return env.ANALYTICS_DATABASE_URL
+  return env.ANALYTICS_DATABASE_URL?.trim() || ''
+}
+
+function shouldUseSsl(connectionString: string): boolean {
+  return (
+    process.env.NODE_ENV === 'production' &&
+    !connectionString.includes('localhost') &&
+    !connectionString.includes('127.0.0.1')
+  )
 }
 
 function getPool(): Pool {
+  const connectionString = getConnectionString()
+
+  if (!connectionString) {
+    throw new Error('Analytics database URL is not configured')
+  }
+
   if (!pool) {
     pool = new Pool({
-      connectionString: getConnectionString(),
+      connectionString,
+      max: 1,
+      connectionTimeoutMillis: 2500,
+      idleTimeoutMillis: 5000,
+      ssl: shouldUseSsl(connectionString)
+        ? { rejectUnauthorized: false }
+        : undefined,
     })
   }
 
@@ -58,7 +78,7 @@ function createSqlTag(): SqlTag {
 const sqlTag = createSqlTag()
 
 export function isAnalyticsDbEnabled(): boolean {
-  return false
+  return Boolean(getConnectionString())
 }
 
 export function getAnalyticsDb(): SqlTag | null {
