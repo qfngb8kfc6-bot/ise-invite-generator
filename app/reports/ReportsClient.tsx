@@ -724,21 +724,6 @@ export default function ReportsClient({
     }))
   }, [summary.funnel.steps])
 
-  const filteredAvailableExhibitors = useMemo(() => {
-    const q = search.trim().toLowerCase()
-
-    if (!q) {
-      return summary.availableExhibitors
-    }
-
-    return summary.availableExhibitors.filter((item) => {
-      return (
-        item.companyName.toLowerCase().includes(q) ||
-        item.exhibitorId.toLowerCase().includes(q)
-      )
-    })
-  }, [search, summary.availableExhibitors])
-
   const exhibitorOptions = useMemo(() => {
     return summary.availableExhibitors.map((item) => ({
       ...item,
@@ -761,10 +746,25 @@ export default function ReportsClient({
   const topPerformer = leaderboard[0] ?? null
   const zeroConversionCount = conversionBuckets.zero
 
+  const searchedExhibitorRows = useMemo(() => {
+    const q = search.trim().toLowerCase()
+
+    if (!q) {
+      return summary.exhibitorSummaries
+    }
+
+    return summary.exhibitorSummaries.filter((item) => {
+      return (
+        item.companyName.toLowerCase().includes(q) ||
+        item.exhibitorId.toLowerCase().includes(q)
+      )
+    })
+  }, [search, summary.exhibitorSummaries])
+
   const focusedExhibitorRows = useMemo(() => {
     switch (focusFilter) {
       case 'needsAttention':
-        return summary.exhibitorSummaries.filter((item) => {
+        return searchedExhibitorRows.filter((item) => {
           const opens = item.generatorOpenedCount
           const exports = item.exportSucceededCount
           return (
@@ -773,22 +773,20 @@ export default function ReportsClient({
           )
         })
       case 'zeroConversion':
-        return summary.exhibitorSummaries.filter(
+        return searchedExhibitorRows.filter(
           (item) => conversionRateValue(item) === 0
         )
       case 'failedExports':
-        return summary.exhibitorSummaries.filter(
-          (item) => item.exportFailedCount > 0
-        )
+        return searchedExhibitorRows.filter((item) => item.exportFailedCount > 0)
       case 'topPerformers':
-        return leaderboard.slice(0, 50)
+        return buildLeaderboard(searchedExhibitorRows).slice(0, 50)
       case 'activeOnly':
-        return summary.exhibitorSummaries.filter((item) => item.totalEvents > 0)
+        return searchedExhibitorRows.filter((item) => item.totalEvents > 0)
       case 'all':
       default:
-        return summary.exhibitorSummaries
+        return searchedExhibitorRows
     }
-  }, [focusFilter, summary.exhibitorSummaries, leaderboard])
+  }, [focusFilter, searchedExhibitorRows])
 
   const sortedExhibitorRows = useMemo(() => {
     const copy = [...focusedExhibitorRows]
@@ -798,7 +796,7 @@ export default function ReportsClient({
 
   useEffect(() => {
     setCurrentPage(1)
-  }, [focusFilter, pageSize])
+  }, [focusFilter, pageSize, search])
 
   const totalPages = Math.max(1, Math.ceil(sortedExhibitorRows.length / pageSize))
 
@@ -830,7 +828,7 @@ export default function ReportsClient({
     if (!normalized) {
       window.location.href = buildReportsHref({
         range: currentRange,
-        q: currentSearchQuery,
+        q: search,
         startDate: summary.appliedStartDate,
         endDate: summary.appliedEndDate,
       })
@@ -852,7 +850,19 @@ export default function ReportsClient({
     window.location.href = buildReportsHref({
       range: currentRange,
       exhibitorId: matchedExhibitor.exhibitorId,
-      q: currentSearchQuery,
+      q: search,
+      startDate: summary.appliedStartDate,
+      endDate: summary.appliedEndDate,
+    })
+  }
+
+  function handleSearchSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    window.location.href = buildReportsHref({
+      range: currentRange,
+      exhibitorId: currentExhibitorId,
+      q: search,
       startDate: summary.appliedStartDate,
       endDate: summary.appliedEndDate,
     })
@@ -908,7 +918,7 @@ export default function ReportsClient({
                 <span>
                   Search:{' '}
                   <span className="font-medium text-white">
-                    {summary.appliedSearchQuery || '—'}
+                    {summary.appliedSearchQuery || search || '—'}
                   </span>
                 </span>
                 <span>
@@ -944,7 +954,7 @@ export default function ReportsClient({
                     href={buildReportsHref({
                       range: option.value,
                       exhibitorId: currentExhibitorId,
-                      q: currentSearchQuery,
+                      q: search || currentSearchQuery,
                     })}
                   >
                     {option.label}
@@ -956,7 +966,7 @@ export default function ReportsClient({
                 href={getCsvHref(
                   currentRange,
                   currentExhibitorId,
-                  currentSearchQuery,
+                  search || currentSearchQuery,
                   summary.appliedStartDate,
                   summary.appliedEndDate
                 )}
@@ -969,7 +979,7 @@ export default function ReportsClient({
                 href={getXlsxHref(
                   currentRange,
                   currentExhibitorId,
-                  currentSearchQuery,
+                  search || currentSearchQuery,
                   summary.appliedStartDate,
                   summary.appliedEndDate
                 )}
@@ -979,6 +989,96 @@ export default function ReportsClient({
               </a>
             </div>
           </div>
+
+          <div className="mt-6 grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(320px,420px)] xl:items-end">
+            <form onSubmit={handleSearchSubmit}>
+              <label
+                htmlFor="top-report-search"
+                className="mb-2 block text-sm font-medium text-neutral-300"
+              >
+                Search exhibitors
+              </label>
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <input
+                  id="top-report-search"
+                  type="text"
+                  placeholder="Search by company name or exhibitor ID"
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/20"
+                />
+                <button
+                  type="submit"
+                  className="rounded-2xl border border-white bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-neutral-200"
+                >
+                  Apply search
+                </button>
+              </div>
+              <p className="mt-2 text-xs text-neutral-500">
+                This filters the explorer instantly and can also be applied to the full report URL.
+              </p>
+            </form>
+
+            <form onSubmit={handleApplyExhibitorFilter}>
+              <label
+                htmlFor="top-exhibitor-picker"
+                className="mb-2 block text-sm font-medium text-neutral-300"
+              >
+                Jump to one exhibitor
+              </label>
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <input
+                  id="top-exhibitor-picker"
+                  list="exhibitor-picker-options"
+                  type="text"
+                  value={exhibitorPickerValue}
+                  onChange={(event) => setExhibitorPickerValue(event.target.value)}
+                  placeholder="Type company name or ID"
+                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/20"
+                />
+                <datalist id="exhibitor-picker-options">
+                  {exhibitorOptions.map((item) => (
+                    <option key={item.exhibitorId} value={item.label} />
+                  ))}
+                </datalist>
+                <button
+                  type="submit"
+                  className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-neutral-200 transition hover:bg-white/10"
+                >
+                  Apply
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {(summary.appliedSearchQuery ||
+            summary.appliedExhibitorId ||
+            summary.appliedStartDate ||
+            summary.appliedEndDate ||
+            search) ? (
+            <div className="mt-5 flex flex-wrap gap-2">
+              <Link
+                href="/reports"
+                className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-neutral-300 transition hover:bg-white/10"
+              >
+                Clear all filters
+              </Link>
+
+              {summary.appliedExhibitorId ? (
+                <Link
+                  href={buildReportsHref({
+                    range: currentRange,
+                    q: search || currentSearchQuery,
+                    startDate: summary.appliedStartDate,
+                    endDate: summary.appliedEndDate,
+                  })}
+                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-neutral-300 transition hover:bg-white/10"
+                >
+                  Clear exhibitor
+                </Link>
+              ) : null}
+            </div>
+          ) : null}
         </Card>
 
         <div>
@@ -1336,41 +1436,25 @@ export default function ReportsClient({
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-end gap-3">
-                <div>
-                  <label htmlFor="visible-exhibitor-filter" className="mb-2 block text-sm font-medium text-neutral-300">
-                    Filter visible list
-                  </label>
-                  <input
-                    id="visible-exhibitor-filter"
-                    type="text"
-                    placeholder="Filter by name or ID"
-                    value={search}
-                    onChange={(event) => setSearch(event.target.value)}
-                    className="w-full min-w-[280px] rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/20"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="pageSize" className="mb-2 block text-sm font-medium text-neutral-300">
-                    Rows per page
-                  </label>
-                  <select
-                    id="pageSize"
-                    value={pageSize}
-                    onChange={(event) => {
-                      setPageSize(Number(event.target.value))
-                      setCurrentPage(1)
-                    }}
-                    className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition focus:border-white/20"
-                  >
-                    {PAGE_SIZE_OPTIONS.map((option) => (
-                      <option key={option} value={option} className="text-black">
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <div>
+                <label htmlFor="pageSize" className="mb-2 block text-sm font-medium text-neutral-300">
+                  Rows per page
+                </label>
+                <select
+                  id="pageSize"
+                  value={pageSize}
+                  onChange={(event) => {
+                    setPageSize(Number(event.target.value))
+                    setCurrentPage(1)
+                  }}
+                  className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition focus:border-white/20"
+                >
+                  {PAGE_SIZE_OPTIONS.map((option) => (
+                    <option key={option} value={option} className="text-black">
+                      {option}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
