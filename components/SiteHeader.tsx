@@ -11,7 +11,7 @@ export default function SiteHeader() {
 
           <div>
             <div className="text-sm font-semibold leading-none text-white">
-              ISE Exhibitor Platform
+              ISE 2026 Exhibitor Tools
             </div>
             <div className="mt-1 text-xs text-neutral-500">
               Invitation Generator
@@ -19,21 +19,9 @@ export default function SiteHeader() {
           </div>
         </Link>
 
-        <nav className="flex items-center gap-2 text-sm">
-          <Link
-            href="/tools"
-            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-neutral-300 transition hover:bg-white/10 hover:text-white"
-          >
-            Tools
-          </Link>
-
-          <Link
-            href="/reports"
-            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-neutral-300 transition hover:bg-white/10 hover:text-white"
-          >
-            Reports
-          </Link>
-        </nav>
+        <div className="hidden rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300 sm:inline-flex">
+          Official Exhibitor Access
+        </div>
       </div>
     </header>
   )
