@@ -3,10 +3,99 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import LanguageSwitcher from '@/components/LanguageSwitcher'
+import LanguageSwitcher, { useSiteLanguage } from '@/components/LanguageSwitcher'
+import type { LanguageKey } from '@/lib/types'
+
+const headerText: Record<
+  LanguageKey,
+  {
+    generatorTitle: string
+    toolsTitle: string
+    reportsTitle: string
+    toolsSubtitle: string
+    reportsSubtitle: string
+    toolsNav: string
+    reportsNav: string
+  }
+> = {
+  en: {
+    generatorTitle: 'ISE 2027 Invitation Generator',
+    toolsTitle: 'ISE 2027 Exhibitor Tools',
+    reportsTitle: 'ISE 2027 Exhibitor Reports',
+    toolsSubtitle: 'Invitation Generator',
+    reportsSubtitle: 'Analytics Dashboard',
+    toolsNav: 'Tools',
+    reportsNav: 'Reports',
+  },
+  es: {
+    generatorTitle: 'Generador de Invitaciones ISE 2027',
+    toolsTitle: 'Herramientas para Expositores ISE 2027',
+    reportsTitle: 'Informes de Expositores ISE 2027',
+    toolsSubtitle: 'Generador de Invitaciones',
+    reportsSubtitle: 'Panel de Analítica',
+    toolsNav: 'Herramientas',
+    reportsNav: 'Informes',
+  },
+  de: {
+    generatorTitle: 'ISE 2027 Einladungsgenerator',
+    toolsTitle: 'ISE 2027 Aussteller-Tools',
+    reportsTitle: 'ISE 2027 Ausstellerberichte',
+    toolsSubtitle: 'Einladungsgenerator',
+    reportsSubtitle: 'Analyse-Dashboard',
+    toolsNav: 'Tools',
+    reportsNav: 'Berichte',
+  },
+  fr: {
+    generatorTitle: 'Générateur d’invitations ISE 2027',
+    toolsTitle: 'Outils Exposants ISE 2027',
+    reportsTitle: 'Rapports Exposants ISE 2027',
+    toolsSubtitle: 'Générateur d’invitations',
+    reportsSubtitle: 'Tableau de bord analytique',
+    toolsNav: 'Outils',
+    reportsNav: 'Rapports',
+  },
+  it: {
+    generatorTitle: 'Generatore Inviti ISE 2027',
+    toolsTitle: 'Strumenti Espositori ISE 2027',
+    reportsTitle: 'Report Espositori ISE 2027',
+    toolsSubtitle: 'Generatore Inviti',
+    reportsSubtitle: 'Dashboard Analitica',
+    toolsNav: 'Strumenti',
+    reportsNav: 'Report',
+  },
+  pt: {
+    generatorTitle: 'Gerador de Convites ISE 2027',
+    toolsTitle: 'Ferramentas para Expositores ISE 2027',
+    reportsTitle: 'Relatórios de Expositores ISE 2027',
+    toolsSubtitle: 'Gerador de Convites',
+    reportsSubtitle: 'Painel de Análise',
+    toolsNav: 'Ferramentas',
+    reportsNav: 'Relatórios',
+  },
+  nl: {
+    generatorTitle: 'ISE 2027 Uitnodigingsgenerator',
+    toolsTitle: 'ISE 2027 Exposantentools',
+    reportsTitle: 'ISE 2027 Exposantenrapporten',
+    toolsSubtitle: 'Uitnodigingsgenerator',
+    reportsSubtitle: 'Analysedashboard',
+    toolsNav: 'Tools',
+    reportsNav: 'Rapporten',
+  },
+  'zh-CN': {
+    generatorTitle: 'ISE 2027 邀请函生成器',
+    toolsTitle: 'ISE 2027 参展商工具',
+    reportsTitle: 'ISE 2027 参展商报告',
+    toolsSubtitle: '邀请函生成器',
+    reportsSubtitle: '数据分析面板',
+    toolsNav: '工具',
+    reportsNav: '报告',
+  },
+}
 
 export default function SiteHeader() {
   const pathname = usePathname()
+  const [language] = useSiteLanguage()
+  const text = headerText[language] ?? headerText.en
 
   const isTools = pathname.startsWith('/tools')
   const isReports = pathname.startsWith('/reports')
@@ -16,17 +105,17 @@ export default function SiteHeader() {
   let subtitle = ''
 
   if (isGenerator) {
-    title = 'ISE 2027 Invitation Generator'
+    title = text.generatorTitle
   }
 
   if (isTools) {
-    title = 'ISE 2027 Exhibitor Tools'
-    subtitle = 'Invitation Generator'
+    title = text.toolsTitle
+    subtitle = text.toolsSubtitle
   }
 
   if (isReports) {
-    title = 'ISE 2027 Exhibitor Reports'
-    subtitle = 'Analytics Dashboard'
+    title = text.reportsTitle
+    subtitle = text.reportsSubtitle
   }
 
   return (
@@ -57,7 +146,7 @@ export default function SiteHeader() {
         </Link>
 
         <div className="flex shrink-0 items-center gap-2">
-          {(isTools || isReports) ? (
+          {isTools || isReports ? (
             <nav className="hidden items-center gap-2 text-sm sm:flex">
               <Link
                 href="/tools"
@@ -67,7 +156,7 @@ export default function SiteHeader() {
                     : 'border-white/10 bg-white/5 text-neutral-300 hover:bg-white/10 hover:text-white'
                 }`}
               >
-                Tools
+                {text.toolsNav}
               </Link>
 
               <Link
@@ -78,7 +167,7 @@ export default function SiteHeader() {
                     : 'border-white/10 bg-white/5 text-neutral-300 hover:bg-white/10 hover:text-white'
                 }`}
               >
-                Reports
+                {text.reportsNav}
               </Link>
             </nav>
           ) : null}
