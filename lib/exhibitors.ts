@@ -250,7 +250,7 @@ function getMysCategorySummary(record: Record<string, unknown>): string {
 }
 
 function buildFallbackInvitationCode(exhibitorId: string, standNumber: string): string {
-  const year = env.EVENT_YEAR || '2027'
+const year = '2027'
   const standPart = standNumber ? standNumber.replace(/\s+/g, '').toUpperCase() : 'INVITE'
   return `${exhibitorId}-${standPart}-${year}`
 }
