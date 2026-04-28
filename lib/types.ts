@@ -36,6 +36,7 @@ export type InviteTranslationSet = {
 
 export type UiTranslationSet = {
   languageName: string
+
   homeTitle: string
   homeDescription: string
   homeOpenTools: string
@@ -92,7 +93,132 @@ export type UiTranslationSet = {
   commonNoExhibitorLoaded: string
 }
 
+export type ReportsTranslationSet = {
+  title: string
+  range: string
+  search: string
+  exhibitor: string
+  dates: string
+  customDateRange: string
+  allTime: string
+  downloadCsv: string
+  downloadXlsx: string
+
+  searchExhibitorsTitle: string
+  searchExhibitorsDescription: string
+  clearAllFilters: string
+  companyNameOrExhibitorId: string
+  searchAcrossReports: string
+  startDate: string
+  endDate: string
+  applyFilters: string
+  selectOneExhibitor: string
+  selectOneExhibitorPlaceholder: string
+  applyExhibitor: string
+  matchingAvailableExhibitors: string
+
+  topInsights: string
+  topInsightsDescription: string
+  insightsGenerated: string
+
+  exportAnalytics: string
+  exportAnalyticsDescription: string
+  exportAttemptsTracked: string
+  mostUsedFormat: string
+  leastUsedFormat: string
+  exportSuccessRate: string
+  exportFailureRate: string
+  noFormatUsage: string
+  successfulExports: string
+  share: string
+  format: string
+
+  overview: string
+  totalEvents: string
+  allTrackedActivity: string
+  exhibitorsSeen: string
+  uniqueExhibitors: string
+  generatorOpens: string
+  sessionsOpened: string
+  exportsSucceeded: string
+  exportsFailed: string
+  openToExport: string
+  conversionRate: string
+
+  needsAttention: string
+  needsAttentionDescription: string
+  topConversion: string
+  zeroConversion: string
+  failedExports: string
+  activeOnly: string
+  allExhibitors: string
+  topPerformers: string
+
+  topExhibitorsByActivity: string
+  topExhibitorsByActivityDescription: string
+  noExhibitorActivity: string
+  exportFormatUsage: string
+  exportFormatUsageDescription: string
+  noExportData: string
+  generatorOpensOverTime: string
+  generatorOpensOverTimeDescription: string
+  selectDateRangeForDailyCharts: string
+  exportFailuresOverTime: string
+  exportFailuresOverTimeDescription: string
+
+  company: string
+  exhibitorId: string
+  links: string
+  opens: string
+  exports: string
+  issue: string
+  action: string
+  viewDetails: string
+  noIssuesDetected: string
+  collapseTable: string
+  expandTable: string
+  openedGeneratorNeverExported: string
+  generatedLinksNoExports: string
+  showingOfExhibitors: string
+
+  exhibitorExplorer: string
+  exhibitorExplorerDescription: string
+  filterVisibleList: string
+  filterByNameOrId: string
+  rowsPerPage: string
+  currentFocus: string
+  showing: string
+  page: string
+  of: string
+  first: string
+  previous: string
+  next: string
+  last: string
+  noExhibitorsMatch: string
+  totalEventsColumn: string
+  lastActivity: string
+  noActivity: string
+  activeToday: string
+  activeThisWeek: string
+  inactive: string
+  unknown: string
+
+  funnelAnalytics: string
+  funnelAnalyticsDescription: string
+  step: string
+  count: string
+  fromPrevious: string
+  fromStart: string
+
+  recentEvents: string
+  recentEventsDescription: string
+  timestamp: string
+  event: string
+  noEventsRecorded: string
+}
+
 export type TranslationBundle = {
   invite: InviteTranslationSet
   ui: UiTranslationSet
+  reports?: ReportsTranslationSet
 }
