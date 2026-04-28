@@ -1,8 +1,9 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import Image from 'next/image'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 
 export default function SiteHeader() {
   const pathname = usePathname()
@@ -31,11 +32,8 @@ export default function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-black/75 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-        
-        <Link href="/" className="flex items-center gap-3">
-          
-          {/* LOGO */}
-          <div className="relative h-10 w-10 overflow-hidden rounded-lg bg-white">
+        <Link href="/" className="flex min-w-0 items-center gap-3">
+          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-white">
             <Image
               src="/ise-logo.png"
               alt="ISE Logo"
@@ -45,36 +43,48 @@ export default function SiteHeader() {
             />
           </div>
 
-          <div>
-            <div className="text-sm font-semibold leading-none text-white">
+          <div className="min-w-0">
+            <div className="truncate text-sm font-semibold leading-none text-white">
               {title}
             </div>
 
-            {subtitle && (
-              <div className="mt-1 text-xs text-neutral-500">
+            {subtitle ? (
+              <div className="mt-1 truncate text-xs text-neutral-500">
                 {subtitle}
               </div>
-            )}
+            ) : null}
           </div>
         </Link>
 
-        {(isTools || isReports) && (
-          <nav className="flex items-center gap-2 text-sm">
-            <Link
-              href="/tools"
-              className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-neutral-300 transition hover:bg-white/10 hover:text-white"
-            >
-              Tools
-            </Link>
+        <div className="flex shrink-0 items-center gap-2">
+          {(isTools || isReports) ? (
+            <nav className="hidden items-center gap-2 text-sm sm:flex">
+              <Link
+                href="/tools"
+                className={`rounded-xl border px-3 py-2 transition ${
+                  isTools
+                    ? 'border-white bg-white text-black'
+                    : 'border-white/10 bg-white/5 text-neutral-300 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                Tools
+              </Link>
 
-            <Link
-              href="/reports"
-              className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-neutral-300 transition hover:bg-white/10 hover:text-white"
-            >
-              Reports
-            </Link>
-          </nav>
-        )}
+              <Link
+                href="/reports"
+                className={`rounded-xl border px-3 py-2 transition ${
+                  isReports
+                    ? 'border-white bg-white text-black'
+                    : 'border-white/10 bg-white/5 text-neutral-300 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                Reports
+              </Link>
+            </nav>
+          ) : null}
+
+          <LanguageSwitcher dark />
+        </div>
       </div>
     </header>
   )
