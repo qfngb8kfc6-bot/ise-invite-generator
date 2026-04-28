@@ -1,180 +1,157 @@
 'use client'
 
-import Image from 'next/image'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import LanguageSwitcher, { useSiteLanguage } from '@/components/LanguageSwitcher'
+import { useEffect, useRef, useState } from 'react'
+import { translations } from '@/lib/translations'
 import type { LanguageKey } from '@/lib/types'
 
-const headerText: Record<
-  LanguageKey,
-  {
-    generatorTitle: string
-    toolsTitle: string
-    reportsTitle: string
-    toolsSubtitle: string
-    reportsSubtitle: string
-    toolsNav: string
-    reportsNav: string
+const STORAGE_KEY = 'ise-site-language'
+
+export function getStoredLanguage(): LanguageKey {
+  if (typeof window === 'undefined') return 'en'
+
+  const value = window.localStorage.getItem(STORAGE_KEY)
+
+  if (value && value in translations) {
+    return value as LanguageKey
   }
-> = {
-  en: {
-    generatorTitle: 'ISE 2027 Invitation Generator',
-    toolsTitle: 'ISE 2027 Exhibitor Tools',
-    reportsTitle: 'ISE 2027 Exhibitor Reports',
-    toolsSubtitle: 'Invitation Generator',
-    reportsSubtitle: 'Analytics Dashboard',
-    toolsNav: 'Tools',
-    reportsNav: 'Reports',
-  },
-  es: {
-    generatorTitle: 'Generador de Invitaciones ISE 2027',
-    toolsTitle: 'Herramientas para Expositores ISE 2027',
-    reportsTitle: 'Informes de Expositores ISE 2027',
-    toolsSubtitle: 'Generador de Invitaciones',
-    reportsSubtitle: 'Panel de Analítica',
-    toolsNav: 'Herramientas',
-    reportsNav: 'Informes',
-  },
-  de: {
-    generatorTitle: 'ISE 2027 Einladungsgenerator',
-    toolsTitle: 'ISE 2027 Aussteller-Tools',
-    reportsTitle: 'ISE 2027 Ausstellerberichte',
-    toolsSubtitle: 'Einladungsgenerator',
-    reportsSubtitle: 'Analyse-Dashboard',
-    toolsNav: 'Tools',
-    reportsNav: 'Berichte',
-  },
-  fr: {
-    generatorTitle: 'Générateur d’invitations ISE 2027',
-    toolsTitle: 'Outils Exposants ISE 2027',
-    reportsTitle: 'Rapports Exposants ISE 2027',
-    toolsSubtitle: 'Générateur d’invitations',
-    reportsSubtitle: 'Tableau de bord analytique',
-    toolsNav: 'Outils',
-    reportsNav: 'Rapports',
-  },
-  it: {
-    generatorTitle: 'Generatore Inviti ISE 2027',
-    toolsTitle: 'Strumenti Espositori ISE 2027',
-    reportsTitle: 'Report Espositori ISE 2027',
-    toolsSubtitle: 'Generatore Inviti',
-    reportsSubtitle: 'Dashboard Analitica',
-    toolsNav: 'Strumenti',
-    reportsNav: 'Report',
-  },
-  pt: {
-    generatorTitle: 'Gerador de Convites ISE 2027',
-    toolsTitle: 'Ferramentas para Expositores ISE 2027',
-    reportsTitle: 'Relatórios de Expositores ISE 2027',
-    toolsSubtitle: 'Gerador de Convites',
-    reportsSubtitle: 'Painel de Análise',
-    toolsNav: 'Ferramentas',
-    reportsNav: 'Relatórios',
-  },
-  nl: {
-    generatorTitle: 'ISE 2027 Uitnodigingsgenerator',
-    toolsTitle: 'ISE 2027 Exposantentools',
-    reportsTitle: 'ISE 2027 Exposantenrapporten',
-    toolsSubtitle: 'Uitnodigingsgenerator',
-    reportsSubtitle: 'Analysedashboard',
-    toolsNav: 'Tools',
-    reportsNav: 'Rapporten',
-  },
-  'zh-CN': {
-    generatorTitle: 'ISE 2027 邀请函生成器',
-    toolsTitle: 'ISE 2027 参展商工具',
-    reportsTitle: 'ISE 2027 参展商报告',
-    toolsSubtitle: '邀请函生成器',
-    reportsSubtitle: '数据分析面板',
-    toolsNav: '工具',
-    reportsNav: '报告',
-  },
+
+  return 'en'
 }
 
-export default function SiteHeader() {
-  const pathname = usePathname()
-  const [language] = useSiteLanguage()
-  const text = headerText[language] ?? headerText.en
+export function setStoredLanguage(language: LanguageKey) {
+  if (typeof window === 'undefined') return
 
-  const isTools = pathname.startsWith('/tools')
-  const isReports = pathname.startsWith('/reports')
-  const isGenerator = pathname.startsWith('/generator')
+  window.localStorage.setItem(STORAGE_KEY, language)
+  window.dispatchEvent(
+    new CustomEvent('site-language-changed', { detail: language })
+  )
+}
 
-  let title = 'ISE 2027'
-  let subtitle = ''
+export function useSiteLanguage(): [LanguageKey, (language: LanguageKey) => void] {
+  const [language, setLanguage] = useState<LanguageKey>('en')
 
-  if (isGenerator) {
-    title = text.generatorTitle
+  useEffect(() => {
+    setLanguage(getStoredLanguage())
+
+    function handleLanguageChange(event: Event) {
+      const customEvent = event as CustomEvent<LanguageKey>
+      setLanguage(customEvent.detail)
+    }
+
+    window.addEventListener('site-language-changed', handleLanguageChange)
+
+    return () => {
+      window.removeEventListener('site-language-changed', handleLanguageChange)
+    }
+  }, [])
+
+  function updateLanguage(nextLanguage: LanguageKey) {
+    setLanguage(nextLanguage)
+    setStoredLanguage(nextLanguage)
   }
 
-  if (isTools) {
-    title = text.toolsTitle
-    subtitle = text.toolsSubtitle
+  return [language, updateLanguage]
+}
+
+type LanguageSwitcherProps = {
+  value?: LanguageKey
+  onChange?: (language: LanguageKey) => void
+  dark?: boolean
+}
+
+export default function LanguageSwitcher({
+  value,
+  onChange,
+  dark = false,
+}: LanguageSwitcherProps) {
+  const [siteLanguage, setSiteLanguage] = useSiteLanguage()
+  const [open, setOpen] = useState(false)
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
+
+  const language = value ?? siteLanguage
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (!wrapperRef.current) return
+
+      if (!wrapperRef.current.contains(event.target as Node)) {
+        setOpen(false)
+      }
+    }
+
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('keydown', handleEscape)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleEscape)
+    }
+  }, [])
+
+  function handleSelect(nextLanguage: LanguageKey) {
+    if (value === undefined) {
+      setSiteLanguage(nextLanguage)
+    } else {
+      setStoredLanguage(nextLanguage)
+    }
+
+    onChange?.(nextLanguage)
+    setOpen(false)
   }
 
-  if (isReports) {
-    title = text.reportsTitle
-    subtitle = text.reportsSubtitle
-  }
+  const buttonClasses = dark
+    ? 'border-white/10 bg-black/30 text-white hover:bg-white/10'
+    : 'border-zinc-300 bg-white text-zinc-900 hover:bg-zinc-50'
+
+  const menuClasses = dark
+    ? 'border-white/10 bg-neutral-950 text-white shadow-2xl'
+    : 'border-zinc-200 bg-white text-zinc-900 shadow-xl'
+
+  const optionClasses = dark
+    ? 'hover:bg-white/10'
+    : 'hover:bg-zinc-100'
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-black/75 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex min-w-0 items-center gap-3">
-          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-white">
-            <Image
-              src="/ise-logo.png"
-              alt="ISE Logo"
-              fill
-              className="object-contain p-1"
-              priority
-            />
-          </div>
+    <div ref={wrapperRef} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        className={`inline-flex min-w-[130px] items-center justify-between gap-3 rounded-xl border px-3 py-2 text-sm outline-none transition ${buttonClasses}`}
+      >
+        <span>{translations[language]?.ui.languageName ?? 'English'}</span>
+        <span className="text-xs opacity-70">⌄</span>
+      </button>
 
-          <div className="min-w-0">
-            <div className="truncate text-sm font-semibold leading-none text-white">
-              {title}
-            </div>
+      {open ? (
+        <div
+          className={`absolute right-0 top-[calc(100%+8px)] z-[100] max-h-[280px] min-w-[190px] overflow-auto rounded-2xl border p-1 ${menuClasses}`}
+        >
+          {Object.entries(translations).map(([key, bundle]) => {
+            const optionLanguage = key as LanguageKey
+            const active = optionLanguage === language
 
-            {subtitle ? (
-              <div className="mt-1 truncate text-xs text-neutral-500">
-                {subtitle}
-              </div>
-            ) : null}
-          </div>
-        </Link>
-
-        <div className="flex shrink-0 items-center gap-2">
-          {isTools || isReports ? (
-            <nav className="hidden items-center gap-2 text-sm sm:flex">
-              <Link
-                href="/tools"
-                className={`rounded-xl border px-3 py-2 transition ${
-                  isTools
-                    ? 'border-white bg-white text-black'
-                    : 'border-white/10 bg-white/5 text-neutral-300 hover:bg-white/10 hover:text-white'
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => handleSelect(optionLanguage)}
+                className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm transition ${optionClasses} ${
+                  active ? 'font-semibold' : 'font-normal'
                 }`}
               >
-                {text.toolsNav}
-              </Link>
-
-              <Link
-                href="/reports"
-                className={`rounded-xl border px-3 py-2 transition ${
-                  isReports
-                    ? 'border-white bg-white text-black'
-                    : 'border-white/10 bg-white/5 text-neutral-300 hover:bg-white/10 hover:text-white'
-                }`}
-              >
-                {text.reportsNav}
-              </Link>
-            </nav>
-          ) : null}
-
-          <LanguageSwitcher dark />
+                <span>{bundle.ui.languageName}</span>
+                {active ? <span>✓</span> : null}
+              </button>
+            )
+          })}
         </div>
-      </div>
-    </header>
+      ) : null}
+    </div>
   )
 }
