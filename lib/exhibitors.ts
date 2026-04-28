@@ -21,8 +21,8 @@ const mockExhibitors: Record<string, Exhibitor> = {
     id: '1001',
     companyName: 'Acme Audio Ltd',
     standNumber: 'A12',
-    invitationCode: 'ACME-A12-2026',
-    registrationUrl: 'https://example.com/register/ACME-A12-2026',
+    invitationCode: 'ACME-A12-2027',
+    registrationUrl: 'https://example.com/register/ACME-A12-2027',
     logoUrl: null,
     theme: 'audio',
     language: 'en',
@@ -31,8 +31,8 @@ const mockExhibitors: Record<string, Exhibitor> = {
     id: '1002',
     companyName: 'Luma Living',
     standNumber: 'R08',
-    invitationCode: 'LUMA-R08-2026',
-    registrationUrl: 'https://example.com/register/LUMA-R08-2026',
+    invitationCode: 'LUMA-R08-2027',
+    registrationUrl: 'https://example.com/register/LUMA-R08-2027',
     logoUrl: null,
     theme: 'residential',
     language: 'de',
@@ -41,8 +41,8 @@ const mockExhibitors: Record<string, Exhibitor> = {
     id: '1003',
     companyName: 'Northlight Systems',
     standNumber: 'L21',
-    invitationCode: 'NORTH-L21-2026',
-    registrationUrl: 'https://example.com/register/NORTH-L21-2026',
+    invitationCode: 'NORTH-L21-2027',
+    registrationUrl: 'https://example.com/register/NORTH-L21-2027',
     logoUrl: null,
     theme: 'lighting',
     language: 'es',
@@ -250,7 +250,7 @@ function getMysCategorySummary(record: Record<string, unknown>): string {
 }
 
 function buildFallbackInvitationCode(exhibitorId: string, standNumber: string): string {
-  const year = new Date().getUTCFullYear()
+  const year = env.EVENT_YEAR || '2027'
   const standPart = standNumber ? standNumber.replace(/\s+/g, '').toUpperCase() : 'INVITE'
   return `${exhibitorId}-${standPart}-${year}`
 }

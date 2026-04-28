@@ -3,7 +3,7 @@ import type { LanguageKey, TranslationBundle } from '@/lib/types'
 export const translations: Record<LanguageKey, TranslationBundle> = {
   en: {
     invite: {
-      headline: "You're invited to ISE 2026",
+      headline: "You're invited to ISE 2027",
       subheadline: 'Join us in Barcelona',
       freeAccess: 'Free access with invitation code',
       visitUs: 'Visit us at stand',
@@ -78,7 +78,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
 
   es: {
     invite: {
-      headline: 'Estás invitado a ISE 2026',
+      headline: 'Estás invitado a ISE 2027',
       subheadline: 'Únase a nosotros en Barcelona',
       freeAccess: 'Acceso gratuito con código de invitación',
       visitUs: 'Visítanos en el stand',
@@ -153,7 +153,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
 
   de: {
     invite: {
-      headline: 'Sie sind zur ISE 2026 eingeladen',
+      headline: 'Sie sind zur ISE 2027 eingeladen',
       subheadline: 'Treffen Sie uns in Barcelona',
       freeAccess: 'Kostenfreier Zutritt mit Einladungscode',
       visitUs: 'Besuchen Sie uns am Stand',
@@ -228,7 +228,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
 
   fr: {
     invite: {
-      headline: 'Vous êtes invité à l’ISE 2026',
+      headline: 'Vous êtes invité à l’ISE 2027',
       subheadline: 'Rejoignez-nous à Barcelone',
       freeAccess: 'Accès gratuit avec code d’invitation',
       visitUs: 'Retrouvez-nous au stand',
@@ -303,7 +303,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
 
   it: {
     invite: {
-      headline: 'Sei invitato a ISE 2026',
+      headline: 'Sei invitato a ISE 2027',
       subheadline: 'Unisciti a noi a Barcellona',
       freeAccess: "Accesso gratuito con codice d'invito",
       visitUs: 'Vieni a trovarci allo stand',
@@ -378,7 +378,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
 
   pt: {
     invite: {
-      headline: 'Você está convidado para a ISE 2026',
+      headline: 'Você está convidado para a ISE 2027',
       subheadline: 'Junte-se a nós em Barcelona',
       freeAccess: 'Acesso gratuito com código de convite',
       visitUs: 'Visite-nos no estande',
@@ -453,7 +453,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
 
   nl: {
     invite: {
-      headline: 'U bent uitgenodigd voor ISE 2026',
+      headline: 'U bent uitgenodigd voor ISE 2027',
       subheadline: 'Kom naar Barcelona',
       freeAccess: 'Gratis toegang met uitnodigingscode',
       visitUs: 'Bezoek ons op stand',
@@ -528,7 +528,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
 
   'zh-CN': {
     invite: {
-      headline: '诚邀您参加 ISE 2026',
+      headline: '诚邀您参加 ISE 2027',
       subheadline: '与我们相聚巴塞罗那',
       freeAccess: '凭邀请代码免费入场',
       visitUs: '欢迎莅临展位',

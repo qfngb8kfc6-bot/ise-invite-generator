@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ISE 2026 Exhibitor Invitation Generator",
+  title: "ISE 2027 Exhibitor Invitation Generator",
   description:
-    "Create official ISE 2026 exhibitor invitation assets including PNG, PDF, and marketing packs.",
+    "Create official ISE 2027 exhibitor invitation assets including PNG, PDF, and marketing packs.",
   icons: {
     icon: "/favicon.ico",
   },
