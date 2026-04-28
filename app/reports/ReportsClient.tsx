@@ -127,6 +127,13 @@ type FocusFilter =
   | 'topPerformers'
   | 'activeOnly'
 
+type ExportFormatRow = {
+  format: string
+  label: string
+  count: number
+  share: string
+}
+
 const RANGE_OPTIONS = [
   { label: 'Last 7 days', value: '7d' },
   { label: 'Last 30 days', value: '30d' },
@@ -626,6 +633,37 @@ function InsightCard({ insight }: { insight: AnalyticsInsight }) {
   )
 }
 
+function ExportHealthCard({
+  label,
+  value,
+  description,
+  tone,
+}: {
+  label: string
+  value: string | number
+  description: string
+  tone: 'green' | 'blue' | 'amber' | 'red'
+}) {
+  const toneClasses =
+    tone === 'green'
+      ? 'border-emerald-500/25 bg-emerald-500/[0.08]'
+      : tone === 'blue'
+      ? 'border-blue-500/25 bg-blue-500/[0.08]'
+      : tone === 'amber'
+      ? 'border-amber-500/25 bg-amber-500/[0.08]'
+      : 'border-red-500/25 bg-red-500/[0.08]'
+
+  return (
+    <div className={`rounded-3xl border p-5 ${toneClasses}`}>
+      <div className="text-sm font-medium text-neutral-300">{label}</div>
+      <div className="mt-3 truncate text-3xl font-semibold leading-none text-white">
+        {value}
+      </div>
+      <p className="mt-3 text-sm leading-6 text-neutral-400">{description}</p>
+    </div>
+  )
+}
+
 function ToolbarPill({
   active,
   children,
@@ -742,6 +780,34 @@ export default function ReportsClient({
         count,
       }))
   }, [summary.formatUsage])
+
+  const exportFormatRows = useMemo<ExportFormatRow[]>(() => {
+    return Object.entries(summary.formatUsage)
+      .sort((a, b) => b[1] - a[1])
+      .map(([format, count]) => ({
+        format,
+        label: formatFormatLabel(format),
+        count,
+        share: percentage(count, summary.totalExportsSucceeded),
+      }))
+  }, [summary.formatUsage, summary.totalExportsSucceeded])
+
+  const mostUsedFormat = exportFormatRows[0] ?? null
+  const leastUsedFormat =
+    exportFormatRows.length > 0 ? exportFormatRows[exportFormatRows.length - 1] : null
+
+  const totalExportAttempts =
+    summary.totalExportsSucceeded + summary.totalExportsFailed
+
+  const exportSuccessRate = percentage(
+    summary.totalExportsSucceeded,
+    totalExportAttempts
+  )
+
+  const exportFailureRate = percentage(
+    summary.totalExportsFailed,
+    totalExportAttempts
+  )
 
   const dailyChartData = useMemo(() => {
     return summary.dailySeries.map((item) => ({
@@ -1152,6 +1218,101 @@ export default function ReportsClient({
             </div>
           </Card>
         ) : null}
+
+        <Card className="p-6 sm:p-7">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 className="text-2xl font-semibold text-white">Export analytics</h2>
+              <p className="mt-1 text-sm leading-6 text-neutral-400">
+                Format usage, success rate, and failed export health for the selected report view.
+              </p>
+            </div>
+            <div className="text-sm text-neutral-500">
+              {totalExportAttempts} export attempts tracked
+            </div>
+          </div>
+
+          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <ExportHealthCard
+              label="Most used format"
+              value={mostUsedFormat ? mostUsedFormat.label : '—'}
+              description={
+                mostUsedFormat
+                  ? `${mostUsedFormat.count} exports · ${mostUsedFormat.share} of successful exports.`
+                  : 'No format usage recorded yet.'
+              }
+              tone="blue"
+            />
+
+            <ExportHealthCard
+              label="Least used format"
+              value={leastUsedFormat ? leastUsedFormat.label : '—'}
+              description={
+                leastUsedFormat
+                  ? `${leastUsedFormat.count} exports · ${leastUsedFormat.share} of successful exports.`
+                  : 'No format usage recorded yet.'
+              }
+              tone="amber"
+            />
+
+            <ExportHealthCard
+              label="Export success rate"
+              value={exportSuccessRate}
+              description={`${summary.totalExportsSucceeded} successful exports from ${totalExportAttempts} total attempts.`}
+              tone="green"
+            />
+
+            <ExportHealthCard
+              label="Export failure rate"
+              value={exportFailureRate}
+              description={`${summary.totalExportsFailed} failed exports from ${totalExportAttempts} total attempts.`}
+              tone={summary.totalExportsFailed > 0 ? 'red' : 'green'}
+            />
+          </div>
+
+          <div className="mt-6 overflow-hidden rounded-3xl border border-white/10">
+            <div className="overflow-x-auto">
+              <table className="min-w-full border-collapse text-sm">
+                <thead className="bg-white/[0.04]">
+                  <tr className="border-b border-white/10 text-left">
+                    <th className="px-5 py-3 font-medium text-neutral-300">Format</th>
+                    <th className="px-5 py-3 font-medium text-neutral-300">Successful exports</th>
+                    <th className="px-5 py-3 font-medium text-neutral-300">Share</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {exportFormatRows.length === 0 ? (
+                    <tr>
+                      <td className="px-5 py-5 text-neutral-500" colSpan={3}>
+                        No export format usage recorded yet.
+                      </td>
+                    </tr>
+                  ) : (
+                    exportFormatRows.map((row) => (
+                      <tr key={row.format} className="border-b border-white/5 last:border-b-0">
+                        <td className="px-5 py-4 font-medium text-white">{row.label}</td>
+                        <td className="px-5 py-4 text-neutral-300">{row.count}</td>
+                        <td className="px-5 py-4 text-neutral-300">
+                          <div className="flex items-center gap-3">
+                            <div className="h-2 w-28 overflow-hidden rounded-full bg-white/10">
+                              <div
+                                className="h-full rounded-full bg-emerald-400"
+                                style={{
+                                  width: row.share,
+                                }}
+                              />
+                            </div>
+                            <span>{row.share}</span>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </Card>
 
         <div>
           <h2 className="mb-4 text-xl font-semibold text-white">Overview</h2>
