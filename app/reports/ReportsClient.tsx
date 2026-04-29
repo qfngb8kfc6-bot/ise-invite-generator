@@ -14,6 +14,8 @@ import {
   Legend,
 } from 'recharts'
 import MeasuredChart from '@/components/charts/MeasuredChart'
+import { useSiteLanguage } from '@/components/LanguageSwitcher'
+import type { LanguageKey } from '@/lib/types'
 
 type ExhibitorSummary = {
   exhibitorId: string
@@ -134,11 +136,584 @@ type ExportFormatRow = {
   share: string
 }
 
+type ReportsText = {
+  reports: string
+  range: string
+  search: string
+  exhibitor: string
+  dates: string
+  customDateRange: string
+  allTime: string
+  open: string
+  downloadCsv: string
+  downloadXlsx: string
+  searchExhibitors: string
+  searchExhibitorsDescription: string
+  clearAllFilters: string
+  companyNameOrExhibitorId: string
+  searchAcrossReports: string
+  startDate: string
+  endDate: string
+  applyFilters: string
+  selectOneExhibitor: string
+  selectOneExhibitorPlaceholder: string
+  applyExhibitor: string
+  matchingAvailableExhibitors: string
+  topInsights: string
+  topInsightsDescription: string
+  insightsGenerated: string
+  exportAnalytics: string
+  exportAnalyticsDescription: string
+  exportAttemptsTracked: string
+  mostUsedFormat: string
+  leastUsedFormat: string
+  exportSuccessRate: string
+  exportFailureRate: string
+  noFormatUsage: string
+  exportsRecordedForFormat: string
+  ofSuccessfulExports: string
+  successfulExportsFromAttempts: string
+  failedExportsFromAttempts: string
+  total: string
+  format: string
+  successfulExports: string
+  share: string
+  overview: string
+  totalEvents: string
+  allTrackedActivity: string
+  exhibitorsSeen: string
+  uniqueExhibitors: string
+  generatorOpens: string
+  sessionsOpened: string
+  exportsSucceeded: string
+  exportsFailed: string
+  openToExport: string
+  conversionRate: string
+  needsAttention: string
+  needsAttentionDescription: string
+  topConversion: string
+  zeroConversion: string
+  zeroConversionDescription: string
+  failedExports: string
+  failedExportsDescription: string
+  noExhibitorDataYet: string
+  topExhibitorsByActivity: string
+  topExhibitorsByActivityDescription: string
+  noExhibitorActivityToChart: string
+  exportFormatUsage: string
+  exportFormatUsageDescription: string
+  noExportDataToChart: string
+  generatorOpensOverTime: string
+  generatorOpensOverTimeDescription: string
+  selectDateRangeToViewDailyCharts: string
+  exportFailuresOverTime: string
+  exportFailuresOverTimeDescription: string
+  loadingChart: string
+  totalEventLegend: string
+  generatorOpenLegend: string
+  exportSucceededLegend: string
+  exportFailedLegend: string
+  count: string
+  exhibitorsWithEngagementNoExports: string
+  collapseTable: string
+  expandTable: string
+  company: string
+  exhibitorId: string
+  links: string
+  opens: string
+  exports: string
+  issue: string
+  action: string
+  openedGeneratorButNeverExported: string
+  generatedLinksButNoSuccessfulExports: string
+  viewDetails: string
+  showingFiveOf: string
+  noIssuesDetected: string
+  exhibitorExplorer: string
+  exhibitorExplorerDescription: string
+  filterVisibleList: string
+  filterByNameOrId: string
+  rowsPerPage: string
+  allExhibitors: string
+  activeOnly: string
+  topPerformers: string
+  showing: string
+  of: string
+  currentFocus: string
+  totalEventsColumn: string
+  successfulExportsColumn: string
+  failedExportsColumn: string
+  lastActivity: string
+  actions: string
+  noExhibitorsMatch: string
+  noActivity: string
+  activeToday: string
+  activeThisWeek: string
+  inactive: string
+  unknown: string
+  page: string
+  first: string
+  previous: string
+  next: string
+  last: string
+  funnelAnalytics: string
+  funnelAnalyticsDescription: string
+  step: string
+  fromPrevious: string
+  fromStart: string
+  recentEvents: string
+  recentEventsDescription: string
+  timestamp: string
+  event: string
+  noEventsRecordedYet: string
+}
+
+const enReportsText: ReportsText = {
+  reports: 'Reports',
+  range: 'Range',
+  search: 'Search',
+  exhibitor: 'Exhibitor',
+  dates: 'Dates',
+  customDateRange: 'Custom date range',
+  allTime: 'All time',
+  open: 'Open',
+  downloadCsv: 'Download CSV',
+  downloadXlsx: 'Download XLSX',
+  searchExhibitors: 'Search exhibitors',
+  searchExhibitorsDescription:
+    'Find one exhibitor quickly, filter the whole report, or jump into a detail view.',
+  clearAllFilters: 'Clear all filters',
+  companyNameOrExhibitorId: 'Company name or exhibitor ID',
+  searchAcrossReports: 'Search across reports',
+  startDate: 'Start date',
+  endDate: 'End date',
+  applyFilters: 'Apply filters',
+  selectOneExhibitor: 'Select one exhibitor',
+  selectOneExhibitorPlaceholder: 'Start typing company name or exhibitor ID',
+  applyExhibitor: 'Apply exhibitor',
+  matchingAvailableExhibitors: 'Matching available exhibitors',
+  topInsights: 'Top insights',
+  topInsightsDescription: 'Automated highlights from the selected report view.',
+  insightsGenerated: 'insights generated',
+  exportAnalytics: 'Export analytics',
+  exportAnalyticsDescription:
+    'Format usage, success rate, and failed export health for the selected report view.',
+  exportAttemptsTracked: 'export attempts tracked',
+  mostUsedFormat: 'Most used format',
+  leastUsedFormat: 'Least used format',
+  exportSuccessRate: 'Export success rate',
+  exportFailureRate: 'Export failure rate',
+  noFormatUsage: 'No format usage recorded yet.',
+  exportsRecordedForFormat: 'exports recorded for this format.',
+  ofSuccessfulExports: 'of successful exports.',
+  successfulExportsFromAttempts: 'successful exports from',
+  failedExportsFromAttempts: 'failed exports from',
+  total: 'total',
+  format: 'Format',
+  successfulExports: 'Successful exports',
+  share: 'Share',
+  overview: 'Overview',
+  totalEvents: 'Total events',
+  allTrackedActivity: 'All tracked activity',
+  exhibitorsSeen: 'Exhibitors seen',
+  uniqueExhibitors: 'Unique exhibitors',
+  generatorOpens: 'Generator opens',
+  sessionsOpened: 'Sessions opened',
+  exportsSucceeded: 'Exports succeeded',
+  exportsFailed: 'Exports failed',
+  openToExport: 'Open → Export',
+  conversionRate: 'Conversion rate',
+  needsAttention: 'Needs attention',
+  needsAttentionDescription: 'Engaged exhibitors with no successful exports.',
+  topConversion: 'Top conversion',
+  zeroConversion: 'Zero conversion',
+  zeroConversionDescription: 'Exhibitors currently at 0% open-to-export conversion.',
+  failedExports: 'Failed exports',
+  failedExportsDescription: 'Total failed export events in the selected view.',
+  noExhibitorDataYet: 'No exhibitor data yet.',
+  topExhibitorsByActivity: 'Top exhibitors by activity',
+  topExhibitorsByActivityDescription:
+    'Summary-only chart. Limited to the top exhibitors to keep the view readable.',
+  noExhibitorActivityToChart: 'No exhibitor activity to chart.',
+  exportFormatUsage: 'Export format usage',
+  exportFormatUsageDescription: 'Which output formats are being used most.',
+  noExportDataToChart: 'No export data to chart.',
+  generatorOpensOverTime: 'Generator opens over time',
+  generatorOpensOverTimeDescription: 'Daily generator opens and successful exports.',
+  selectDateRangeToViewDailyCharts: 'Select a date range to view daily charts.',
+  exportFailuresOverTime: 'Export failures over time',
+  exportFailuresOverTimeDescription: 'Track failed exports by day in the selected range.',
+  loadingChart: 'Loading chart…',
+  totalEventLegend: 'Total events',
+  generatorOpenLegend: 'Generator opens',
+  exportSucceededLegend: 'Exports succeeded',
+  exportFailedLegend: 'Exports failed',
+  count: 'Count',
+  exhibitorsWithEngagementNoExports:
+    'Exhibitors with engagement but no successful exports.',
+  collapseTable: 'Collapse table',
+  expandTable: 'Expand table',
+  company: 'Company',
+  exhibitorId: 'Exhibitor ID',
+  links: 'Links',
+  opens: 'Opens',
+  exports: 'Exports',
+  issue: 'Issue',
+  action: 'Action',
+  openedGeneratorButNeverExported: 'Opened generator but never exported',
+  generatedLinksButNoSuccessfulExports: 'Generated links but no successful exports',
+  viewDetails: 'View details',
+  showingFiveOf: 'Showing 5 of',
+  noIssuesDetected: 'No issues detected.',
+  exhibitorExplorer: 'Exhibitor explorer',
+  exhibitorExplorerDescription: 'Scalable table with sorting, filtering, and pagination.',
+  filterVisibleList: 'Filter visible list',
+  filterByNameOrId: 'Filter by name or ID',
+  rowsPerPage: 'Rows per page',
+  allExhibitors: 'All exhibitors',
+  activeOnly: 'Active only',
+  topPerformers: 'Top performers',
+  showing: 'Showing',
+  of: 'of',
+  currentFocus: 'Current focus',
+  totalEventsColumn: 'Total events',
+  successfulExportsColumn: 'Successful exports',
+  failedExportsColumn: 'Failed exports',
+  lastActivity: 'Last activity',
+  actions: 'Actions',
+  noExhibitorsMatch: 'No exhibitors match your current filters.',
+  noActivity: 'No activity',
+  activeToday: 'Active today',
+  activeThisWeek: 'Active this week',
+  inactive: 'Inactive',
+  unknown: 'Unknown',
+  page: 'Page',
+  first: 'First',
+  previous: 'Previous',
+  next: 'Next',
+  last: 'Last',
+  funnelAnalytics: 'Funnel analytics',
+  funnelAnalyticsDescription: 'Step-by-step progression through the generator journey.',
+  step: 'Step',
+  fromPrevious: 'From previous',
+  fromStart: 'From start',
+  recentEvents: 'Recent events',
+  recentEventsDescription: 'Latest analytics events in the current filtered view.',
+  timestamp: 'Timestamp',
+  event: 'Event',
+  noEventsRecordedYet: 'No events recorded yet.',
+}
+
+const reportsText: Record<LanguageKey, ReportsText> = {
+  en: enReportsText,
+  es: {
+    ...enReportsText,
+    reports: 'Informes',
+    range: 'Rango',
+    search: 'Buscar',
+    exhibitor: 'Expositor',
+    dates: 'Fechas',
+    customDateRange: 'Rango de fechas personalizado',
+    allTime: 'Todo el tiempo',
+    downloadCsv: 'Descargar CSV',
+    downloadXlsx: 'Descargar XLSX',
+    searchExhibitors: 'Buscar expositores',
+    clearAllFilters: 'Limpiar filtros',
+    applyFilters: 'Aplicar filtros',
+    overview: 'Resumen',
+    totalEvents: 'Eventos totales',
+    exhibitorsSeen: 'Expositores vistos',
+    generatorOpens: 'Aperturas del generador',
+    exportsSucceeded: 'Exportaciones correctas',
+    exportsFailed: 'Exportaciones fallidas',
+    conversionRate: 'Tasa de conversión',
+    needsAttention: 'Requiere atención',
+    failedExports: 'Exportaciones fallidas',
+    company: 'Empresa',
+    exhibitorId: 'ID expositor',
+    links: 'Enlaces',
+    opens: 'Aperturas',
+    exports: 'Exportaciones',
+    issue: 'Problema',
+    action: 'Acción',
+    viewDetails: 'Ver detalles',
+    exhibitorExplorer: 'Explorador de expositores',
+    allExhibitors: 'Todos los expositores',
+    activeOnly: 'Solo activos',
+    topPerformers: 'Mejores resultados',
+    page: 'Página',
+    first: 'Primera',
+    previous: 'Anterior',
+    next: 'Siguiente',
+    last: 'Última',
+    funnelAnalytics: 'Analítica del embudo',
+    recentEvents: 'Eventos recientes',
+  },
+  de: {
+    ...enReportsText,
+    reports: 'Berichte',
+    range: 'Zeitraum',
+    search: 'Suche',
+    exhibitor: 'Aussteller',
+    dates: 'Daten',
+    customDateRange: 'Benutzerdefinierter Zeitraum',
+    allTime: 'Gesamtzeitraum',
+    downloadCsv: 'CSV herunterladen',
+    downloadXlsx: 'XLSX herunterladen',
+    searchExhibitors: 'Aussteller suchen',
+    clearAllFilters: 'Filter löschen',
+    applyFilters: 'Filter anwenden',
+    overview: 'Übersicht',
+    totalEvents: 'Ereignisse gesamt',
+    exhibitorsSeen: 'Aussteller gesehen',
+    generatorOpens: 'Generator-Aufrufe',
+    exportsSucceeded: 'Exporte erfolgreich',
+    exportsFailed: 'Exporte fehlgeschlagen',
+    conversionRate: 'Konversionsrate',
+    needsAttention: 'Benötigt Aufmerksamkeit',
+    failedExports: 'Fehlgeschlagene Exporte',
+    company: 'Firma',
+    exhibitorId: 'Aussteller-ID',
+    links: 'Links',
+    opens: 'Aufrufe',
+    exports: 'Exporte',
+    issue: 'Problem',
+    action: 'Aktion',
+    viewDetails: 'Details anzeigen',
+    exhibitorExplorer: 'Aussteller-Explorer',
+    allExhibitors: 'Alle Aussteller',
+    activeOnly: 'Nur aktive',
+    topPerformers: 'Top-Performer',
+    page: 'Seite',
+    first: 'Erste',
+    previous: 'Zurück',
+    next: 'Weiter',
+    last: 'Letzte',
+    funnelAnalytics: 'Funnel-Analyse',
+    recentEvents: 'Aktuelle Ereignisse',
+  },
+  fr: {
+    ...enReportsText,
+    reports: 'Rapports',
+    range: 'Période',
+    search: 'Recherche',
+    exhibitor: 'Exposant',
+    dates: 'Dates',
+    customDateRange: 'Plage de dates personnalisée',
+    allTime: 'Tout',
+    downloadCsv: 'Télécharger CSV',
+    downloadXlsx: 'Télécharger XLSX',
+    searchExhibitors: 'Rechercher des exposants',
+    clearAllFilters: 'Effacer les filtres',
+    applyFilters: 'Appliquer les filtres',
+    overview: 'Vue d’ensemble',
+    totalEvents: 'Événements totaux',
+    exhibitorsSeen: 'Exposants vus',
+    generatorOpens: 'Ouvertures du générateur',
+    exportsSucceeded: 'Exports réussis',
+    exportsFailed: 'Exports échoués',
+    conversionRate: 'Taux de conversion',
+    needsAttention: 'À surveiller',
+    failedExports: 'Exports échoués',
+    company: 'Entreprise',
+    exhibitorId: 'ID exposant',
+    links: 'Liens',
+    opens: 'Ouvertures',
+    exports: 'Exports',
+    issue: 'Problème',
+    action: 'Action',
+    viewDetails: 'Voir détails',
+    exhibitorExplorer: 'Explorateur exposants',
+    allExhibitors: 'Tous les exposants',
+    activeOnly: 'Actifs seulement',
+    topPerformers: 'Meilleurs résultats',
+    page: 'Page',
+    first: 'Premier',
+    previous: 'Précédent',
+    next: 'Suivant',
+    last: 'Dernier',
+    funnelAnalytics: 'Analyse du tunnel',
+    recentEvents: 'Événements récents',
+  },
+  it: {
+    ...enReportsText,
+    reports: 'Report',
+    range: 'Intervallo',
+    search: 'Cerca',
+    exhibitor: 'Espositore',
+    dates: 'Date',
+    customDateRange: 'Intervallo date personalizzato',
+    allTime: 'Tutto il periodo',
+    downloadCsv: 'Scarica CSV',
+    downloadXlsx: 'Scarica XLSX',
+    searchExhibitors: 'Cerca espositori',
+    clearAllFilters: 'Cancella filtri',
+    applyFilters: 'Applica filtri',
+    overview: 'Panoramica',
+    totalEvents: 'Eventi totali',
+    exhibitorsSeen: 'Espositori visti',
+    generatorOpens: 'Aperture generatore',
+    exportsSucceeded: 'Esportazioni riuscite',
+    exportsFailed: 'Esportazioni fallite',
+    conversionRate: 'Tasso di conversione',
+    needsAttention: 'Richiede attenzione',
+    failedExports: 'Esportazioni fallite',
+    company: 'Azienda',
+    exhibitorId: 'ID espositore',
+    links: 'Link',
+    opens: 'Aperture',
+    exports: 'Esportazioni',
+    issue: 'Problema',
+    action: 'Azione',
+    viewDetails: 'Vedi dettagli',
+    exhibitorExplorer: 'Esploratore espositori',
+    allExhibitors: 'Tutti gli espositori',
+    activeOnly: 'Solo attivi',
+    topPerformers: 'Migliori risultati',
+    page: 'Pagina',
+    first: 'Prima',
+    previous: 'Precedente',
+    next: 'Successiva',
+    last: 'Ultima',
+    funnelAnalytics: 'Analisi funnel',
+    recentEvents: 'Eventi recenti',
+  },
+  pt: {
+    ...enReportsText,
+    reports: 'Relatórios',
+    range: 'Período',
+    search: 'Busca',
+    exhibitor: 'Expositor',
+    dates: 'Datas',
+    customDateRange: 'Intervalo personalizado',
+    allTime: 'Todo o período',
+    downloadCsv: 'Baixar CSV',
+    downloadXlsx: 'Baixar XLSX',
+    searchExhibitors: 'Buscar expositores',
+    clearAllFilters: 'Limpar filtros',
+    applyFilters: 'Aplicar filtros',
+    overview: 'Visão geral',
+    totalEvents: 'Eventos totais',
+    exhibitorsSeen: 'Expositores vistos',
+    generatorOpens: 'Aberturas do gerador',
+    exportsSucceeded: 'Exportações bem-sucedidas',
+    exportsFailed: 'Exportações com falha',
+    conversionRate: 'Taxa de conversão',
+    needsAttention: 'Requer atenção',
+    failedExports: 'Exportações com falha',
+    company: 'Empresa',
+    exhibitorId: 'ID do expositor',
+    links: 'Links',
+    opens: 'Aberturas',
+    exports: 'Exportações',
+    issue: 'Problema',
+    action: 'Ação',
+    viewDetails: 'Ver detalhes',
+    exhibitorExplorer: 'Explorador de expositores',
+    allExhibitors: 'Todos os expositores',
+    activeOnly: 'Somente ativos',
+    topPerformers: 'Melhores resultados',
+    page: 'Página',
+    first: 'Primeira',
+    previous: 'Anterior',
+    next: 'Próxima',
+    last: 'Última',
+    funnelAnalytics: 'Análise de funil',
+    recentEvents: 'Eventos recentes',
+  },
+  nl: {
+    ...enReportsText,
+    reports: 'Rapporten',
+    range: 'Bereik',
+    search: 'Zoeken',
+    exhibitor: 'Exposant',
+    dates: 'Datums',
+    customDateRange: 'Aangepast datumbereik',
+    allTime: 'Altijd',
+    downloadCsv: 'CSV downloaden',
+    downloadXlsx: 'XLSX downloaden',
+    searchExhibitors: 'Exposanten zoeken',
+    clearAllFilters: 'Filters wissen',
+    applyFilters: 'Filters toepassen',
+    overview: 'Overzicht',
+    totalEvents: 'Totaal gebeurtenissen',
+    exhibitorsSeen: 'Exposanten gezien',
+    generatorOpens: 'Generator geopend',
+    exportsSucceeded: 'Exports geslaagd',
+    exportsFailed: 'Exports mislukt',
+    conversionRate: 'Conversieratio',
+    needsAttention: 'Aandacht nodig',
+    failedExports: 'Mislukte exports',
+    company: 'Bedrijf',
+    exhibitorId: 'Exposant-ID',
+    links: 'Links',
+    opens: 'Openingen',
+    exports: 'Exports',
+    issue: 'Probleem',
+    action: 'Actie',
+    viewDetails: 'Details bekijken',
+    exhibitorExplorer: 'Exposantenverkenner',
+    allExhibitors: 'Alle exposanten',
+    activeOnly: 'Alleen actief',
+    topPerformers: 'Toppresteerders',
+    page: 'Pagina',
+    first: 'Eerste',
+    previous: 'Vorige',
+    next: 'Volgende',
+    last: 'Laatste',
+    funnelAnalytics: 'Funnelanalyse',
+    recentEvents: 'Recente gebeurtenissen',
+  },
+  'zh-CN': {
+    ...enReportsText,
+    reports: '报告',
+    range: '范围',
+    search: '搜索',
+    exhibitor: '参展商',
+    dates: '日期',
+    customDateRange: '自定义日期范围',
+    allTime: '全部时间',
+    downloadCsv: '下载 CSV',
+    downloadXlsx: '下载 XLSX',
+    searchExhibitors: '搜索参展商',
+    clearAllFilters: '清除所有筛选',
+    applyFilters: '应用筛选',
+    overview: '概览',
+    totalEvents: '事件总数',
+    exhibitorsSeen: '参展商数量',
+    generatorOpens: '生成器打开次数',
+    exportsSucceeded: '成功导出',
+    exportsFailed: '导出失败',
+    conversionRate: '转化率',
+    needsAttention: '需要关注',
+    failedExports: '导出失败',
+    company: '公司',
+    exhibitorId: '参展商 ID',
+    links: '链接',
+    opens: '打开',
+    exports: '导出',
+    issue: '问题',
+    action: '操作',
+    viewDetails: '查看详情',
+    exhibitorExplorer: '参展商浏览器',
+    allExhibitors: '所有参展商',
+    activeOnly: '仅活跃',
+    topPerformers: '表现最佳',
+    page: '页面',
+    first: '第一页',
+    previous: '上一页',
+    next: '下一页',
+    last: '最后一页',
+    funnelAnalytics: '漏斗分析',
+    recentEvents: '最近事件',
+  },
+}
+
 const RANGE_OPTIONS = [
-  { label: 'Last 7 days', value: '7d' },
-  { label: 'Last 30 days', value: '30d' },
-  { label: 'Last 90 days', value: '90d' },
-  { label: 'All time', value: 'all' },
+  { labelKey: 'last7', value: '7d' },
+  { labelKey: 'last30', value: '30d' },
+  { labelKey: 'last90', value: '90d' },
+  { labelKey: 'all', value: 'all' },
 ] as const
 
 const PAGE_SIZE_OPTIONS = [25, 50, 100, 250] as const
@@ -151,6 +726,20 @@ const CHART_COLORS = {
   red: '#f87171',
   grid: '#3f3f46',
   axis: '#a1a1aa',
+}
+
+function getRangeLabel(value: string, text: ReportsText): string {
+  switch (value) {
+    case '7d':
+      return text.reports === 'Reports' ? 'Last 7 days' : '7 days'
+    case '30d':
+      return text.reports === 'Reports' ? 'Last 30 days' : '30 days'
+    case '90d':
+      return text.reports === 'Reports' ? 'Last 90 days' : '90 days'
+    case 'all':
+    default:
+      return text.allTime
+  }
 }
 
 function pad(value: number): string {
@@ -429,13 +1018,16 @@ function buildConversionBuckets(rows: ExhibitorSummary[]) {
   return buckets
 }
 
-function getLastActiveStatus(value: string | null): {
+function getLastActiveStatus(
+  value: string | null,
+  text: ReportsText
+): {
   label: string
   className: string
 } {
   if (!value) {
     return {
-      label: 'No activity',
+      label: text.noActivity,
       className: 'bg-neutral-800 text-neutral-300',
     }
   }
@@ -444,7 +1036,7 @@ function getLastActiveStatus(value: string | null): {
 
   if (Number.isNaN(timestamp)) {
     return {
-      label: 'Unknown',
+      label: text.unknown,
       className: 'bg-neutral-800 text-neutral-300',
     }
   }
@@ -456,20 +1048,20 @@ function getLastActiveStatus(value: string | null): {
 
   if (diffMs <= oneDay) {
     return {
-      label: 'Active today',
+      label: text.activeToday,
       className: 'bg-emerald-500/15 text-emerald-300',
     }
   }
 
   if (diffMs <= sevenDays) {
     return {
-      label: 'Active this week',
+      label: text.activeThisWeek,
       className: 'bg-blue-500/15 text-blue-300',
     }
   }
 
   return {
-    label: 'Inactive',
+    label: text.inactive,
     className: 'bg-amber-500/15 text-amber-300',
   }
 }
@@ -500,6 +1092,7 @@ function ChartCard({
   hasData,
   chartsReady,
   children,
+  loadingMessage,
 }: {
   title: string
   description: string
@@ -507,6 +1100,7 @@ function ChartCard({
   hasData: boolean
   chartsReady: boolean
   children: ReactNode
+  loadingMessage: string
 }) {
   return (
     <Card className="min-w-0 p-6 sm:p-7">
@@ -522,7 +1116,7 @@ function ChartCard({
           </div>
         ) : !chartsReady ? (
           <div className="flex h-full items-center justify-center rounded-2xl border border-white/10 bg-black/20 text-sm text-neutral-500">
-            Loading chart…
+            {loadingMessage}
           </div>
         ) : (
           <div className="h-full min-w-0 rounded-2xl border border-white/5 bg-black/10 p-2">
@@ -741,6 +1335,9 @@ export default function ReportsClient({
   currentExhibitorId,
   currentSearchQuery,
 }: Props) {
+  const [language] = useSiteLanguage()
+  const text = reportsText[language] ?? reportsText.en
+
   const [search, setSearch] = useState(currentSearchQuery)
   const [chartsReady, setChartsReady] = useState(false)
   const [exhibitorPickerValue, setExhibitorPickerValue] = useState(
@@ -984,6 +1581,24 @@ export default function ReportsClient({
     }
   }
 
+  function focusLabel(filter: FocusFilter) {
+    switch (filter) {
+      case 'activeOnly':
+        return text.activeOnly
+      case 'needsAttention':
+        return text.needsAttention
+      case 'zeroConversion':
+        return text.zeroConversion
+      case 'failedExports':
+        return text.failedExports
+      case 'topPerformers':
+        return text.topPerformers
+      case 'all':
+      default:
+        return text.allExhibitors
+    }
+  }
+
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#262626_0%,_#090909_42%,_#000_100%)] px-4 py-6 text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-10">
@@ -991,26 +1606,25 @@ export default function ReportsClient({
           <div className="mx-auto flex max-w-7xl flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
             <div>
               <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                Reports
+                {text.reports}
               </h1>
               <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-sm text-neutral-400">
                 <span>
-                  Range:{' '}
+                  {text.range}:{' '}
                   <span className="font-medium text-white">
                     {summary.appliedStartDate || summary.appliedEndDate
-                      ? 'Custom date range'
-                      : RANGE_OPTIONS.find((item) => item.value === currentRange)?.label ??
-                        'All time'}
+                      ? text.customDateRange
+                      : getRangeLabel(currentRange, text)}
                   </span>
                 </span>
                 <span>
-                  Search:{' '}
+                  {text.search}:{' '}
                   <span className="font-medium text-white">
                     {summary.appliedSearchQuery || '—'}
                   </span>
                 </span>
                 <span>
-                  Exhibitor:{' '}
+                  {text.exhibitor}:{' '}
                   <span className="font-medium text-white">
                     {summary.appliedExhibitorName
                       ? `${summary.appliedExhibitorName} (${summary.appliedExhibitorId})`
@@ -1018,10 +1632,10 @@ export default function ReportsClient({
                   </span>
                 </span>
                 <span>
-                  Dates:{' '}
+                  {text.dates}:{' '}
                   <span className="font-medium text-white">
                     {summary.appliedStartDate || summary.appliedEndDate
-                      ? `${summary.appliedStartDate ?? 'Open'} → ${summary.appliedEndDate ?? 'Open'}`
+                      ? `${summary.appliedStartDate ?? text.open} → ${summary.appliedEndDate ?? text.open}`
                       : '—'}
                   </span>
                 </span>
@@ -1045,7 +1659,7 @@ export default function ReportsClient({
                       q: currentSearchQuery,
                     })}
                   >
-                    {option.label}
+                    {getRangeLabel(option.value, text)}
                   </ToolbarPill>
                 )
               })}
@@ -1060,7 +1674,7 @@ export default function ReportsClient({
                   summary.appliedEndDate
                 )}
               >
-                Download CSV
+                {text.downloadCsv}
               </ExportButton>
 
               <ExportButton
@@ -1073,7 +1687,7 @@ export default function ReportsClient({
                   summary.appliedEndDate
                 )}
               >
-                Download XLSX
+                {text.downloadXlsx}
               </ExportButton>
             </div>
           </div>
@@ -1082,9 +1696,11 @@ export default function ReportsClient({
         <Card className="p-6 sm:p-7">
           <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
             <div>
-              <h2 className="text-2xl font-semibold text-white">Search exhibitors</h2>
+              <h2 className="text-2xl font-semibold text-white">
+                {text.searchExhibitors}
+              </h2>
               <p className="mt-1 text-sm leading-6 text-neutral-400">
-                Find one exhibitor quickly, filter the whole report, or jump into a detail view.
+                {text.searchExhibitorsDescription}
               </p>
             </div>
 
@@ -1096,7 +1712,7 @@ export default function ReportsClient({
                 href="/reports"
                 className="inline-flex w-fit rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-neutral-300 transition hover:bg-white/10"
               >
-                Clear all filters
+                {text.clearAllFilters}
               </Link>
             ) : null}
           </div>
@@ -1108,13 +1724,13 @@ export default function ReportsClient({
           >
             <div>
               <label htmlFor="report-search" className="mb-2 block text-sm font-medium text-neutral-300">
-                Company name or exhibitor ID
+                {text.companyNameOrExhibitorId}
               </label>
               <input
                 id="report-search"
                 name="q"
                 type="text"
-                placeholder="Search across reports"
+                placeholder={text.searchAcrossReports}
                 defaultValue={currentSearchQuery}
                 className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/25"
               />
@@ -1122,7 +1738,7 @@ export default function ReportsClient({
 
             <div>
               <label htmlFor="startDate" className="mb-2 block text-sm font-medium text-neutral-300">
-                Start date
+                {text.startDate}
               </label>
               <input
                 id="startDate"
@@ -1135,7 +1751,7 @@ export default function ReportsClient({
 
             <div>
               <label htmlFor="endDate" className="mb-2 block text-sm font-medium text-neutral-300">
-                End date
+                {text.endDate}
               </label>
               <input
                 id="endDate"
@@ -1155,7 +1771,7 @@ export default function ReportsClient({
                 type="submit"
                 className="w-full rounded-2xl border border-white bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-neutral-200 lg:w-auto"
               >
-                Apply filters
+                {text.applyFilters}
               </button>
             </div>
           </form>
@@ -1166,7 +1782,7 @@ export default function ReportsClient({
           >
             <div>
               <label htmlFor="exhibitor-picker" className="mb-2 block text-sm font-medium text-neutral-300">
-                Select one exhibitor
+                {text.selectOneExhibitor}
               </label>
               <input
                 id="exhibitor-picker"
@@ -1174,7 +1790,7 @@ export default function ReportsClient({
                 type="text"
                 value={exhibitorPickerValue}
                 onChange={(event) => setExhibitorPickerValue(event.target.value)}
-                placeholder="Start typing company name or exhibitor ID"
+                placeholder={text.selectOneExhibitorPlaceholder}
                 className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/25"
               />
               <datalist id="exhibitor-picker-options">
@@ -1188,12 +1804,12 @@ export default function ReportsClient({
               type="submit"
               className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-neutral-200 transition hover:bg-white/10"
             >
-              Apply exhibitor
+              {text.applyExhibitor}
             </button>
           </form>
 
           <div className="mt-4 text-sm text-neutral-500">
-            Matching available exhibitors: {filteredAvailableExhibitors.length}
+            {text.matchingAvailableExhibitors}: {filteredAvailableExhibitors.length}
           </div>
         </Card>
 
@@ -1201,13 +1817,15 @@ export default function ReportsClient({
           <Card className="p-6 sm:p-7">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <h2 className="text-2xl font-semibold text-white">Top insights</h2>
+                <h2 className="text-2xl font-semibold text-white">
+                  {text.topInsights}
+                </h2>
                 <p className="mt-1 text-sm leading-6 text-neutral-400">
-                  Automated highlights from the selected report view.
+                  {text.topInsightsDescription}
                 </p>
               </div>
               <div className="text-sm text-neutral-500">
-                {summary.insights.length} insights generated
+                {summary.insights.length} {text.insightsGenerated}
               </div>
             </div>
 
@@ -1222,50 +1840,52 @@ export default function ReportsClient({
         <Card className="p-6 sm:p-7">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h2 className="text-2xl font-semibold text-white">Export analytics</h2>
+              <h2 className="text-2xl font-semibold text-white">
+                {text.exportAnalytics}
+              </h2>
               <p className="mt-1 text-sm leading-6 text-neutral-400">
-                Format usage, success rate, and failed export health for the selected report view.
+                {text.exportAnalyticsDescription}
               </p>
             </div>
             <div className="text-sm text-neutral-500">
-              {totalExportAttempts} export attempts tracked
+              {totalExportAttempts} {text.exportAttemptsTracked}
             </div>
           </div>
 
           <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <ExportHealthCard
-              label="Most used format"
+              label={text.mostUsedFormat}
               value={mostUsedFormat ? mostUsedFormat.label : '—'}
               description={
                 mostUsedFormat
-                  ? `${mostUsedFormat.count} exports · ${mostUsedFormat.share} of successful exports.`
-                  : 'No format usage recorded yet.'
+                  ? `${mostUsedFormat.count} ${text.exportsRecordedForFormat} ${mostUsedFormat.share} ${text.ofSuccessfulExports}`
+                  : text.noFormatUsage
               }
               tone="blue"
             />
 
             <ExportHealthCard
-              label="Least used format"
+              label={text.leastUsedFormat}
               value={leastUsedFormat ? leastUsedFormat.label : '—'}
               description={
                 leastUsedFormat
-                  ? `${leastUsedFormat.count} exports · ${leastUsedFormat.share} of successful exports.`
-                  : 'No format usage recorded yet.'
+                  ? `${leastUsedFormat.count} ${text.exportsRecordedForFormat} ${leastUsedFormat.share} ${text.ofSuccessfulExports}`
+                  : text.noFormatUsage
               }
               tone="amber"
             />
 
             <ExportHealthCard
-              label="Export success rate"
+              label={text.exportSuccessRate}
               value={exportSuccessRate}
-              description={`${summary.totalExportsSucceeded} successful exports from ${totalExportAttempts} total attempts.`}
+              description={`${summary.totalExportsSucceeded} ${text.successfulExportsFromAttempts} ${totalExportAttempts} ${text.total}.`}
               tone="green"
             />
 
             <ExportHealthCard
-              label="Export failure rate"
+              label={text.exportFailureRate}
               value={exportFailureRate}
-              description={`${summary.totalExportsFailed} failed exports from ${totalExportAttempts} total attempts.`}
+              description={`${summary.totalExportsFailed} ${text.failedExportsFromAttempts} ${totalExportAttempts} ${text.total}.`}
               tone={summary.totalExportsFailed > 0 ? 'red' : 'green'}
             />
           </div>
@@ -1275,16 +1895,16 @@ export default function ReportsClient({
               <table className="min-w-full border-collapse text-sm">
                 <thead className="bg-white/[0.04]">
                   <tr className="border-b border-white/10 text-left">
-                    <th className="px-5 py-3 font-medium text-neutral-300">Format</th>
-                    <th className="px-5 py-3 font-medium text-neutral-300">Successful exports</th>
-                    <th className="px-5 py-3 font-medium text-neutral-300">Share</th>
+                    <th className="px-5 py-3 font-medium text-neutral-300">{text.format}</th>
+                    <th className="px-5 py-3 font-medium text-neutral-300">{text.successfulExports}</th>
+                    <th className="px-5 py-3 font-medium text-neutral-300">{text.share}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {exportFormatRows.length === 0 ? (
                     <tr>
                       <td className="px-5 py-5 text-neutral-500" colSpan={3}>
-                        No export format usage recorded yet.
+                        {text.noFormatUsage}
                       </td>
                     </tr>
                   ) : (
@@ -1315,40 +1935,40 @@ export default function ReportsClient({
         </Card>
 
         <div>
-          <h2 className="mb-4 text-xl font-semibold text-white">Overview</h2>
+          <h2 className="mb-4 text-xl font-semibold text-white">{text.overview}</h2>
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             <KpiCard
-              label="Total events"
+              label={text.totalEvents}
               value={summary.totalEvents}
-              sublabel="All tracked activity"
+              sublabel={text.allTrackedActivity}
             />
             <KpiCard
-              label="Exhibitors seen"
+              label={text.exhibitorsSeen}
               value={summary.totalExhibitors}
-              sublabel="Unique exhibitors"
+              sublabel={text.uniqueExhibitors}
             />
             <KpiCard
-              label="Generator opens"
+              label={text.generatorOpens}
               value={summary.totalGeneratorOpens}
-              sublabel="Sessions opened"
+              sublabel={text.sessionsOpened}
               tone="blue"
             />
             <KpiCard
-              label="Exports succeeded"
+              label={text.exportsSucceeded}
               value={summary.totalExportsSucceeded}
-              sublabel="Successful exports"
+              sublabel={text.successfulExports}
               tone="green"
             />
             <KpiCard
-              label="Exports failed"
+              label={text.exportsFailed}
               value={summary.totalExportsFailed}
-              sublabel="Failed exports"
+              sublabel={text.failedExports}
               tone="red"
             />
             <KpiCard
-              label="Open → Export"
+              label={text.openToExport}
               value={summary.conversionRate}
-              sublabel="Conversion rate"
+              sublabel={text.conversionRate}
               tone="amber"
             />
           </section>
@@ -1356,15 +1976,15 @@ export default function ReportsClient({
 
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <CompactFocusCard
-            title="Needs attention"
+            title={text.needsAttention}
             value={String(needsAttention.length)}
-            subtitle="Engaged exhibitors with no successful exports."
+            subtitle={text.needsAttentionDescription}
             onClick={() => activateFocusFilter('needsAttention')}
             tone="red"
           />
 
           <CompactFocusCard
-            title="Top conversion"
+            title={text.topConversion}
             value={
               topPerformer
                 ? `${Math.round(
@@ -1375,23 +1995,23 @@ export default function ReportsClient({
                   )}%`
                 : '0%'
             }
-            subtitle={topPerformer ? topPerformer.companyName : 'No exhibitor data yet.'}
+            subtitle={topPerformer ? topPerformer.companyName : text.noExhibitorDataYet}
             onClick={() => activateFocusFilter('topPerformers')}
             tone="green"
           />
 
           <CompactFocusCard
-            title="Zero conversion"
+            title={text.zeroConversion}
             value={String(zeroConversionCount)}
-            subtitle="Exhibitors currently at 0% open-to-export conversion."
+            subtitle={text.zeroConversionDescription}
             onClick={() => activateFocusFilter('zeroConversion')}
             tone="amber"
           />
 
           <CompactFocusCard
-            title="Failed exports"
+            title={text.failedExports}
             value={String(summary.totalExportsFailed)}
-            subtitle="Total failed export events in the selected view."
+            subtitle={text.failedExportsDescription}
             onClick={() => activateFocusFilter('failedExports')}
             tone="blue"
           />
@@ -1399,11 +2019,12 @@ export default function ReportsClient({
 
         <section className="grid gap-10 xl:grid-cols-2">
           <ChartCard
-            title="Top exhibitors by activity"
-            description="Summary-only chart. Limited to the top exhibitors to keep the view readable."
-            emptyMessage="No exhibitor activity to chart."
+            title={text.topExhibitorsByActivity}
+            description={text.topExhibitorsByActivityDescription}
+            emptyMessage={text.noExhibitorActivityToChart}
             hasData={topExhibitorsChartData.length > 0}
             chartsReady={chartsReady}
+            loadingMessage={text.loadingChart}
           >
             <MeasuredChart>
               {({ width, height }) => (
@@ -1432,20 +2053,21 @@ export default function ReportsClient({
                     }}
                   />
                   <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: 20 }} />
-                  <Bar dataKey="exports" name="Exports succeeded" fill={CHART_COLORS.green} isAnimationActive={false} />
-                  <Bar dataKey="opens" name="Generator opens" fill={CHART_COLORS.violet} isAnimationActive={false} />
-                  <Bar dataKey="totalEvents" name="Total events" fill={CHART_COLORS.blue} isAnimationActive={false} />
+                  <Bar dataKey="exports" name={text.exportSucceededLegend} fill={CHART_COLORS.green} isAnimationActive={false} />
+                  <Bar dataKey="opens" name={text.generatorOpenLegend} fill={CHART_COLORS.violet} isAnimationActive={false} />
+                  <Bar dataKey="totalEvents" name={text.totalEventLegend} fill={CHART_COLORS.blue} isAnimationActive={false} />
                 </BarChart>
               )}
             </MeasuredChart>
           </ChartCard>
 
           <ChartCard
-            title="Export format usage"
-            description="Which output formats are being used most."
-            emptyMessage="No export data to chart."
+            title={text.exportFormatUsage}
+            description={text.exportFormatUsageDescription}
+            emptyMessage={text.noExportDataToChart}
             hasData={formatUsageChartData.length > 0}
             chartsReady={chartsReady}
+            loadingMessage={text.loadingChart}
           >
             <MeasuredChart>
               {({ width, height }) => (
@@ -1474,7 +2096,7 @@ export default function ReportsClient({
                     }}
                   />
                   <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: 20 }} />
-                  <Bar dataKey="count" name="Count" fill={CHART_COLORS.amber} isAnimationActive={false} />
+                  <Bar dataKey="count" name={text.count} fill={CHART_COLORS.amber} isAnimationActive={false} />
                 </BarChart>
               )}
             </MeasuredChart>
@@ -1483,11 +2105,12 @@ export default function ReportsClient({
 
         <section className="grid gap-10 xl:grid-cols-2">
           <ChartCard
-            title="Generator opens over time"
-            description="Daily generator opens and successful exports."
-            emptyMessage="Select a date range to view daily charts."
+            title={text.generatorOpensOverTime}
+            description={text.generatorOpensOverTimeDescription}
+            emptyMessage={text.selectDateRangeToViewDailyCharts}
             hasData={dailyChartData.length > 0}
             chartsReady={chartsReady}
+            loadingMessage={text.loadingChart}
           >
             <MeasuredChart>
               {({ width, height }) => (
@@ -1512,7 +2135,7 @@ export default function ReportsClient({
                   <Line
                     type="monotone"
                     dataKey="exportsSucceeded"
-                    name="Exports succeeded"
+                    name={text.exportSucceededLegend}
                     stroke={CHART_COLORS.green}
                     strokeWidth={2}
                     dot={false}
@@ -1521,7 +2144,7 @@ export default function ReportsClient({
                   <Line
                     type="monotone"
                     dataKey="generatorOpened"
-                    name="Generator opens"
+                    name={text.generatorOpenLegend}
                     stroke={CHART_COLORS.blue}
                     strokeWidth={2}
                     dot={false}
@@ -1533,11 +2156,12 @@ export default function ReportsClient({
           </ChartCard>
 
           <ChartCard
-            title="Export failures over time"
-            description="Track failed exports by day in the selected range."
-            emptyMessage="Select a date range to view daily charts."
+            title={text.exportFailuresOverTime}
+            description={text.exportFailuresOverTimeDescription}
+            emptyMessage={text.selectDateRangeToViewDailyCharts}
             hasData={dailyChartData.length > 0}
             chartsReady={chartsReady}
+            loadingMessage={text.loadingChart}
           >
             <MeasuredChart>
               {({ width, height }) => (
@@ -1562,7 +2186,7 @@ export default function ReportsClient({
                   <Line
                     type="monotone"
                     dataKey="exportsFailed"
-                    name="Exports failed"
+                    name={text.exportFailedLegend}
                     stroke={CHART_COLORS.red}
                     strokeWidth={2}
                     dot={false}
@@ -1578,13 +2202,13 @@ export default function ReportsClient({
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-2xl font-semibold text-white">Needs attention</h2>
+                <h2 className="text-2xl font-semibold text-white">{text.needsAttention}</h2>
                 <span className="rounded-full bg-red-500/20 px-2 py-1 text-xs font-medium text-red-300">
                   {needsAttention.length}
                 </span>
               </div>
               <p className="mt-1 text-sm leading-6 text-neutral-400">
-                Exhibitors with engagement but no successful exports.
+                {text.exhibitorsWithEngagementNoExports}
               </p>
             </div>
 
@@ -1593,7 +2217,7 @@ export default function ReportsClient({
               onClick={() => setNeedsAttentionExpanded((prev) => !prev)}
               className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-neutral-300 transition hover:bg-white/10"
             >
-              {needsAttentionExpanded ? 'Collapse table' : 'Expand table'}
+              {needsAttentionExpanded ? text.collapseTable : text.expandTable}
             </button>
           </div>
 
@@ -1603,21 +2227,21 @@ export default function ReportsClient({
                 <table className="min-w-full border-collapse text-sm">
                   <thead className="bg-red-500/10">
                     <tr className="border-b border-red-500/20 text-left">
-                      <th className="px-5 py-3 font-medium text-red-100">Company</th>
-                      <th className="px-5 py-3 font-medium text-red-100">Exhibitor ID</th>
-                      <th className="px-5 py-3 font-medium text-red-100">Links</th>
-                      <th className="px-5 py-3 font-medium text-red-100">Opens</th>
-                      <th className="px-5 py-3 font-medium text-red-100">Exports</th>
-                      <th className="px-5 py-3 font-medium text-red-100">Issue</th>
-                      <th className="px-5 py-3 font-medium text-red-100">Action</th>
+                      <th className="px-5 py-3 font-medium text-red-100">{text.company}</th>
+                      <th className="px-5 py-3 font-medium text-red-100">{text.exhibitorId}</th>
+                      <th className="px-5 py-3 font-medium text-red-100">{text.links}</th>
+                      <th className="px-5 py-3 font-medium text-red-100">{text.opens}</th>
+                      <th className="px-5 py-3 font-medium text-red-100">{text.exports}</th>
+                      <th className="px-5 py-3 font-medium text-red-100">{text.issue}</th>
+                      <th className="px-5 py-3 font-medium text-red-100">{text.action}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {visibleNeedsAttentionRows.map((item) => {
                       const issueLabel =
                         item.generatorOpenedCount > 0 && item.exportSucceededCount === 0
-                          ? 'Opened generator but never exported'
-                          : 'Generated links but no successful exports'
+                          ? text.openedGeneratorButNeverExported
+                          : text.generatedLinksButNoSuccessfulExports
 
                       return (
                         <tr key={item.exhibitorId} className="border-b border-white/5 last:border-b-0">
@@ -1636,7 +2260,7 @@ export default function ReportsClient({
                               })}
                               className="inline-flex items-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-neutral-200 transition hover:bg-white/10"
                             >
-                              View details
+                              {text.viewDetails}
                             </Link>
                           </td>
                         </tr>
@@ -1648,13 +2272,13 @@ export default function ReportsClient({
 
               {!needsAttentionExpanded && needsAttention.length > 5 ? (
                 <div className="border-t border-white/5 px-5 py-3 text-sm text-neutral-400">
-                  Showing 5 of {needsAttention.length} exhibitors.
+                  {text.showingFiveOf} {needsAttention.length} {text.exhibitor.toLowerCase()}s.
                 </div>
               ) : null}
             </div>
           ) : (
             <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-neutral-400">
-              No issues detected.
+              {text.noIssuesDetected}
             </div>
           )}
         </Card>
@@ -1663,21 +2287,21 @@ export default function ReportsClient({
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
               <div>
-                <h2 className="text-2xl font-semibold text-white">Exhibitor explorer</h2>
+                <h2 className="text-2xl font-semibold text-white">{text.exhibitorExplorer}</h2>
                 <p className="mt-1 text-sm leading-6 text-neutral-400">
-                  Scalable table with sorting, filtering, and pagination.
+                  {text.exhibitorExplorerDescription}
                 </p>
               </div>
 
               <div className="flex flex-wrap items-end gap-3">
                 <div>
                   <label htmlFor="visible-exhibitor-filter" className="mb-2 block text-sm font-medium text-neutral-300">
-                    Filter visible list
+                    {text.filterVisibleList}
                   </label>
                   <input
                     id="visible-exhibitor-filter"
                     type="text"
-                    placeholder="Filter by name or ID"
+                    placeholder={text.filterByNameOrId}
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
                     className="w-full min-w-[280px] rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/25"
@@ -1686,7 +2310,7 @@ export default function ReportsClient({
 
                 <div>
                   <label htmlFor="pageSize" className="mb-2 block text-sm font-medium text-neutral-300">
-                    Rows per page
+                    {text.rowsPerPage}
                   </label>
                   <select
                     id="pageSize"
@@ -1709,59 +2333,32 @@ export default function ReportsClient({
 
             <div className="flex flex-wrap gap-2">
               <FocusChip active={focusFilter === 'all'} onClick={() => activateFocusFilter('all')}>
-                All exhibitors
+                {text.allExhibitors}
               </FocusChip>
-              <FocusChip
-                active={focusFilter === 'activeOnly'}
-                onClick={() => activateFocusFilter('activeOnly')}
-              >
-                Active only
+              <FocusChip active={focusFilter === 'activeOnly'} onClick={() => activateFocusFilter('activeOnly')}>
+                {text.activeOnly}
               </FocusChip>
-              <FocusChip
-                active={focusFilter === 'needsAttention'}
-                onClick={() => activateFocusFilter('needsAttention')}
-              >
-                Needs attention
+              <FocusChip active={focusFilter === 'needsAttention'} onClick={() => activateFocusFilter('needsAttention')}>
+                {text.needsAttention}
               </FocusChip>
-              <FocusChip
-                active={focusFilter === 'zeroConversion'}
-                onClick={() => activateFocusFilter('zeroConversion')}
-              >
-                Zero conversion
+              <FocusChip active={focusFilter === 'zeroConversion'} onClick={() => activateFocusFilter('zeroConversion')}>
+                {text.zeroConversion}
               </FocusChip>
-              <FocusChip
-                active={focusFilter === 'failedExports'}
-                onClick={() => activateFocusFilter('failedExports')}
-              >
-                Failed exports
+              <FocusChip active={focusFilter === 'failedExports'} onClick={() => activateFocusFilter('failedExports')}>
+                {text.failedExports}
               </FocusChip>
-              <FocusChip
-                active={focusFilter === 'topPerformers'}
-                onClick={() => activateFocusFilter('topPerformers')}
-              >
-                Top performers
+              <FocusChip active={focusFilter === 'topPerformers'} onClick={() => activateFocusFilter('topPerformers')}>
+                {text.topPerformers}
               </FocusChip>
             </div>
 
             <div className="flex flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between">
               <div className="text-neutral-500">
-                Showing {tableStartIndex}-{tableEndIndex} of {sortedExhibitorRows.length}
+                {text.showing} {tableStartIndex}-{tableEndIndex} {text.of} {sortedExhibitorRows.length}
               </div>
               <div className="text-neutral-500">
-                Current focus:{' '}
-                <span className="font-medium text-white">
-                  {focusFilter === 'all'
-                    ? 'All exhibitors'
-                    : focusFilter === 'activeOnly'
-                    ? 'Active only'
-                    : focusFilter === 'needsAttention'
-                    ? 'Needs attention'
-                    : focusFilter === 'zeroConversion'
-                    ? 'Zero conversion'
-                    : focusFilter === 'failedExports'
-                    ? 'Failed exports'
-                    : 'Top performers'}
-                </span>
+                {text.currentFocus}:{' '}
+                <span className="font-medium text-white">{focusLabel(focusFilter)}</span>
               </div>
             </div>
 
@@ -1771,90 +2368,58 @@ export default function ReportsClient({
                   <thead className="bg-white/[0.04]">
                     <tr className="border-b border-white/10 text-left">
                       <th className="px-5 py-4 font-medium text-neutral-300">
-                        <button
-                          type="button"
-                          onClick={() => handleSort('companyName')}
-                          className="font-medium hover:underline"
-                        >
-                          Company{sortIndicator('companyName')}
+                        <button type="button" onClick={() => handleSort('companyName')} className="font-medium hover:underline">
+                          {text.company}{sortIndicator('companyName')}
                         </button>
                       </th>
                       <th className="px-5 py-4 font-medium text-neutral-300">
-                        <button
-                          type="button"
-                          onClick={() => handleSort('exhibitorId')}
-                          className="font-medium hover:underline"
-                        >
-                          Exhibitor ID{sortIndicator('exhibitorId')}
+                        <button type="button" onClick={() => handleSort('exhibitorId')} className="font-medium hover:underline">
+                          {text.exhibitorId}{sortIndicator('exhibitorId')}
                         </button>
                       </th>
                       <th className="px-5 py-4 font-medium text-neutral-300">
-                        <button
-                          type="button"
-                          onClick={() => handleSort('totalEvents')}
-                          className="font-medium hover:underline"
-                        >
-                          Total events{sortIndicator('totalEvents')}
+                        <button type="button" onClick={() => handleSort('totalEvents')} className="font-medium hover:underline">
+                          {text.totalEventsColumn}{sortIndicator('totalEvents')}
                         </button>
                       </th>
                       <th className="px-5 py-4 font-medium text-neutral-300">
-                        <button
-                          type="button"
-                          onClick={() => handleSort('generatorOpenedCount')}
-                          className="font-medium hover:underline"
-                        >
-                          Opens{sortIndicator('generatorOpenedCount')}
+                        <button type="button" onClick={() => handleSort('generatorOpenedCount')} className="font-medium hover:underline">
+                          {text.opens}{sortIndicator('generatorOpenedCount')}
                         </button>
                       </th>
                       <th className="px-5 py-4 font-medium text-neutral-300">
-                        <button
-                          type="button"
-                          onClick={() => handleSort('exportSucceededCount')}
-                          className="font-medium hover:underline"
-                        >
-                          Successful exports{sortIndicator('exportSucceededCount')}
+                        <button type="button" onClick={() => handleSort('exportSucceededCount')} className="font-medium hover:underline">
+                          {text.successfulExportsColumn}{sortIndicator('exportSucceededCount')}
                         </button>
                       </th>
                       <th className="px-5 py-4 font-medium text-neutral-300">
-                        <button
-                          type="button"
-                          onClick={() => handleSort('exportFailedCount')}
-                          className="font-medium hover:underline"
-                        >
-                          Failed exports{sortIndicator('exportFailedCount')}
+                        <button type="button" onClick={() => handleSort('exportFailedCount')} className="font-medium hover:underline">
+                          {text.failedExportsColumn}{sortIndicator('exportFailedCount')}
                         </button>
                       </th>
                       <th className="px-5 py-4 font-medium text-neutral-300">
-                        <button
-                          type="button"
-                          onClick={() => handleSort('conversionRate')}
-                          className="font-medium hover:underline"
-                        >
-                          Open → Export{sortIndicator('conversionRate')}
+                        <button type="button" onClick={() => handleSort('conversionRate')} className="font-medium hover:underline">
+                          {text.openToExport}{sortIndicator('conversionRate')}
                         </button>
                       </th>
                       <th className="px-5 py-4 font-medium text-neutral-300">
-                        <button
-                          type="button"
-                          onClick={() => handleSort('lastActivityAt')}
-                          className="font-medium hover:underline"
-                        >
-                          Last activity{sortIndicator('lastActivityAt')}
+                        <button type="button" onClick={() => handleSort('lastActivityAt')} className="font-medium hover:underline">
+                          {text.lastActivity}{sortIndicator('lastActivityAt')}
                         </button>
                       </th>
-                      <th className="px-5 py-4 font-medium text-neutral-300">Actions</th>
+                      <th className="px-5 py-4 font-medium text-neutral-300">{text.actions}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {paginatedExhibitorRows.length === 0 ? (
                       <tr>
                         <td className="px-5 py-6 text-neutral-500" colSpan={9}>
-                          No exhibitors match your current filters.
+                          {text.noExhibitorsMatch}
                         </td>
                       </tr>
                     ) : (
                       paginatedExhibitorRows.map((item) => {
-                        const status = getLastActiveStatus(item.lastActivityAt)
+                        const status = getLastActiveStatus(item.lastActivityAt, text)
 
                         return (
                           <tr key={item.exhibitorId} className="border-b border-white/5 align-top last:border-b-0">
@@ -1881,9 +2446,7 @@ export default function ReportsClient({
                             <td className="px-5 py-4">
                               <div className="space-y-2">
                                 <div>
-                                  <span
-                                    className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${status.className}`}
-                                  >
+                                  <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${status.className}`}>
                                     {status.label}
                                   </span>
                                 </div>
@@ -1901,7 +2464,7 @@ export default function ReportsClient({
                                 })}
                                 className="inline-flex min-w-[110px] items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-neutral-200 transition hover:bg-white/10"
                               >
-                                View details
+                                {text.viewDetails}
                               </Link>
                             </td>
                           </tr>
@@ -1916,41 +2479,21 @@ export default function ReportsClient({
             {sortedExhibitorRows.length > 0 ? (
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="text-sm text-neutral-500">
-                  Page {Math.min(currentPage, totalPages)} of {totalPages}
+                  {text.page} {Math.min(currentPage, totalPages)} {text.of} {totalPages}
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setCurrentPage(1)}
-                    disabled={currentPage <= 1}
-                    className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    First
+                  <button type="button" onClick={() => setCurrentPage(1)} disabled={currentPage <= 1} className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50">
+                    {text.first}
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                    disabled={currentPage <= 1}
-                    className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    Previous
+                  <button type="button" onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))} disabled={currentPage <= 1} className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50">
+                    {text.previous}
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-                    disabled={currentPage >= totalPages}
-                    className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    Next
+                  <button type="button" onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))} disabled={currentPage >= totalPages} className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50">
+                    {text.next}
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => setCurrentPage(totalPages)}
-                    disabled={currentPage >= totalPages}
-                    className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    Last
+                  <button type="button" onClick={() => setCurrentPage(totalPages)} disabled={currentPage >= totalPages} className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50">
+                    {text.last}
                   </button>
                 </div>
               </div>
@@ -1960,9 +2503,9 @@ export default function ReportsClient({
 
         <section className="grid gap-10 xl:grid-cols-2">
           <Card className="p-6 sm:p-7">
-            <h2 className="text-xl font-semibold text-white">Funnel analytics</h2>
+            <h2 className="text-xl font-semibold text-white">{text.funnelAnalytics}</h2>
             <p className="mt-1 text-sm leading-6 text-neutral-400">
-              Step-by-step progression through the generator journey.
+              {text.funnelAnalyticsDescription}
             </p>
 
             <div className="mt-6 overflow-hidden rounded-3xl border border-white/10">
@@ -1970,10 +2513,10 @@ export default function ReportsClient({
                 <table className="min-w-full border-collapse text-sm">
                   <thead className="bg-white/[0.04]">
                     <tr className="border-b border-white/10 text-left">
-                      <th className="px-5 py-3 font-medium text-neutral-300">Step</th>
-                      <th className="px-5 py-3 font-medium text-neutral-300">Count</th>
-                      <th className="px-5 py-3 font-medium text-neutral-300">From previous</th>
-                      <th className="px-5 py-3 font-medium text-neutral-300">From start</th>
+                      <th className="px-5 py-3 font-medium text-neutral-300">{text.step}</th>
+                      <th className="px-5 py-3 font-medium text-neutral-300">{text.count}</th>
+                      <th className="px-5 py-3 font-medium text-neutral-300">{text.fromPrevious}</th>
+                      <th className="px-5 py-3 font-medium text-neutral-300">{text.fromStart}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1992,9 +2535,9 @@ export default function ReportsClient({
           </Card>
 
           <Card className="p-6 sm:p-7">
-            <h2 className="text-xl font-semibold text-white">Recent events</h2>
+            <h2 className="text-xl font-semibold text-white">{text.recentEvents}</h2>
             <p className="mt-1 text-sm leading-6 text-neutral-400">
-              Latest analytics events in the current filtered view.
+              {text.recentEventsDescription}
             </p>
 
             <div className="mt-6 overflow-hidden rounded-3xl border border-white/10">
@@ -2002,17 +2545,17 @@ export default function ReportsClient({
                 <table className="min-w-full border-collapse text-sm">
                   <thead className="bg-white/[0.04]">
                     <tr className="border-b border-white/10 text-left">
-                      <th className="px-5 py-3 font-medium text-neutral-300">Timestamp</th>
-                      <th className="px-5 py-3 font-medium text-neutral-300">Company</th>
-                      <th className="px-5 py-3 font-medium text-neutral-300">Event</th>
-                      <th className="px-5 py-3 font-medium text-neutral-300">Format</th>
+                      <th className="px-5 py-3 font-medium text-neutral-300">{text.timestamp}</th>
+                      <th className="px-5 py-3 font-medium text-neutral-300">{text.company}</th>
+                      <th className="px-5 py-3 font-medium text-neutral-300">{text.event}</th>
+                      <th className="px-5 py-3 font-medium text-neutral-300">{text.format}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {summary.recentEvents.length === 0 ? (
                       <tr>
                         <td className="px-5 py-5 text-neutral-500" colSpan={4}>
-                          No events recorded yet.
+                          {text.noEventsRecordedYet}
                         </td>
                       </tr>
                     ) : (
