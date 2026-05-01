@@ -651,6 +651,30 @@ const toolsText: Record<LanguageKey, ToolsText> = {
 
 const DEFAULT_MOCK_EXHIBITOR_IDS = ['1001', '1002', '1003']
 
+async function readJsonResponse(res: Response) {
+  const rawText = await res.text()
+  const contentType = res.headers.get('content-type') ?? ''
+
+  if (!contentType.includes('application/json')) {
+    const preview = rawText
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 160)
+
+    throw new Error(
+      `Expected JSON but received ${res.status} ${res.statusText || 'response'} from ${res.url}. Preview: ${preview || 'empty response'}`
+    )
+  }
+
+  try {
+    return JSON.parse(rawText)
+  } catch {
+    throw new Error(
+      `Invalid JSON returned from ${res.url}. Status: ${res.status}.`
+    )
+  }
+}
+
 function formatTimestamp(value: string) {
   try {
     return new Date(value).toLocaleString()
@@ -830,7 +854,7 @@ export default function ToolsPage() {
 
   async function requestLaunchLink(id: string) {
     const res = await fetch(`/api/internal-launch-link/${encodeURIComponent(id)}`)
-    const data = await res.json()
+    const data = await readJsonResponse(res)
 
     if (!res.ok || !data.ok) {
       throw new Error(
@@ -861,7 +885,7 @@ export default function ToolsPage() {
 
     try {
       const res = await fetch(`/api/exhibitor/${encodeURIComponent(id)}`)
-      const data = await res.json()
+      const data = await readJsonResponse(res)
 
       if (!res.ok) {
         throw new Error(data?.error || `${t.failedToFindExhibitor} ${id}`)
