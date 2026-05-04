@@ -1078,9 +1078,10 @@ function Card({
   return (
     <section
       id={id}
-      className={`rounded-3xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.055),rgba(255,255,255,0.025))] shadow-[0_20px_80px_rgba(0,0,0,0.42)] backdrop-blur ${className}`}
+      className={`relative overflow-hidden rounded-3xl border border-white/10 bg-[#0b0b0b] shadow-[0_30px_120px_rgba(0,0,0,0.55)] ${className}`}
     >
-      {children}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_60%)]" />
+      <div className="relative">{children}</div>
     </section>
   )
 }
@@ -1207,20 +1208,24 @@ function CompactFocusCard({
 function InsightCard({ insight }: { insight: AnalyticsInsight }) {
   const toneClasses =
     insight.tone === 'green'
-      ? 'border-emerald-500/25 bg-emerald-500/[0.08] text-emerald-300'
+      ? 'border-emerald-500/30 bg-emerald-500/[0.12]'
       : insight.tone === 'blue'
-      ? 'border-blue-500/25 bg-blue-500/[0.08] text-blue-300'
+      ? 'border-blue-500/30 bg-blue-500/[0.12]'
       : insight.tone === 'amber'
-      ? 'border-amber-500/25 bg-amber-500/[0.08] text-amber-300'
-      : 'border-red-500/25 bg-red-500/[0.08] text-red-300'
+      ? 'border-amber-500/30 bg-amber-500/[0.12]'
+      : 'border-red-500/30 bg-red-500/[0.12]'
 
   return (
-    <div className={`rounded-3xl border p-5 ${toneClasses}`}>
-      <div className="text-sm font-medium">{insight.title}</div>
-      <div className="mt-3 truncate text-2xl font-semibold text-white">
+    <div className={`rounded-3xl border p-6 transition hover:scale-[1.02] ${toneClasses}`}>
+      <div className="text-xs uppercase tracking-wide text-neutral-400">
+        {insight.title}
+      </div>
+
+      <div className="mt-3 truncate text-3xl font-semibold leading-none text-white">
         {insight.value}
       </div>
-      <p className="mt-3 text-sm leading-6 text-neutral-400">
+
+      <p className="mt-4 text-sm leading-6 text-neutral-300">
         {insight.description}
       </p>
     </div>
@@ -1602,14 +1607,24 @@ export default function ReportsClient({
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#262626_0%,_#090909_42%,_#000_100%)] px-4 py-6 text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-10">
-        <div className="sticky top-0 z-30 -mx-4 border-b border-white/10 bg-black/70 px-4 py-4 backdrop-blur-xl sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-          <div className="mx-auto flex max-w-7xl flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-            <div>
+        <div className="sticky top-0 z-30 -mx-4 border-b border-white/10 bg-black/80 px-4 py-4 backdrop-blur-xl sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+          <div className="mx-auto flex max-w-7xl flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+            <div className="min-w-0">
+              <div className="mb-3 flex flex-wrap items-center gap-3">
+                <span className="inline-flex rounded-full border border-blue-400/25 bg-blue-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-300">
+                  ISE 2027
+                </span>
+                <span className="inline-flex rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-300">
+                  Live analytics
+                </span>
+              </div>
+
               <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                {text.reports}
+                ISE 2027 Exhibitor Reports
               </h1>
-              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-sm text-neutral-400">
-                <span>
+
+              <div className="mt-3 flex flex-wrap gap-2 text-xs text-neutral-400 sm:text-sm">
+                <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">
                   {text.range}:{' '}
                   <span className="font-medium text-white">
                     {summary.appliedStartDate || summary.appliedEndDate
@@ -1617,13 +1632,13 @@ export default function ReportsClient({
                       : getRangeLabel(currentRange, text)}
                   </span>
                 </span>
-                <span>
+                <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">
                   {text.search}:{' '}
                   <span className="font-medium text-white">
                     {summary.appliedSearchQuery || '—'}
                   </span>
                 </span>
-                <span>
+                <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">
                   {text.exhibitor}:{' '}
                   <span className="font-medium text-white">
                     {summary.appliedExhibitorName
@@ -1631,7 +1646,7 @@ export default function ReportsClient({
                       : '—'}
                   </span>
                 </span>
-                <span>
+                <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">
                   {text.dates}:{' '}
                   <span className="font-medium text-white">
                     {summary.appliedStartDate || summary.appliedEndDate
@@ -1642,7 +1657,7 @@ export default function ReportsClient({
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 xl:justify-end">
               {RANGE_OPTIONS.map((option) => {
                 const isActive =
                   !summary.appliedStartDate &&
@@ -1825,12 +1840,12 @@ export default function ReportsClient({
                 </p>
               </div>
               <div className="text-sm text-neutral-500">
-                {summary.insights.length} {text.insightsGenerated}
+                {(summary.insights ?? []).length} {text.insightsGenerated}
               </div>
             </div>
 
             <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-              {summary.insights.map((insight) => (
+              {(summary.insights ?? []).slice(0, 5).map((insight) => (
                 <InsightCard key={insight.id} insight={insight} />
               ))}
             </div>
@@ -2016,6 +2031,67 @@ export default function ReportsClient({
             tone="blue"
           />
         </section>
+
+        <Card className="p-6 sm:p-7">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 className="text-2xl font-semibold text-white">Top performer leaderboard</h2>
+              <p className="mt-1 text-sm leading-6 text-neutral-400">
+                Exhibitors ranked by open-to-export conversion, then successful exports.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => activateFocusFilter('topPerformers')}
+              className="inline-flex w-fit rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-neutral-300 transition hover:bg-white/10"
+            >
+              View all top performers
+            </button>
+          </div>
+
+          <div className="mt-6 grid gap-4 lg:grid-cols-5">
+            {leaderboard.slice(0, 5).map((item, index) => (
+              <Link
+                key={item.exhibitorId}
+                href={buildExhibitorDetailHref(item.exhibitorId, {
+                  range: currentRange,
+                  startDate: summary.appliedStartDate,
+                  endDate: summary.appliedEndDate,
+                })}
+                className="rounded-3xl border border-white/10 bg-black/20 p-5 transition hover:bg-white/[0.06]"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-sm font-semibold text-black">
+                    {index + 1}
+                  </span>
+                  <span className="rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
+                    {percentage(item.exportSucceededCount, item.generatorOpenedCount)}
+                  </span>
+                </div>
+
+                <div className="mt-5 line-clamp-2 min-h-[48px] text-base font-semibold leading-6 text-white">
+                  {item.companyName}
+                </div>
+
+                <div className="mt-4 space-y-2 text-sm text-neutral-400">
+                  <div className="flex justify-between gap-3">
+                    <span>Exports</span>
+                    <span className="font-medium text-white">{item.exportSucceededCount}</span>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <span>Opens</span>
+                    <span className="font-medium text-white">{item.generatorOpenedCount}</span>
+                  </div>
+                  <div className="flex justify-between gap-3">
+                    <span>ID</span>
+                    <span className="font-mono text-white">{item.exhibitorId}</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </Card>
 
         <section className="grid gap-10 xl:grid-cols-2">
           <ChartCard

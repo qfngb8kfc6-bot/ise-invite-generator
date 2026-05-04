@@ -420,69 +420,153 @@ function buildInsights(args: {
     totalGeneratorOpens,
   } = args
 
+  const activeExhibitors = exhibitorSummaries.filter(
+    (item) => item.totalEvents > 0
+  )
+
+  const exhibitorsWithOpens = exhibitorSummaries.filter(
+    (item) => item.generatorOpenedCount > 0
+  )
+
   const needsAttention = exhibitorSummaries.filter(
     (item) =>
       (item.generatorOpenedCount > 0 && item.exportSucceededCount === 0) ||
       (item.linkGeneratedCount > 0 && item.exportSucceededCount === 0)
   )
 
-  const topPerformer = [...exhibitorSummaries]
-    .filter((item) => item.generatorOpenedCount > 0)
+  const highIntentNoExport = exhibitorSummaries
+    .filter(
+      (item) =>
+        item.generatorOpenedCount >= 2 &&
+        item.exportSucceededCount === 0
+    )
+    .sort((a, b) => b.generatorOpenedCount - a.generatorOpenedCount)
+
+  const topPerformer = [...exhibitorsWithOpens]
     .sort((a, b) => {
       const aRate = a.exportSucceededCount / a.generatorOpenedCount
       const bRate = b.exportSucceededCount / b.generatorOpenedCount
 
       if (bRate !== aRate) return bRate - aRate
-      return b.exportSucceededCount - a.exportSucceededCount
+      if (b.exportSucceededCount !== a.exportSucceededCount) {
+        return b.exportSucceededCount - a.exportSucceededCount
+      }
+
+      return a.companyName.localeCompare(b.companyName)
     })[0]
 
+  const mostActiveWithoutExport = [...needsAttention].sort((a, b) => {
+    if (b.generatorOpenedCount !== a.generatorOpenedCount) {
+      return b.generatorOpenedCount - a.generatorOpenedCount
+    }
+
+    return b.linkGeneratedCount - a.linkGeneratedCount
+  })[0]
+
   const topFormat = Object.entries(formatUsage).sort((a, b) => b[1] - a[1])[0]
+
+  const totalExportAttempts = totalExportsSucceeded + totalExportsFailed
 
   const conversionRate = totalGeneratorOpens
     ? Math.round((totalExportsSucceeded / totalGeneratorOpens) * 100)
     : 0
 
-  return [
+  const failureRate = totalExportAttempts
+    ? Math.round((totalExportsFailed / totalExportAttempts) * 100)
+    : 0
+
+  const exportCoverage = activeExhibitors.length
+    ? Math.round(
+        (exhibitorSummaries.filter((item) => item.exportSucceededCount > 0)
+          .length /
+          activeExhibitors.length) *
+          100
+      )
+    : 0
+
+  const insights: AnalyticsInsight[] = [
     {
       id: 'conversion-rate',
       title: 'Open → Export conversion',
       value: `${conversionRate}%`,
-      description: `${totalExportsSucceeded} successful exports from ${totalGeneratorOpens} generator opens.`,
+      description:
+        conversionRate >= 50
+          ? `${totalExportsSucceeded} successful exports from ${totalGeneratorOpens} opens. Conversion is strong for the selected view.`
+          : conversionRate >= 20
+          ? `${totalExportsSucceeded} successful exports from ${totalGeneratorOpens} opens. Conversion is usable but can be improved.`
+          : `${totalExportsSucceeded} successful exports from ${totalGeneratorOpens} opens. Prioritise exhibitors who opened but did not export.`,
       tone: conversionRate >= 50 ? 'green' : conversionRate >= 20 ? 'amber' : 'red',
     },
     {
       id: 'needs-attention',
       title: 'Needs attention',
       value: String(needsAttention.length),
-      description: 'Exhibitors with engagement but no successful export yet.',
+      description:
+        needsAttention.length > 0
+          ? `${needsAttention.length} exhibitors show engagement but have no successful export yet.`
+          : 'No engaged exhibitors are currently blocked without a successful export.',
       tone: needsAttention.length > 0 ? 'red' : 'green',
+    },
+    {
+      id: 'high-intent-no-export',
+      title: 'High intent, no export',
+      value: String(highIntentNoExport.length),
+      description:
+        highIntentNoExport.length > 0
+          ? `${highIntentNoExport[0].companyName} has ${highIntentNoExport[0].generatorOpenedCount} opens and no export. Follow up first.`
+          : 'No repeat-opening exhibitors are stuck without an export.',
+      tone: highIntentNoExport.length > 0 ? 'red' : 'green',
     },
     {
       id: 'top-performer',
       title: 'Top performer',
       value: topPerformer ? topPerformer.companyName : '—',
       description: topPerformer
-        ? `${topPerformer.exportSucceededCount} exports from ${topPerformer.generatorOpenedCount} opens.`
+        ? `${topPerformer.exportSucceededCount} exports from ${topPerformer.generatorOpenedCount} opens. Use this exhibitor as the success benchmark.`
         : 'No active exhibitor conversion data yet.',
       tone: 'blue',
+    },
+    {
+      id: 'export-coverage',
+      title: 'Export coverage',
+      value: `${exportCoverage}%`,
+      description:
+        activeExhibitors.length > 0
+          ? `${exhibitorSummaries.filter((item) => item.exportSucceededCount > 0).length} of ${activeExhibitors.length} active exhibitors have completed at least one export.`
+          : 'No active exhibitors are available in this report view.',
+      tone: exportCoverage >= 60 ? 'green' : exportCoverage >= 25 ? 'amber' : 'red',
+    },
+    {
+      id: 'failed-exports',
+      title: 'Failed exports',
+      value: String(totalExportsFailed),
+      description:
+        totalExportsFailed > 0
+          ? `${failureRate}% of export attempts failed. Check recent failed events and affected formats.`
+          : 'No failed export attempts in the selected report view.',
+      tone: totalExportsFailed > 0 ? 'red' : 'green',
     },
     {
       id: 'top-format',
       title: 'Most used format',
       value: topFormat ? topFormat[0] : '—',
       description: topFormat
-        ? `${topFormat[1]} exports recorded for this format.`
+        ? `${topFormat[1]} successful exports recorded for this format. This is the preferred output right now.`
         : 'No export format usage recorded yet.',
       tone: 'amber',
     },
     {
-      id: 'failed-exports',
-      title: 'Failed exports',
-      value: String(totalExportsFailed),
-      description: 'Export attempts that failed in the selected view.',
-      tone: totalExportsFailed > 0 ? 'red' : 'green',
+      id: 'priority-follow-up',
+      title: 'Priority follow-up',
+      value: mostActiveWithoutExport ? mostActiveWithoutExport.companyName : '—',
+      description: mostActiveWithoutExport
+        ? `${mostActiveWithoutExport.companyName} generated ${mostActiveWithoutExport.linkGeneratedCount} links and opened ${mostActiveWithoutExport.generatorOpenedCount} sessions but has no successful export.`
+        : 'No obvious priority follow-up is needed in this report view.',
+      tone: mostActiveWithoutExport ? 'red' : 'green',
     },
   ]
+
+  return insights
 }
 
 async function logAnalyticsEventToDb(event: AnalyticsEvent): Promise<void> {
