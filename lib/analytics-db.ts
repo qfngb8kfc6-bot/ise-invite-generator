@@ -1,7 +1,6 @@
 import 'server-only'
 
 import { Pool } from 'pg'
-import { env } from './env'
 
 type SqlTag = {
   <T = unknown[]>(strings: TemplateStringsArray, ...values: unknown[]): Promise<T>
@@ -11,12 +10,11 @@ let pool: Pool | null = null
 let tableEnsured = false
 
 function getConnectionString(): string {
-  return env.ANALYTICS_DATABASE_URL?.trim() || ''
+  return process.env.ANALYTICS_DATABASE_URL?.trim() || ''
 }
 
 function shouldUseSsl(connectionString: string): boolean {
   return (
-    process.env.NODE_ENV === 'production' &&
     !connectionString.includes('localhost') &&
     !connectionString.includes('127.0.0.1')
   )
@@ -26,15 +24,21 @@ function getPool(): Pool {
   const connectionString = getConnectionString()
 
   if (!connectionString) {
-    throw new Error('Analytics database URL is not configured')
+    throw new Error('ANALYTICS_DATABASE_URL is not configured')
   }
 
   if (!pool) {
+    const url = new URL(connectionString)
+
     pool = new Pool({
-      connectionString,
+      host: url.hostname,
+      port: url.port ? Number(url.port) : 5432,
+      database: url.pathname.replace(/^\//, ''),
+      user: decodeURIComponent(url.username),
+      password: decodeURIComponent(url.password),
       max: 1,
-      connectionTimeoutMillis: 2500,
-      idleTimeoutMillis: 5000,
+      connectionTimeoutMillis: 10000,
+      idleTimeoutMillis: 10000,
       ssl: shouldUseSsl(connectionString)
         ? { rejectUnauthorized: false }
         : undefined,
@@ -98,7 +102,9 @@ export async function ensureAnalyticsTable(): Promise<void> {
     return
   }
 
-  await getPool().query(`
+  const db = getPool()
+
+  await db.query(`
     create table if not exists analytics_events (
       id text primary key,
       exhibitor_id text not null,
@@ -111,17 +117,17 @@ export async function ensureAnalyticsTable(): Promise<void> {
     )
   `)
 
-  await getPool().query(`
+  await db.query(`
     create index if not exists analytics_events_exhibitor_id_idx
     on analytics_events (exhibitor_id)
   `)
 
-  await getPool().query(`
+  await db.query(`
     create index if not exists analytics_events_timestamp_idx
     on analytics_events (timestamp desc)
   `)
 
-  await getPool().query(`
+  await db.query(`
     create index if not exists analytics_events_event_type_idx
     on analytics_events (event_type)
   `)
