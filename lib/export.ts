@@ -30,7 +30,7 @@ const EXPORT_FORMATS: Record<ExportFormatKey, ExportFormatConfig> = {
   email: {
     key: 'email',
     width: 1200,
-    height: 627,
+    height: 900,
     fileLabel: 'email',
     pixelRatio: 2,
   },

@@ -22,6 +22,92 @@ function replaceYear(text: string, year: string) {
   return text.replace(/\b20\d{2}\b/g, year)
 }
 
+function getFallbackInviteText(language: LanguageKey) {
+  switch (language) {
+    case 'es':
+      return {
+        logoUnavailable: 'Logotipo no disponible',
+        companyName: 'Nombre de la empresa',
+        booth: 'Stand',
+        booths: 'Stands',
+        qrUnavailable: 'QR no disponible',
+        scanToRegister: 'Escanee para registrarse',
+        registrationUrlUnavailable: 'URL de registro no disponible',
+      }
+    case 'de':
+      return {
+        logoUnavailable: 'Logo nicht verfügbar',
+        companyName: 'Firmenname',
+        booth: 'Stand',
+        booths: 'Stände',
+        qrUnavailable: 'QR nicht verfügbar',
+        scanToRegister: 'Zum Registrieren scannen',
+        registrationUrlUnavailable: 'Registrierungs-URL nicht verfügbar',
+      }
+    case 'fr':
+      return {
+        logoUnavailable: 'Logo indisponible',
+        companyName: 'Nom de l’entreprise',
+        booth: 'Stand',
+        booths: 'Stands',
+        qrUnavailable: 'QR indisponible',
+        scanToRegister: 'Scanner pour s’inscrire',
+        registrationUrlUnavailable: 'URL d’inscription indisponible',
+      }
+    case 'it':
+      return {
+        logoUnavailable: 'Logo non disponibile',
+        companyName: 'Nome azienda',
+        booth: 'Stand',
+        booths: 'Stand',
+        qrUnavailable: 'QR non disponibile',
+        scanToRegister: 'Scansiona per registrarti',
+        registrationUrlUnavailable: 'URL di registrazione non disponibile',
+      }
+    case 'pt':
+      return {
+        logoUnavailable: 'Logótipo indisponível',
+        companyName: 'Nome da empresa',
+        booth: 'Stand',
+        booths: 'Stands',
+        qrUnavailable: 'QR indisponível',
+        scanToRegister: 'Digitalize para se registar',
+        registrationUrlUnavailable: 'URL de registo indisponível',
+      }
+    case 'nl':
+      return {
+        logoUnavailable: 'Logo niet beschikbaar',
+        companyName: 'Bedrijfsnaam',
+        booth: 'Stand',
+        booths: 'Stands',
+        qrUnavailable: 'QR niet beschikbaar',
+        scanToRegister: 'Scan om te registreren',
+        registrationUrlUnavailable: 'Registratie-URL niet beschikbaar',
+      }
+    case 'zh-CN':
+      return {
+        logoUnavailable: '暂无标志',
+        companyName: '公司名称',
+        booth: '展位',
+        booths: '展位',
+        qrUnavailable: '二维码不可用',
+        scanToRegister: '扫码注册',
+        registrationUrlUnavailable: '注册链接不可用',
+      }
+    case 'en':
+    default:
+      return {
+        logoUnavailable: 'Logo unavailable',
+        companyName: 'Company name',
+        booth: 'Booth',
+        booths: 'Booths',
+        qrUnavailable: 'QR unavailable',
+        scanToRegister: 'Scan to register',
+        registrationUrlUnavailable: 'Registration URL unavailable',
+      }
+  }
+}
+
 export default function InvitePreview({
   companyName,
   standNumber,
@@ -35,6 +121,7 @@ export default function InvitePreview({
   const [qrDataUrl, setQrDataUrl] = useState('')
 
   const text = translations[language].invite
+  const fallbackText = getFallbackInviteText(language)
   const selectedTheme = themes[theme]
 
   const headline = useMemo(
@@ -115,18 +202,18 @@ export default function InvitePreview({
               />
             ) : (
               <div className="mb-10 flex h-24 w-[280px] items-center justify-center rounded-2xl border border-zinc-200 bg-zinc-50 text-sm font-medium text-zinc-400">
-                Logo unavailable
+                {fallbackText.logoUnavailable}
               </div>
             )}
 
             <h3 className="max-w-[440px] text-4xl font-bold leading-tight tracking-tight text-zinc-950">
-              {companyName || 'Company name'}
+              {companyName || fallbackText.companyName}
             </h3>
 
             <div className="mt-8 space-y-4">
               <div className="rounded-3xl border border-zinc-200 bg-zinc-50 p-5">
                 <div className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
-                  {hasMultipleBooths ? 'Booths' : 'Booth'}
+                  {hasMultipleBooths ? fallbackText.booths : fallbackText.booth}
                 </div>
                 <div className="mt-2 text-2xl font-bold text-zinc-950">
                   {boothDisplay || '—'}
@@ -154,17 +241,17 @@ export default function InvitePreview({
                 />
               ) : (
                 <div className="flex h-40 w-40 items-center justify-center rounded-2xl border border-zinc-200 bg-zinc-50 text-sm font-medium text-zinc-400">
-                  QR unavailable
+                  {fallbackText.qrUnavailable}
                 </div>
               )}
             </div>
 
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold text-zinc-950">
-                Scan to register
+                {fallbackText.scanToRegister}
               </p>
               <p className="mt-2 break-all text-xs leading-5 text-zinc-500">
-                {registrationUrl || 'Registration URL unavailable'}
+                {registrationUrl || fallbackText.registrationUrlUnavailable}
               </p>
             </div>
           </div>

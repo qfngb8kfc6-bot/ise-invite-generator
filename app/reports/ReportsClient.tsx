@@ -1104,13 +1104,13 @@ function ChartCard({
   loadingMessage: string
 }) {
   return (
-    <Card className="min-w-0 p-6 sm:p-7">
+    <Card className="min-w-0 p-4 sm:p-7">
       <div className="space-y-1">
         <h2 className="text-xl font-semibold text-white">{title}</h2>
         <p className="text-sm leading-6 text-neutral-400">{description}</p>
       </div>
 
-      <div className="mt-8 h-[360px] min-w-0">
+      <div className="mt-6 h-[280px] min-w-0 sm:h-[360px]">
         {!hasData ? (
           <div className="flex h-full items-center justify-center rounded-2xl border border-white/10 bg-black/20 text-sm text-neutral-500">
             {emptyMessage}
@@ -1152,9 +1152,9 @@ function KpiCard({
       : 'border-white/10 bg-white/[0.035]'
 
   return (
-    <div className={`rounded-3xl border px-5 py-5 ${toneClasses}`}>
+    <div className={`rounded-3xl border px-5 py-5 transition duration-300 hover:-translate-y-1 hover:scale-[1.01] ${toneClasses}`}>
       <div className="text-sm font-medium text-neutral-300">{label}</div>
-      <div className="mt-4 text-4xl font-semibold leading-none text-white">
+      <div className="mt-4 text-3xl font-semibold leading-none text-white sm:text-4xl">
         {value}
       </div>
       <div className="mt-3 text-xs leading-5 text-neutral-500">{sublabel}</div>
@@ -1275,7 +1275,7 @@ function ToolbarPill({
   return (
     <Link
       href={href}
-      className={`rounded-2xl border px-4 py-2 text-sm font-medium transition ${
+      className={`rounded-2xl border px-3 py-2 text-center text-xs font-medium transition sm:px-4 sm:text-sm ${
         active
           ? 'border-white bg-white text-black'
           : 'border-white/10 bg-white/5 text-neutral-300 hover:bg-white/10'
@@ -1327,7 +1327,7 @@ function ExportButton({
   return (
     <a
       href={href}
-      className={`rounded-2xl border px-4 py-2 text-sm font-medium transition ${className}`}
+      className={`rounded-2xl border px-3 py-2 text-center text-xs font-medium transition sm:px-4 sm:text-sm ${className}`}
     >
       {children}
     </a>
@@ -1605,9 +1605,70 @@ export default function ReportsClient({
   }
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#262626_0%,_#090909_42%,_#000_100%)] px-4 py-6 text-white sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl space-y-10">
-        <div className="sticky top-0 z-30 -mx-4 border-b border-white/10 bg-black/80 px-4 py-4 backdrop-blur-xl sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#262626_0%,_#090909_42%,_#000_100%)] px-3 py-4 text-white sm:px-6 sm:py-6 lg:px-8">
+      <div className="mx-auto max-w-7xl space-y-6 sm:space-y-10">
+        <div className="grid gap-4 lg:grid-cols-4">
+  <div className="rounded-3xl border border-blue-500/20 bg-blue-500/[0.08] p-5">
+    <div className="text-xs uppercase tracking-[0.18em] text-blue-300">
+      Total Engagement
+    </div>
+
+    <div className="mt-3 text-4xl font-semibold text-white">
+      {summary.totalEvents}
+    </div>
+
+    <div className="mt-2 text-sm text-neutral-400">
+      Combined tracked actions
+    </div>
+  </div>
+
+  <div className="rounded-3xl border border-emerald-500/20 bg-emerald-500/[0.08] p-5">
+    <div className="text-xs uppercase tracking-[0.18em] text-emerald-300">
+      Export Success
+    </div>
+
+    <div className="mt-3 text-4xl font-semibold text-white">
+      {exportSuccessRate}
+    </div>
+
+    <div className="mt-2 text-sm text-neutral-400">
+      Successful export completion rate
+    </div>
+  </div>
+
+  <div className="rounded-3xl border border-amber-500/20 bg-amber-500/[0.08] p-5">
+    <div className="text-xs uppercase tracking-[0.18em] text-amber-300">
+      Active Exhibitors
+    </div>
+
+    <div className="mt-3 text-4xl font-semibold text-white">
+      {
+        summary.exhibitorSummaries.filter(
+          (item) => item.totalEvents > 0
+        ).length
+      }
+    </div>
+
+    <div className="mt-2 text-sm text-neutral-400">
+      Exhibitors with engagement
+    </div>
+  </div>
+
+  <div className="rounded-3xl border border-red-500/20 bg-red-500/[0.08] p-5">
+    <div className="text-xs uppercase tracking-[0.18em] text-red-300">
+      Needs Attention
+    </div>
+
+    <div className="mt-3 text-4xl font-semibold text-white">
+      {needsAttention.length}
+    </div>
+
+    <div className="mt-2 text-sm text-neutral-400">
+      Exhibitors with no exports
+    </div>
+  </div>
+</div>
+        <div className="sticky top-0 z-30 -mx-3 border-b border-white/10 bg-black/85 px-3 py-3 backdrop-blur-xl sm:-mx-6 sm:px-6 sm:py-4 lg:-mx-8 lg:px-8">
           <div className="mx-auto flex max-w-7xl flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
             <div className="min-w-0">
               <div className="mb-3 flex flex-wrap items-center gap-3">
@@ -1619,7 +1680,7 @@ export default function ReportsClient({
                 </span>
               </div>
 
-              <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-4xl">
                 ISE 2027 Exhibitor Reports
               </h1>
 
@@ -1657,7 +1718,7 @@ export default function ReportsClient({
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-2 xl:justify-end">
+            <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap xl:justify-end">
               {RANGE_OPTIONS.map((option) => {
                 const isActive =
                   !summary.appliedStartDate &&
@@ -1708,10 +1769,10 @@ export default function ReportsClient({
           </div>
         </div>
 
-        <Card className="p-6 sm:p-7">
+        <Card className="p-4 sm:p-7">
           <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
             <div>
-              <h2 className="text-2xl font-semibold text-white">
+              <h2 className="text-xl font-semibold text-white sm:text-2xl">
                 {text.searchExhibitors}
               </h2>
               <p className="mt-1 text-sm leading-6 text-neutral-400">
@@ -1829,10 +1890,10 @@ export default function ReportsClient({
         </Card>
 
         {summary.insights && summary.insights.length > 0 ? (
-          <Card className="p-6 sm:p-7">
+          <Card className="p-4 sm:p-7">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <h2 className="text-2xl font-semibold text-white">
+                <h2 className="text-xl font-semibold text-white sm:text-2xl">
                   {text.topInsights}
                 </h2>
                 <p className="mt-1 text-sm leading-6 text-neutral-400">
@@ -1844,7 +1905,7 @@ export default function ReportsClient({
               </div>
             </div>
 
-            <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
               {(summary.insights ?? []).slice(0, 5).map((insight) => (
                 <InsightCard key={insight.id} insight={insight} />
               ))}
@@ -1852,10 +1913,10 @@ export default function ReportsClient({
           </Card>
         ) : null}
 
-        <Card className="p-6 sm:p-7">
+        <Card className="p-4 sm:p-7">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h2 className="text-2xl font-semibold text-white">
+              <h2 className="text-xl font-semibold text-white sm:text-2xl">
                 {text.exportAnalytics}
               </h2>
               <p className="mt-1 text-sm leading-6 text-neutral-400">
@@ -1867,7 +1928,7 @@ export default function ReportsClient({
             </div>
           </div>
 
-          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <ExportHealthCard
               label={text.mostUsedFormat}
               value={mostUsedFormat ? mostUsedFormat.label : '—'}
@@ -1906,10 +1967,9 @@ export default function ReportsClient({
           </div>
 
           <div className="mt-6 overflow-hidden rounded-3xl border border-white/10">
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto overscroll-x-contain">
               <table className="min-w-full border-collapse text-sm">
-                <thead className="bg-white/[0.04]">
-                  <tr className="border-b border-white/10 text-left">
+                 <thead className="sticky top-0 z-10 bg-[#111111]">                  <tr className="border-b border-white/10 text-left">
                     <th className="px-5 py-3 font-medium text-neutral-300">{text.format}</th>
                     <th className="px-5 py-3 font-medium text-neutral-300">{text.successfulExports}</th>
                     <th className="px-5 py-3 font-medium text-neutral-300">{text.share}</th>
@@ -1924,7 +1984,7 @@ export default function ReportsClient({
                     </tr>
                   ) : (
                     exportFormatRows.map((row) => (
-                      <tr key={row.format} className="border-b border-white/5 last:border-b-0">
+                      <tr key={row.format} className="border-b border-white/5 transition hover:bg-white/[0.03] last:border-b-0">
                         <td className="px-5 py-4 font-medium text-white">{row.label}</td>
                         <td className="px-5 py-4 text-neutral-300">{row.count}</td>
                         <td className="px-5 py-4 text-neutral-300">
@@ -1951,7 +2011,7 @@ export default function ReportsClient({
 
         <div>
           <h2 className="mb-4 text-xl font-semibold text-white">{text.overview}</h2>
-          <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             <KpiCard
               label={text.totalEvents}
               value={summary.totalEvents}
@@ -1989,7 +2049,7 @@ export default function ReportsClient({
           </section>
         </div>
 
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <CompactFocusCard
             title={text.needsAttention}
             value={String(needsAttention.length)}
@@ -2032,10 +2092,10 @@ export default function ReportsClient({
           />
         </section>
 
-        <Card className="p-6 sm:p-7">
+        <Card className="p-4 sm:p-7">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h2 className="text-2xl font-semibold text-white">Top performer leaderboard</h2>
+              <h2 className="text-xl font-semibold text-white sm:text-2xl">Top performer leaderboard</h2>
               <p className="mt-1 text-sm leading-6 text-neutral-400">
                 Exhibitors ranked by open-to-export conversion, then successful exports.
               </p>
@@ -2050,7 +2110,7 @@ export default function ReportsClient({
             </button>
           </div>
 
-          <div className="mt-6 grid gap-4 lg:grid-cols-5">
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {leaderboard.slice(0, 5).map((item, index) => (
               <Link
                 key={item.exhibitorId}
@@ -2093,7 +2153,7 @@ export default function ReportsClient({
           </div>
         </Card>
 
-        <section className="grid gap-10 xl:grid-cols-2">
+        <section className="grid gap-6 xl:grid-cols-2">
           <ChartCard
             title={text.topExhibitorsByActivity}
             description={text.topExhibitorsByActivityDescription}
@@ -2108,7 +2168,7 @@ export default function ReportsClient({
                   width={width}
                   height={height}
                   data={topExhibitorsChartData}
-                  margin={{ top: 12, right: 12, left: 0, bottom: 72 }}
+                  margin={{ top: 12, right: 8, left: -20, bottom: 72 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
                   <XAxis
@@ -2151,7 +2211,7 @@ export default function ReportsClient({
                   width={width}
                   height={height}
                   data={formatUsageChartData}
-                  margin={{ top: 12, right: 12, left: 0, bottom: 72 }}
+                  margin={{ top: 12, right: 8, left: -20, bottom: 72 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
                   <XAxis
@@ -2179,7 +2239,7 @@ export default function ReportsClient({
           </ChartCard>
         </section>
 
-        <section className="grid gap-10 xl:grid-cols-2">
+        <section className="grid gap-6 xl:grid-cols-2">
           <ChartCard
             title={text.generatorOpensOverTime}
             description={text.generatorOpensOverTimeDescription}
@@ -2194,7 +2254,7 @@ export default function ReportsClient({
                   width={width}
                   height={height}
                   data={dailyChartData}
-                  margin={{ top: 12, right: 16, left: 0, bottom: 44 }}
+                  margin={{ top: 12, right: 8, left: -20, bottom: 44 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
                   <XAxis dataKey="label" stroke={CHART_COLORS.axis} />
@@ -2245,7 +2305,7 @@ export default function ReportsClient({
                   width={width}
                   height={height}
                   data={dailyChartData}
-                  margin={{ top: 12, right: 16, left: 0, bottom: 44 }}
+                  margin={{ top: 12, right: 8, left: -20, bottom: 44 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
                   <XAxis dataKey="label" stroke={CHART_COLORS.axis} />
@@ -2274,11 +2334,11 @@ export default function ReportsClient({
           </ChartCard>
         </section>
 
-        <Card className="p-6 sm:p-7">
+        <Card className="p-4 sm:p-7">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-2xl font-semibold text-white">{text.needsAttention}</h2>
+                <h2 className="text-xl font-semibold text-white sm:text-2xl">{text.needsAttention}</h2>
                 <span className="rounded-full bg-red-500/20 px-2 py-1 text-xs font-medium text-red-300">
                   {needsAttention.length}
                 </span>
@@ -2299,7 +2359,7 @@ export default function ReportsClient({
 
           {needsAttention.length > 0 ? (
             <div className="mt-6 overflow-hidden rounded-3xl border border-red-500/20">
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto overscroll-x-contain">
                 <table className="min-w-full border-collapse text-sm">
                   <thead className="bg-red-500/10">
                     <tr className="border-b border-red-500/20 text-left">
@@ -2320,7 +2380,7 @@ export default function ReportsClient({
                           : text.generatedLinksButNoSuccessfulExports
 
                       return (
-                        <tr key={item.exhibitorId} className="border-b border-white/5 last:border-b-0">
+                        <tr key={item.exhibitorId} className="border-b border-white/5 transition hover:bg-white/[0.03] last:border-b-0">
                           <td className="px-5 py-4 text-white">{item.companyName}</td>
                           <td className="px-5 py-4 text-neutral-300">{item.exhibitorId}</td>
                           <td className="px-5 py-4 text-neutral-300">{item.linkGeneratedCount}</td>
@@ -2359,11 +2419,11 @@ export default function ReportsClient({
           )}
         </Card>
 
-        <Card id="exhibitor-explorer" className="p-6 sm:p-7">
+        <Card id="exhibitor-explorer" className="p-4 sm:p-7">
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
               <div>
-                <h2 className="text-2xl font-semibold text-white">{text.exhibitorExplorer}</h2>
+                <h2 className="text-xl font-semibold text-white sm:text-2xl">{text.exhibitorExplorer}</h2>
                 <p className="mt-1 text-sm leading-6 text-neutral-400">
                   {text.exhibitorExplorerDescription}
                 </p>
@@ -2380,7 +2440,7 @@ export default function ReportsClient({
                     placeholder={text.filterByNameOrId}
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
-                    className="w-full min-w-[280px] rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/25"
+                    className="w-full min-w-0 sm:min-w-[280px] rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/25"
                   />
                 </div>
 
@@ -2438,10 +2498,14 @@ export default function ReportsClient({
               </div>
             </div>
 
+            <div className="rounded-2xl border border-blue-500/20 bg-blue-500/10 px-4 py-3 text-xs leading-5 text-blue-200 sm:hidden">
+              Swipe sideways to view the full table.
+            </div>
+
             <div className="overflow-hidden rounded-3xl border border-white/10">
-              <div className="overflow-x-auto">
-                <table className="min-w-[1120px] w-full border-collapse text-sm">
-                  <thead className="bg-white/[0.04]">
+              <div className="overflow-x-auto overscroll-x-contain">
+                <table className="min-w-[980px] w-full border-collapse text-xs sm:text-sm">
+                  <thead className="sticky top-0 z-10 bg-[#111111]">
                     <tr className="border-b border-white/10 text-left">
                       <th className="px-5 py-4 font-medium text-neutral-300">
                         <button type="button" onClick={() => handleSort('companyName')} className="font-medium hover:underline">
@@ -2498,7 +2562,7 @@ export default function ReportsClient({
                         const status = getLastActiveStatus(item.lastActivityAt, text)
 
                         return (
-                          <tr key={item.exhibitorId} className="border-b border-white/5 align-top last:border-b-0">
+                          <tr key={item.exhibitorId} className="border-b border-white/5 align-top transition hover:bg-white/[0.03] last:border-b-0">
                             <td className="px-5 py-4">
                               <Link
                                 href={buildExhibitorDetailHref(item.exhibitorId, {
@@ -2577,17 +2641,17 @@ export default function ReportsClient({
           </div>
         </Card>
 
-        <section className="grid gap-10 xl:grid-cols-2">
-          <Card className="p-6 sm:p-7">
+        <section className="grid gap-6 xl:grid-cols-2">
+          <Card className="p-4 sm:p-7">
             <h2 className="text-xl font-semibold text-white">{text.funnelAnalytics}</h2>
             <p className="mt-1 text-sm leading-6 text-neutral-400">
               {text.funnelAnalyticsDescription}
             </p>
 
             <div className="mt-6 overflow-hidden rounded-3xl border border-white/10">
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto overscroll-x-contain">
                 <table className="min-w-full border-collapse text-sm">
-                  <thead className="bg-white/[0.04]">
+                  <thead className="sticky top-0 z-10 bg-[#111111]">
                     <tr className="border-b border-white/10 text-left">
                       <th className="px-5 py-3 font-medium text-neutral-300">{text.step}</th>
                       <th className="px-5 py-3 font-medium text-neutral-300">{text.count}</th>
@@ -2597,7 +2661,7 @@ export default function ReportsClient({
                   </thead>
                   <tbody>
                     {funnelRows.map((item) => (
-                      <tr key={item.key} className="border-b border-white/5 last:border-b-0">
+                      <tr key={item.key} className="border-b border-white/5 transition hover:bg-white/[0.03] last:border-b-0">
                         <td className="px-5 py-4 font-medium text-white">{item.label}</td>
                         <td className="px-5 py-4 text-neutral-300">{item.count}</td>
                         <td className="px-5 py-4 text-neutral-300">{item.rateFromPrevious}</td>
@@ -2610,16 +2674,16 @@ export default function ReportsClient({
             </div>
           </Card>
 
-          <Card className="p-6 sm:p-7">
+          <Card className="p-4 sm:p-7">
             <h2 className="text-xl font-semibold text-white">{text.recentEvents}</h2>
             <p className="mt-1 text-sm leading-6 text-neutral-400">
               {text.recentEventsDescription}
             </p>
 
             <div className="mt-6 overflow-hidden rounded-3xl border border-white/10">
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto overscroll-x-contain">
                 <table className="min-w-full border-collapse text-sm">
-                  <thead className="bg-white/[0.04]">
+                  <thead className="sticky top-0 z-10 bg-[#111111]">
                     <tr className="border-b border-white/10 text-left">
                       <th className="px-5 py-3 font-medium text-neutral-300">{text.timestamp}</th>
                       <th className="px-5 py-3 font-medium text-neutral-300">{text.company}</th>
@@ -2636,7 +2700,7 @@ export default function ReportsClient({
                       </tr>
                     ) : (
                       summary.recentEvents.slice(0, 12).map((event) => (
-                        <tr key={event.id} className="border-b border-white/5 last:border-b-0">
+                        <tr key={event.id} className="border-b border-white/5 transition hover:bg-white/[0.03] last:border-b-0">
                           <td className="px-5 py-4 text-neutral-300">{formatDate(event.timestamp)}</td>
                           <td className="px-5 py-4">
                             <Link

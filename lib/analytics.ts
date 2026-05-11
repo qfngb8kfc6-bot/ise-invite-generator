@@ -336,7 +336,11 @@ function buildDailySeries(
 
 function percentage(numerator: number, denominator: number): string {
   if (!denominator) return '0%'
-  return `${Math.round((numerator / denominator) * 100)}%`
+
+  const rawPercentage = Math.round((numerator / denominator) * 100)
+  const safePercentage = Math.min(100, Math.max(0, rawPercentage))
+
+  return `${safePercentage}%`
 }
 
 function buildFunnelSummary(events: AnalyticsEvent[]): FunnelSummary {
