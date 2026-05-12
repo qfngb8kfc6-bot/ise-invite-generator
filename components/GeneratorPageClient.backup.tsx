@@ -140,7 +140,7 @@ function ShellCard({
   children: React.ReactNode
 }) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur sm:rounded-3xl sm:p-6">
+    <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
       <div className="mb-5">
         <h2 className="text-xl font-semibold tracking-tight text-white">{title}</h2>
         {description ? (
@@ -204,7 +204,7 @@ function ActionButton({
   return (
     <button
       {...props}
-      className={`inline-flex min-h-11 w-full items-center justify-center rounded-2xl px-4 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto ${styles} ${className}`}
+      className={`inline-flex items-center justify-center rounded-2xl px-4 py-3 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ${styles} ${className}`}
     >
       {children}
     </button>
@@ -219,7 +219,7 @@ function StatBox({
   children: React.ReactNode
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/20 p-3 sm:p-4">
+    <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
       <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-neutral-500">
         {label}
       </div>
@@ -572,16 +572,16 @@ export default function GeneratorPageClient({
 
   return (
     <>
-      <main className="min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_top,_#262626_0%,_#0a0a0a_38%,_#000_100%)] px-3 py-4 pb-28 text-white sm:px-6 sm:py-6 lg:px-8">
-        <div className="mx-auto w-full max-w-7xl space-y-4 sm:space-y-6">
-          <header className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur sm:rounded-3xl sm:p-6">
-            <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+      <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#262626_0%,_#0a0a0a_38%,_#000_100%)] px-4 py-6 text-white sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl space-y-6">
+          <header className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
+            <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
               <div className="min-w-0 flex-1">
                 <div className="mb-3 inline-flex rounded-full border border-blue-400/20 bg-blue-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-300">
                   Verified exhibitor session
                 </div>
 
-                <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-4xl">
+                <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
                   {ui.generatorTitle}
                 </h1>
 
@@ -590,7 +590,7 @@ export default function GeneratorPageClient({
                   <strong className="text-white">{verifiedExhibitor.companyName}</strong>
                 </p>
 
-                <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                   <StatBox label={getStandLabel(displayStandNumber)}>
                     <BoothBadges standNumber={displayStandNumber} theme={theme} />
                   </StatBox>
@@ -646,12 +646,12 @@ export default function GeneratorPageClient({
               </div>
 
               <div className="shrink-0 xl:w-[360px]">
-                <div className="mb-3 flex justify-start sm:justify-end">
+                <div className="mb-3 flex justify-end">
                   <LanguageSwitcher value={language} onChange={setLanguage} />
                 </div>
 
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-3 sm:rounded-3xl sm:p-4">
-                  <div className="grid gap-2 sm:grid-cols-2">
+                <div className="rounded-3xl border border-white/10 bg-black/20 p-4">
+                  <div className="grid gap-3 sm:grid-cols-2">
                     <ActionButton
                       type="button"
                       onClick={resetToVerifiedValues}
@@ -741,7 +741,7 @@ export default function GeneratorPageClient({
             ) : null}
           </header>
 
-          <div className="grid min-w-0 items-start gap-4 xl:grid-cols-[440px_minmax(0,1fr)] xl:gap-6">
+          <div className="grid items-start gap-6 xl:grid-cols-[440px_minmax(0,1fr)]">
             <ShellCard
               title={ui.generatorInputsTitle}
               description={ui.generatorInputsDescription}
@@ -859,7 +859,7 @@ export default function GeneratorPageClient({
                 </div>
               </div>
 
-              <div className="mt-5 rounded-2xl border border-white/10 bg-black/20 p-4 sm:mt-6 sm:rounded-3xl sm:p-5">
+              <div className="mt-6 rounded-3xl border border-white/10 bg-black/20 p-5">
                 <h3 className="text-sm font-semibold text-white">
                   {ui.generatorVerifiedSourceData}
                 </h3>
@@ -960,11 +960,11 @@ export default function GeneratorPageClient({
               title={ui.generatorPreviewTitle}
               description={ui.generatorPreviewDescription}
             >
-              <div className="xl:sticky xl:top-6">
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-3 sm:rounded-3xl sm:p-4">
-                  <div className="overflow-hidden rounded-2xl border border-white/10 bg-neutral-950 p-2 sm:p-4">
+              <div className="sticky top-6">
+                <div className="rounded-3xl border border-white/10 bg-black/20 p-4">
+                  <div className="overflow-auto rounded-2xl border border-white/10 bg-neutral-950 p-4">
                     <div className="w-full overflow-x-auto">
-                      <div className="w-[760px] origin-top-left scale-[0.44] sm:scale-[0.68] lg:scale-[0.72]">
+                      <div className="min-w-[760px] origin-top-left scale-[0.62] sm:scale-[0.68] lg:scale-[0.72]">
                         <InvitePreview
                           companyName={companyName}
                           standNumber={displayStandNumber}
@@ -978,7 +978,7 @@ export default function GeneratorPageClient({
                     </div>
                   </div>
 
-                  <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                  <div className="mt-4 flex flex-wrap gap-3">
                     <ActionButton
                       type="button"
                       onClick={() => setIsFullPreviewOpen(true)}
@@ -1009,8 +1009,8 @@ export default function GeneratorPageClient({
       </div>
 
       {isFullPreviewOpen ? (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-3 py-4 backdrop-blur-sm sm:px-4 sm:py-6">
-          <div className="relative max-h-[95vh] w-full max-w-[1320px] rounded-2xl border border-white/10 bg-[#0b0b0b] p-3 shadow-2xl sm:rounded-3xl sm:p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-4 py-6 backdrop-blur-sm">
+          <div className="relative max-h-[95vh] w-full max-w-[1320px] rounded-3xl border border-white/10 bg-[#0b0b0b] p-4 shadow-2xl">
             <div className="mb-4 flex items-center justify-between gap-4">
               <div>
                 <h3 className="text-lg font-semibold text-white">Full Invitation Preview</h3>
