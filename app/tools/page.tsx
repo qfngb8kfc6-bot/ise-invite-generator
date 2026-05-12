@@ -740,7 +740,7 @@ function SectionCard({
   children: React.ReactNode
 }) {
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
+    <section className="premium-card rounded-3xl p-5 sm:p-6">
       <div className="mb-5">
         <h2 className="text-xl font-semibold tracking-tight text-white">{title}</h2>
         {description ? (
@@ -1095,9 +1095,9 @@ export default function ToolsPage() {
   }, [bulkResults])
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#262626_0%,_#0a0a0a_38%,_#000_100%)] px-4 py-6 text-white sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl space-y-6">
-        <header className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+    <main className="min-h-screen px-3 py-5 text-white sm:px-6 sm:py-6 lg:px-8">
+      <div className="fade-in-up mx-auto max-w-7xl space-y-5 sm:space-y-6">
+        <header className="premium-card rounded-3xl p-5 sm:p-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <div className="mb-3 inline-flex rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan-300">
@@ -1112,7 +1112,7 @@ export default function ToolsPage() {
             </div>
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+              <div className="rounded-2xl border border-white/10 bg-black/25 px-4 py-3 backdrop-blur-xl">
                 <div className="text-[11px] uppercase tracking-[0.14em] text-neutral-500">
                   {t.latestLookup}
                 </div>
@@ -1120,7 +1120,7 @@ export default function ToolsPage() {
                   {lookupResult?.exhibitorId ?? '—'}
                 </div>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+              <div className="rounded-2xl border border-white/10 bg-black/25 px-4 py-3 backdrop-blur-xl">
                 <div className="text-[11px] uppercase tracking-[0.14em] text-neutral-500">
                   {t.bulkResults}
                 </div>
@@ -1128,7 +1128,7 @@ export default function ToolsPage() {
                   {bulkSummary.total}
                 </div>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+              <div className="rounded-2xl border border-white/10 bg-black/25 px-4 py-3 backdrop-blur-xl">
                 <div className="text-[11px] uppercase tracking-[0.14em] text-neutral-500">
                   {t.sessionHistory}
                 </div>
@@ -1180,7 +1180,7 @@ export default function ToolsPage() {
               </div>
 
               {lookupResult ? (
-                <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
+                <div className="rounded-2xl border border-white/10 bg-black/25 p-4 backdrop-blur-xl sm:rounded-3xl sm:p-5">
                   <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
                     <div className="min-w-0 flex-1">
                       <div className="grid gap-4 sm:grid-cols-2">
@@ -1340,7 +1340,7 @@ export default function ToolsPage() {
               </div>
             </div>
 
-            <div className="overflow-hidden rounded-3xl border border-white/10">
+            <div className="overflow-hidden rounded-2xl border border-white/10 sm:rounded-3xl">
               <div className="overflow-x-auto">
                 <table className="min-w-[980px] w-full border-collapse text-sm">
                   <thead className="bg-white/[0.04] text-left text-neutral-300">
@@ -1442,7 +1442,7 @@ export default function ToolsPage() {
               {history.map((item) => (
                 <div
                   key={`${item.exhibitorId}-${item.createdAt}-${item.launchUrl.slice(0, 8)}`}
-                  className="rounded-3xl border border-white/10 bg-black/20 p-5"
+                  className="rounded-2xl border border-white/10 bg-black/25 p-4 backdrop-blur-xl sm:rounded-3xl sm:p-5"
                 >
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="min-w-0 flex-1">
