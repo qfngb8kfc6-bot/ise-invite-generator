@@ -1078,7 +1078,7 @@ function Card({
   return (
     <section
       id={id}
-      className={`relative overflow-hidden rounded-2xl border border-white/10 bg-[#0b0b0b] shadow-[0_20px_70px_rgba(0,0,0,0.45)] sm:rounded-3xl ${className}`}
+      className={`relative min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-[#0b0b0b] shadow-[0_20px_70px_rgba(0,0,0,0.45)] sm:rounded-3xl ${className}`}
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_60%)]" />
       <div className="relative">{children}</div>
@@ -1152,7 +1152,7 @@ function KpiCard({
       : 'border-white/10 bg-white/[0.035]'
 
   return (
-    <div className={`rounded-2xl border px-4 py-4 transition duration-300 hover:-translate-y-1 hover:scale-[1.01] sm:rounded-3xl sm:px-5 sm:py-5 ${toneClasses}`}>
+    <div className={`min-w-0 overflow-hidden rounded-2xl border px-4 py-4 transition duration-300 hover:-translate-y-1 hover:scale-[1.01] sm:rounded-3xl sm:px-5 sm:py-5 ${toneClasses}`}>
       <div className="text-sm font-medium text-neutral-300">{label}</div>
       <div className="mt-4 text-3xl font-semibold leading-none text-white sm:text-4xl">
         {value}
@@ -1193,7 +1193,7 @@ function CompactFocusCard({
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="text-sm font-medium text-neutral-200">{title}</div>
-          <p className="mt-2 line-clamp-2 text-sm leading-6 text-neutral-400">
+          <p className="mt-2 line-clamp-2 break-words text-sm leading-6 text-neutral-400">
             {subtitle}
           </p>
         </div>
@@ -1216,7 +1216,7 @@ function InsightCard({ insight }: { insight: AnalyticsInsight }) {
       : 'border-red-500/30 bg-red-500/[0.12]'
 
   return (
-    <div className={`rounded-2xl border p-4 transition hover:scale-[1.02] sm:rounded-3xl sm:p-6 ${toneClasses}`}>
+    <div className={`min-w-0 overflow-hidden rounded-2xl border p-4 transition hover:scale-[1.02] sm:rounded-3xl sm:p-6 ${toneClasses}`}>
       <div className="text-xs uppercase tracking-wide text-neutral-400">
         {insight.title}
       </div>
@@ -2130,7 +2130,7 @@ export default function ReportsClient({
                   </span>
                 </div>
 
-                <div className="mt-5 line-clamp-2 min-h-[48px] text-base font-semibold leading-6 text-white">
+                <div className="mt-5 line-clamp-2 min-h-[48px] break-words text-base font-semibold leading-6 text-white">
                   {item.companyName}
                 </div>
 
