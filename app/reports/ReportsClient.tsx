@@ -1605,15 +1605,15 @@ export default function ReportsClient({
   }
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#262626_0%,_#090909_42%,_#000_100%)] px-3 py-4 text-white sm:px-6 sm:py-6 lg:px-8">
+    <main className="fade-in-up min-h-screen px-3 py-4 text-white sm:px-6 sm:py-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-6 sm:space-y-10">
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-  <div className="rounded-2xl border border-blue-500/20 bg-blue-500/[0.08] p-4 sm:rounded-3xl sm:p-5">
+  <div className="premium-card rounded-2xl border-blue-500/20 bg-blue-500/[0.08] p-4 backdrop-blur-xl sm:rounded-3xl sm:p-5">
     <div className="text-xs uppercase tracking-[0.18em] text-blue-300">
       Total Engagement
     </div>
 
-    <div className="mt-3 text-4xl font-semibold text-white">
+    <div className="mt-3 bg-gradient-to-r from-white to-neutral-400 bg-clip-text text-4xl font-semibold text-transparent">
       {summary.totalEvents}
     </div>
 
@@ -1622,12 +1622,12 @@ export default function ReportsClient({
     </div>
   </div>
 
-  <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.08] p-4 sm:rounded-3xl sm:p-5">
+  <div className="premium-card rounded-2xl border-emerald-500/20 bg-emerald-500/[0.08] p-4 backdrop-blur-xl sm:rounded-3xl sm:p-5">
     <div className="text-xs uppercase tracking-[0.18em] text-emerald-300">
       Export Success
     </div>
 
-    <div className="mt-3 text-4xl font-semibold text-white">
+    <div className="mt-3 bg-gradient-to-r from-white to-neutral-400 bg-clip-text text-4xl font-semibold text-transparent">
       {exportSuccessRate}
     </div>
 
@@ -1636,12 +1636,12 @@ export default function ReportsClient({
     </div>
   </div>
 
-  <div className="rounded-2xl border border-amber-500/20 bg-amber-500/[0.08] p-4 sm:rounded-3xl sm:p-5">
+  <div className="premium-card rounded-2xl border-amber-500/20 bg-amber-500/[0.08] p-4 backdrop-blur-xl sm:rounded-3xl sm:p-5">
     <div className="text-xs uppercase tracking-[0.18em] text-amber-300">
       Active Exhibitors
     </div>
 
-    <div className="mt-3 text-4xl font-semibold text-white">
+    <div className="mt-3 bg-gradient-to-r from-white to-neutral-400 bg-clip-text text-4xl font-semibold text-transparent">
       {
         summary.exhibitorSummaries.filter(
           (item) => item.totalEvents > 0
@@ -1654,12 +1654,12 @@ export default function ReportsClient({
     </div>
   </div>
 
-  <div className="rounded-2xl border border-red-500/20 bg-red-500/[0.08] p-4 sm:rounded-3xl sm:p-5">
+  <div className="premium-card rounded-2xl border-red-500/20 bg-red-500/[0.08] p-4 backdrop-blur-xl sm:rounded-3xl sm:p-5">
     <div className="text-xs uppercase tracking-[0.18em] text-red-300">
       Needs Attention
     </div>
 
-    <div className="mt-3 text-4xl font-semibold text-white">
+    <div className="mt-3 bg-gradient-to-r from-white to-neutral-400 bg-clip-text text-4xl font-semibold text-transparent">
       {needsAttention.length}
     </div>
 
@@ -1969,7 +1969,7 @@ export default function ReportsClient({
           <div className="mt-4 overflow-x-auto rounded-2xl border border-white/10 sm:mt-6 sm:rounded-3xl">
             <div className="overflow-x-auto overscroll-x-contain">
               <table className="min-w-full border-collapse text-sm">
-                 <thead className="bg-[#111111]">                  <tr className="border-b border-white/10 text-left">
+                 <thead className="sticky top-0 z-10 bg-[#111111]/95 backdrop-blur-xl">                  <tr className="border-b border-white/10 text-left">
                     <th className="px-5 py-3 font-medium text-neutral-300">{text.format}</th>
                     <th className="px-5 py-3 font-medium text-neutral-300">{text.successfulExports}</th>
                     <th className="px-5 py-3 font-medium text-neutral-300">{text.share}</th>
@@ -2351,7 +2351,7 @@ export default function ReportsClient({
             <button
               type="button"
               onClick={() => setNeedsAttentionExpanded((prev) => !prev)}
-              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-neutral-300 transition hover:bg-white/10"
+              className="glass-panel rounded-2xl px-4 py-3 text-sm font-medium text-neutral-300 transition hover:bg-white/10"
             >
               {needsAttentionExpanded ? text.collapseTable : text.expandTable}
             </button>
@@ -2505,7 +2505,7 @@ export default function ReportsClient({
             <div className="overflow-x-auto rounded-2xl border border-white/10 sm:rounded-3xl">
               <div className="overflow-x-auto overscroll-x-contain">
                 <table className="min-w-[980px] w-full border-collapse text-xs sm:text-sm">
-                  <thead className="bg-[#111111]">
+                  <thead className="sticky top-0 z-10 bg-[#111111]/95 backdrop-blur-xl">
                     <tr className="border-b border-white/10 text-left">
                       <th className="px-5 py-4 font-medium text-neutral-300">
                         <button type="button" onClick={() => handleSort('companyName')} className="font-medium hover:underline">
@@ -2623,16 +2623,16 @@ export default function ReportsClient({
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                  <button type="button" onClick={() => setCurrentPage(1)} disabled={currentPage <= 1} className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50">
+                  <button type="button" onClick={() => setCurrentPage(1)} disabled={currentPage <= 1} className="glass-panel rounded-xl px-3 py-2 text-sm text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50">
                     {text.first}
                   </button>
-                  <button type="button" onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))} disabled={currentPage <= 1} className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50">
+                  <button type="button" onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))} disabled={currentPage <= 1} className="glass-panel rounded-xl px-3 py-2 text-sm text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50">
                     {text.previous}
                   </button>
-                  <button type="button" onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))} disabled={currentPage >= totalPages} className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50">
+                  <button type="button" onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))} disabled={currentPage >= totalPages} className="glass-panel rounded-xl px-3 py-2 text-sm text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50">
                     {text.next}
                   </button>
-                  <button type="button" onClick={() => setCurrentPage(totalPages)} disabled={currentPage >= totalPages} className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50">
+                  <button type="button" onClick={() => setCurrentPage(totalPages)} disabled={currentPage >= totalPages} className="glass-panel rounded-xl px-3 py-2 text-sm text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50">
                     {text.last}
                   </button>
                 </div>
@@ -2651,7 +2651,7 @@ export default function ReportsClient({
             <div className="mt-4 overflow-x-auto rounded-2xl border border-white/10 sm:mt-6 sm:rounded-3xl">
               <div className="overflow-x-auto overscroll-x-contain">
                 <table className="min-w-full border-collapse text-sm">
-                  <thead className="bg-[#111111]">
+                  <thead className="sticky top-0 z-10 bg-[#111111]/95 backdrop-blur-xl">
                     <tr className="border-b border-white/10 text-left">
                       <th className="px-5 py-3 font-medium text-neutral-300">{text.step}</th>
                       <th className="px-5 py-3 font-medium text-neutral-300">{text.count}</th>
@@ -2683,7 +2683,7 @@ export default function ReportsClient({
             <div className="mt-4 overflow-x-auto rounded-2xl border border-white/10 sm:mt-6 sm:rounded-3xl">
               <div className="overflow-x-auto overscroll-x-contain">
                 <table className="min-w-full border-collapse text-sm">
-                  <thead className="bg-[#111111]">
+                  <thead className="sticky top-0 z-10 bg-[#111111]/95 backdrop-blur-xl">
                     <tr className="border-b border-white/10 text-left">
                       <th className="px-5 py-3 font-medium text-neutral-300">{text.timestamp}</th>
                       <th className="px-5 py-3 font-medium text-neutral-300">{text.company}</th>
