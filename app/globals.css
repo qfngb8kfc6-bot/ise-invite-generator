@@ -1,45 +1,160 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000000;
+  --foreground: #ffffff;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.14), transparent 30%),
+    radial-gradient(circle at top right, rgba(16, 185, 129, 0.1), transparent 28%),
+    linear-gradient(180deg, #020202 0%, #050505 40%, #000000 100%);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Premium admin scrollbars */
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: rgba(255, 255, 255, 0.9);
+  color: #000;
+}
+
+a {
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+button {
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+input,
+select,
+textarea {
+  color-scheme: dark;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #fff;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #050505;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2a2a2a;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.24),
+    rgba(255,255,255,0.12)
+  );
   border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3a3a;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.34),
+    rgba(255,255,255,0.18)
+  );
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.recharts-tooltip-wrapper {
+  outline: none !important;
+}
+
+.recharts-default-tooltip {
+  border-radius: 18px !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  background: rgba(10,10,10,0.95) !important;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+}
+
+.recharts-tooltip-label {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.recharts-legend-item-text {
+  color: #d4d4d8 !important;
+}
+
+.recharts-cartesian-axis-tick-value {
+  fill: #a1a1aa !important;
+}
+
+.recharts-cartesian-grid line {
+  stroke: rgba(255,255,255,0.06) !important;
+}
+
+.glass-panel {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.premium-card {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.05),
+      rgba(255,255,255,0.02)
+    );
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow:
+    0 10px 40px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.04);
+  backdrop-filter: blur(20px);
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.45s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
