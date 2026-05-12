@@ -1668,7 +1668,7 @@ export default function ReportsClient({
     </div>
   </div>
 </div>
-        <div className="sticky top-0 z-30 -mx-3 border-b border-white/10 bg-black/85 px-3 py-3 backdrop-blur-xl sm:-mx-6 sm:px-6 sm:py-4 lg:-mx-8 lg:px-8">
+        <div className="-mx-3 border-b border-white/10 bg-black/85 px-3 py-3 backdrop-blur-xl sm:-mx-6 sm:px-6 sm:py-4 lg:-mx-8 lg:px-8">
           <div className="mx-auto flex max-w-7xl flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
             <div className="min-w-0">
               <div className="mb-3 flex flex-wrap items-center gap-3">
