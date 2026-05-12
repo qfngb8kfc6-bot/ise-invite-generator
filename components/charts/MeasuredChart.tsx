@@ -1,57 +1,91 @@
 'use client'
 
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react'
 
-type MeasuredChartProps = {
-  height?: number
-  children: (size: { width: number; height: number }) => ReactNode
+type Size = {
+  width: number
+  height: number
+}
+
+type Props = {
+  children: (size: Size) => ReactNode
+  minHeight?: number
+  className?: string
 }
 
 export default function MeasuredChart({
-  height = 360,
   children,
-}: MeasuredChartProps) {
+  minHeight = 320,
+  className = '',
+}: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null)
-  const [size, setSize] = useState({ width: 0, height })
+
+  const [size, setSize] = useState<Size>({
+    width: 0,
+    height: minHeight,
+  })
+
+  const updateSize = useCallback(() => {
+    if (!containerRef.current) return
+
+    const rect = containerRef.current.getBoundingClientRect()
+
+    const width = Math.max(280, Math.floor(rect.width))
+    const height = Math.max(minHeight, Math.floor(rect.height))
+
+    setSize((prev) => {
+      if (prev.width === width && prev.height === height) {
+        return prev
+      }
+
+      return {
+        width,
+        height,
+      }
+    })
+  }, [minHeight])
 
   useEffect(() => {
-    const element = containerRef.current
-    if (!element) return
-
-    const updateSize = () => {
-      const nextWidth = Math.floor(element.clientWidth)
-      const nextHeight = Math.floor(element.clientHeight) || height
-
-      if (nextWidth > 0 && nextHeight > 0) {
-        setSize({
-          width: nextWidth,
-          height: nextHeight,
-        })
-      }
-    }
-
     updateSize()
 
-    const observer = new ResizeObserver(() => {
-      updateSize()
-    })
+    const element = containerRef.current
 
-    observer.observe(element)
+    if (!element) return
+
+    let resizeObserver: ResizeObserver | null = null
+
+    if (typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(() => {
+        updateSize()
+      })
+
+      resizeObserver.observe(element)
+    }
+
     window.addEventListener('resize', updateSize)
 
     return () => {
-      observer.disconnect()
+      resizeObserver?.disconnect()
       window.removeEventListener('resize', updateSize)
     }
-  }, [height])
+  }, [updateSize])
 
   return (
     <div
       ref={containerRef}
-      className="h-full w-full min-w-0"
-      style={{ height: `${height}px` }}
+      className={`relative h-full min-h-[320px] w-full min-w-0 overflow-hidden rounded-2xl ${className}`}
     >
-      {size.width > 0 ? children(size) : null}
+      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_65%)]" />
+
+      <div className="relative h-full w-full min-w-0 overflow-hidden">
+        {size.width > 0 ? children(size) : null}
+      </div>
     </div>
   )
 }
