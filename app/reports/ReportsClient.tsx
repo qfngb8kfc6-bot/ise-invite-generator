@@ -1673,6 +1673,67 @@ export default function ReportsClient({
   return (
     <main className="fade-in-up min-h-screen px-3 py-4 text-white sm:px-6 sm:py-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-6 sm:space-y-10">
+
+        <div className="relative overflow-hidden rounded-3xl border border-emerald-500/20 bg-black/40 px-5 py-4 backdrop-blur-xl">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_left,rgba(16,185,129,0.18),transparent_35%)]" />
+
+          <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <div className="flex items-center gap-3">
+                <div className="relative flex h-3 w-3">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-400" />
+                </div>
+
+                <span className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-300">
+                  LIVE PLATFORM STATUS
+                </span>
+              </div>
+
+              <div className="mt-3 text-2xl font-semibold text-white">
+                Analytics engine operational
+              </div>
+
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-neutral-400">
+                Real-time exhibitor engagement, export tracking, and invitation activity monitoring for ISE 2027.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                <div className="text-xs uppercase tracking-[0.18em] text-neutral-500">
+                  Events
+                </div>
+
+                <div className="mt-2 text-2xl font-semibold text-white">
+                  <AnimatedNumber value={summary.totalEvents} />
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                <div className="text-xs uppercase tracking-[0.18em] text-neutral-500">
+                  Exhibitors
+                </div>
+
+                <div className="mt-2 text-2xl font-semibold text-white">
+                  <AnimatedNumber value={summary.totalExhibitors} />
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                <div className="text-xs uppercase tracking-[0.18em] text-neutral-500">
+                  Exports
+                </div>
+
+                <div className="mt-2 text-2xl font-semibold text-white">
+                  <AnimatedNumber value={summary.totalExportsSucceeded} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
   <div className="premium-card rounded-2xl border-blue-500/20 bg-blue-500/[0.08] p-4 backdrop-blur-xl sm:rounded-3xl sm:p-5">
     <div className="text-xs uppercase tracking-[0.18em] text-blue-300">
