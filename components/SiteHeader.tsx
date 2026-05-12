@@ -104,9 +104,7 @@ export default function SiteHeader() {
   let title = 'ISE 2027'
   let subtitle = ''
 
-  if (isGenerator) {
-    title = text.generatorTitle
-  }
+  if (isGenerator) title = text.generatorTitle
 
   if (isTools) {
     title = text.toolsTitle
@@ -119,26 +117,28 @@ export default function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex min-w-0 items-center gap-3">
-          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-white">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#050505]/90 shadow-[0_12px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.16),transparent_38%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.1),transparent_34%)]" />
+
+      <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-3 px-3 py-3 sm:gap-4 sm:px-6 sm:py-4 lg:px-8">
+        <Link href="/" className="group flex min-w-0 items-center gap-3">
+          <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-2xl bg-white shadow-[0_10px_35px_rgba(255,255,255,0.08)] ring-1 ring-white/20 transition duration-300 group-hover:scale-[1.03] sm:h-12 sm:w-12">
             <Image
               src="/ise-logo.png"
               alt="ISE Logo"
               fill
-              className="object-contain p-1"
+              className="object-contain p-1.5"
               priority
             />
           </div>
 
           <div className="min-w-0">
-            <div className="truncate text-sm font-semibold leading-none text-white">
+            <div className="truncate text-sm font-semibold leading-none tracking-tight text-white sm:text-base">
               {title}
             </div>
 
             {subtitle ? (
-              <div className="mt-1 truncate text-xs text-neutral-500">
+              <div className="mt-1 truncate text-xs font-medium text-neutral-400">
                 {subtitle}
               </div>
             ) : null}
@@ -147,13 +147,13 @@ export default function SiteHeader() {
 
         <div className="flex shrink-0 items-center gap-2">
           {isTools || isReports ? (
-            <nav className="hidden items-center gap-2 text-sm sm:flex">
+            <nav className="hidden items-center gap-1 rounded-2xl border border-white/10 bg-white/[0.04] p-1 text-sm shadow-inner sm:flex">
               <Link
                 href="/tools"
-                className={`rounded-xl border px-3 py-2 transition ${
+                className={`rounded-xl border px-4 py-2 font-medium transition ${
                   isTools
-                    ? 'border-white bg-white text-black'
-                    : 'border-white/10 bg-white/5 text-neutral-300 hover:bg-white/10 hover:text-white'
+                    ? 'border-white bg-white text-black shadow-sm'
+                    : 'border-transparent bg-transparent text-neutral-300 hover:bg-white/10 hover:text-white'
                 }`}
               >
                 {text.toolsNav}
@@ -161,10 +161,10 @@ export default function SiteHeader() {
 
               <Link
                 href="/reports"
-                className={`rounded-xl border px-3 py-2 transition ${
+                className={`rounded-xl border px-4 py-2 font-medium transition ${
                   isReports
-                    ? 'border-white bg-white text-black'
-                    : 'border-white/10 bg-white/5 text-neutral-300 hover:bg-white/10 hover:text-white'
+                    ? 'border-white bg-white text-black shadow-sm'
+                    : 'border-transparent bg-transparent text-neutral-300 hover:bg-white/10 hover:text-white'
                 }`}
               >
                 {text.reportsNav}
@@ -178,16 +178,16 @@ export default function SiteHeader() {
         </div>
       </div>
 
-      <div className="border-t border-white/5 px-4 pb-3 sm:hidden">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3">
+      <div className="border-t border-white/5 bg-black/25 px-3 pb-3 sm:hidden">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 pt-3">
           {isTools || isReports ? (
-            <nav className="flex items-center gap-2 text-sm">
+            <nav className="flex items-center gap-1 rounded-2xl border border-white/10 bg-white/[0.04] p-1 text-sm">
               <Link
                 href="/tools"
-                className={`rounded-xl border px-3 py-2 transition ${
+                className={`rounded-xl border px-3 py-2 font-medium transition ${
                   isTools
                     ? 'border-white bg-white text-black'
-                    : 'border-white/10 bg-white/5 text-neutral-300 hover:bg-white/10 hover:text-white'
+                    : 'border-transparent bg-transparent text-neutral-300'
                 }`}
               >
                 {text.toolsNav}
@@ -195,10 +195,10 @@ export default function SiteHeader() {
 
               <Link
                 href="/reports"
-                className={`rounded-xl border px-3 py-2 transition ${
+                className={`rounded-xl border px-3 py-2 font-medium transition ${
                   isReports
                     ? 'border-white bg-white text-black'
-                    : 'border-white/10 bg-white/5 text-neutral-300 hover:bg-white/10 hover:text-white'
+                    : 'border-transparent bg-transparent text-neutral-300'
                 }`}
               >
                 {text.reportsNav}
