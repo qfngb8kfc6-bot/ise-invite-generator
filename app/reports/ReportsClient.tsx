@@ -1078,7 +1078,7 @@ function Card({
   return (
     <section
       id={id}
-      className={`relative overflow-hidden rounded-3xl border border-white/10 bg-[#0b0b0b] shadow-[0_30px_120px_rgba(0,0,0,0.55)] ${className}`}
+      className={`relative overflow-hidden rounded-2xl border border-white/10 bg-[#0b0b0b] shadow-[0_20px_70px_rgba(0,0,0,0.45)] sm:rounded-3xl ${className}`}
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_60%)]" />
       <div className="relative">{children}</div>
@@ -1104,7 +1104,7 @@ function ChartCard({
   loadingMessage: string
 }) {
   return (
-    <Card className="min-w-0 p-4 sm:p-7">
+    <Card className="min-w-0 p-4 sm:p-6 lg:p-7">
       <div className="space-y-1">
         <h2 className="text-xl font-semibold text-white">{title}</h2>
         <p className="text-sm leading-6 text-neutral-400">{description}</p>
@@ -1152,7 +1152,7 @@ function KpiCard({
       : 'border-white/10 bg-white/[0.035]'
 
   return (
-    <div className={`rounded-3xl border px-5 py-5 transition duration-300 hover:-translate-y-1 hover:scale-[1.01] ${toneClasses}`}>
+    <div className={`rounded-2xl border px-4 py-4 transition duration-300 hover:-translate-y-1 hover:scale-[1.01] sm:rounded-3xl sm:px-5 sm:py-5 ${toneClasses}`}>
       <div className="text-sm font-medium text-neutral-300">{label}</div>
       <div className="mt-4 text-3xl font-semibold leading-none text-white sm:text-4xl">
         {value}
@@ -1188,7 +1188,7 @@ function CompactFocusCard({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-3xl border px-5 py-5 text-left transition ${toneClasses}`}
+      className={`rounded-2xl border px-4 py-4 text-left transition sm:rounded-3xl sm:px-5 sm:py-5 ${toneClasses}`}
     >
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
@@ -1216,7 +1216,7 @@ function InsightCard({ insight }: { insight: AnalyticsInsight }) {
       : 'border-red-500/30 bg-red-500/[0.12]'
 
   return (
-    <div className={`rounded-3xl border p-6 transition hover:scale-[1.02] ${toneClasses}`}>
+    <div className={`rounded-2xl border p-4 transition hover:scale-[1.02] sm:rounded-3xl sm:p-6 ${toneClasses}`}>
       <div className="text-xs uppercase tracking-wide text-neutral-400">
         {insight.title}
       </div>
@@ -1253,7 +1253,7 @@ function ExportHealthCard({
       : 'border-red-500/25 bg-red-500/[0.08]'
 
   return (
-    <div className={`rounded-3xl border p-5 ${toneClasses}`}>
+    <div className={`rounded-2xl border p-4 sm:rounded-3xl sm:p-5 ${toneClasses}`}>
       <div className="text-sm font-medium text-neutral-300">{label}</div>
       <div className="mt-3 truncate text-3xl font-semibold leading-none text-white">
         {value}
@@ -1607,8 +1607,8 @@ export default function ReportsClient({
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#262626_0%,_#090909_42%,_#000_100%)] px-3 py-4 text-white sm:px-6 sm:py-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-6 sm:space-y-10">
-        <div className="grid gap-4 lg:grid-cols-4">
-  <div className="rounded-3xl border border-blue-500/20 bg-blue-500/[0.08] p-5">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+  <div className="rounded-2xl border border-blue-500/20 bg-blue-500/[0.08] p-4 sm:rounded-3xl sm:p-5">
     <div className="text-xs uppercase tracking-[0.18em] text-blue-300">
       Total Engagement
     </div>
@@ -1622,7 +1622,7 @@ export default function ReportsClient({
     </div>
   </div>
 
-  <div className="rounded-3xl border border-emerald-500/20 bg-emerald-500/[0.08] p-5">
+  <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.08] p-4 sm:rounded-3xl sm:p-5">
     <div className="text-xs uppercase tracking-[0.18em] text-emerald-300">
       Export Success
     </div>
@@ -1636,7 +1636,7 @@ export default function ReportsClient({
     </div>
   </div>
 
-  <div className="rounded-3xl border border-amber-500/20 bg-amber-500/[0.08] p-5">
+  <div className="rounded-2xl border border-amber-500/20 bg-amber-500/[0.08] p-4 sm:rounded-3xl sm:p-5">
     <div className="text-xs uppercase tracking-[0.18em] text-amber-300">
       Active Exhibitors
     </div>
@@ -1654,7 +1654,7 @@ export default function ReportsClient({
     </div>
   </div>
 
-  <div className="rounded-3xl border border-red-500/20 bg-red-500/[0.08] p-5">
+  <div className="rounded-2xl border border-red-500/20 bg-red-500/[0.08] p-4 sm:rounded-3xl sm:p-5">
     <div className="text-xs uppercase tracking-[0.18em] text-red-300">
       Needs Attention
     </div>
@@ -1668,8 +1668,8 @@ export default function ReportsClient({
     </div>
   </div>
 </div>
-        <div className="-mx-3 border-b border-white/10 bg-black/85 px-3 py-3 backdrop-blur-xl sm:-mx-6 sm:px-6 sm:py-4 lg:-mx-8 lg:px-8">
-          <div className="mx-auto flex max-w-7xl flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+        <div className="-mx-3 border-b border-white/10 bg-black/70 px-3 py-3 sm:-mx-6 sm:px-6 sm:py-4 lg:-mx-8 lg:px-8">
+          <div className="mx-auto flex max-w-7xl flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
             <div className="min-w-0">
               <div className="mb-3 flex flex-wrap items-center gap-3">
                 <span className="inline-flex rounded-full border border-blue-400/25 bg-blue-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-300">
@@ -1769,7 +1769,7 @@ export default function ReportsClient({
           </div>
         </div>
 
-        <Card className="p-4 sm:p-7">
+        <Card className="p-4 sm:p-6 lg:p-7">
           <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
             <div>
               <h2 className="text-xl font-semibold text-white sm:text-2xl">
@@ -1890,7 +1890,7 @@ export default function ReportsClient({
         </Card>
 
         {summary.insights && summary.insights.length > 0 ? (
-          <Card className="p-4 sm:p-7">
+          <Card className="p-4 sm:p-6 lg:p-7">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <h2 className="text-xl font-semibold text-white sm:text-2xl">
@@ -1905,7 +1905,7 @@ export default function ReportsClient({
               </div>
             </div>
 
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
               {(summary.insights ?? []).slice(0, 5).map((insight) => (
                 <InsightCard key={insight.id} insight={insight} />
               ))}
@@ -1913,7 +1913,7 @@ export default function ReportsClient({
           </Card>
         ) : null}
 
-        <Card className="p-4 sm:p-7">
+        <Card className="p-4 sm:p-6 lg:p-7">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className="text-xl font-semibold text-white sm:text-2xl">
@@ -1928,7 +1928,7 @@ export default function ReportsClient({
             </div>
           </div>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             <ExportHealthCard
               label={text.mostUsedFormat}
               value={mostUsedFormat ? mostUsedFormat.label : '—'}
@@ -1966,10 +1966,10 @@ export default function ReportsClient({
             />
           </div>
 
-          <div className="mt-6 overflow-hidden rounded-3xl border border-white/10">
+          <div className="mt-4 overflow-x-auto rounded-2xl border border-white/10 sm:mt-6 sm:rounded-3xl">
             <div className="overflow-x-auto overscroll-x-contain">
               <table className="min-w-full border-collapse text-sm">
-                 <thead className="sticky top-0 z-10 bg-[#111111]">                  <tr className="border-b border-white/10 text-left">
+                 <thead className="bg-[#111111]">                  <tr className="border-b border-white/10 text-left">
                     <th className="px-5 py-3 font-medium text-neutral-300">{text.format}</th>
                     <th className="px-5 py-3 font-medium text-neutral-300">{text.successfulExports}</th>
                     <th className="px-5 py-3 font-medium text-neutral-300">{text.share}</th>
@@ -2011,7 +2011,7 @@ export default function ReportsClient({
 
         <div>
           <h2 className="mb-4 text-xl font-semibold text-white">{text.overview}</h2>
-          <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             <KpiCard
               label={text.totalEvents}
               value={summary.totalEvents}
@@ -2049,7 +2049,7 @@ export default function ReportsClient({
           </section>
         </div>
 
-        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <CompactFocusCard
             title={text.needsAttention}
             value={String(needsAttention.length)}
@@ -2092,7 +2092,7 @@ export default function ReportsClient({
           />
         </section>
 
-        <Card className="p-4 sm:p-7">
+        <Card className="p-4 sm:p-6 lg:p-7">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className="text-xl font-semibold text-white sm:text-2xl">Top performer leaderboard</h2>
@@ -2153,7 +2153,7 @@ export default function ReportsClient({
           </div>
         </Card>
 
-        <section className="grid gap-6 xl:grid-cols-2">
+        <section className="grid gap-4 xl:grid-cols-2">
           <ChartCard
             title={text.topExhibitorsByActivity}
             description={text.topExhibitorsByActivityDescription}
@@ -2239,7 +2239,7 @@ export default function ReportsClient({
           </ChartCard>
         </section>
 
-        <section className="grid gap-6 xl:grid-cols-2">
+        <section className="grid gap-4 xl:grid-cols-2">
           <ChartCard
             title={text.generatorOpensOverTime}
             description={text.generatorOpensOverTimeDescription}
@@ -2334,7 +2334,7 @@ export default function ReportsClient({
           </ChartCard>
         </section>
 
-        <Card className="p-4 sm:p-7">
+        <Card className="p-4 sm:p-6 lg:p-7">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <div className="flex items-center gap-2">
@@ -2358,7 +2358,7 @@ export default function ReportsClient({
           </div>
 
           {needsAttention.length > 0 ? (
-            <div className="mt-6 overflow-hidden rounded-3xl border border-red-500/20">
+            <div className="mt-4 overflow-x-auto rounded-2xl border border-red-500/20 sm:mt-6 sm:rounded-3xl">
               <div className="overflow-x-auto overscroll-x-contain">
                 <table className="min-w-full border-collapse text-sm">
                   <thead className="bg-red-500/10">
@@ -2502,10 +2502,10 @@ export default function ReportsClient({
               Swipe sideways to view the full table.
             </div>
 
-            <div className="overflow-hidden rounded-3xl border border-white/10">
+            <div className="overflow-x-auto rounded-2xl border border-white/10 sm:rounded-3xl">
               <div className="overflow-x-auto overscroll-x-contain">
                 <table className="min-w-[980px] w-full border-collapse text-xs sm:text-sm">
-                  <thead className="sticky top-0 z-10 bg-[#111111]">
+                  <thead className="bg-[#111111]">
                     <tr className="border-b border-white/10 text-left">
                       <th className="px-5 py-4 font-medium text-neutral-300">
                         <button type="button" onClick={() => handleSort('companyName')} className="font-medium hover:underline">
@@ -2641,17 +2641,17 @@ export default function ReportsClient({
           </div>
         </Card>
 
-        <section className="grid gap-6 xl:grid-cols-2">
-          <Card className="p-4 sm:p-7">
+        <section className="grid gap-4 xl:grid-cols-2">
+          <Card className="p-4 sm:p-6 lg:p-7">
             <h2 className="text-xl font-semibold text-white">{text.funnelAnalytics}</h2>
             <p className="mt-1 text-sm leading-6 text-neutral-400">
               {text.funnelAnalyticsDescription}
             </p>
 
-            <div className="mt-6 overflow-hidden rounded-3xl border border-white/10">
+            <div className="mt-4 overflow-x-auto rounded-2xl border border-white/10 sm:mt-6 sm:rounded-3xl">
               <div className="overflow-x-auto overscroll-x-contain">
                 <table className="min-w-full border-collapse text-sm">
-                  <thead className="sticky top-0 z-10 bg-[#111111]">
+                  <thead className="bg-[#111111]">
                     <tr className="border-b border-white/10 text-left">
                       <th className="px-5 py-3 font-medium text-neutral-300">{text.step}</th>
                       <th className="px-5 py-3 font-medium text-neutral-300">{text.count}</th>
@@ -2674,16 +2674,16 @@ export default function ReportsClient({
             </div>
           </Card>
 
-          <Card className="p-4 sm:p-7">
+          <Card className="p-4 sm:p-6 lg:p-7">
             <h2 className="text-xl font-semibold text-white">{text.recentEvents}</h2>
             <p className="mt-1 text-sm leading-6 text-neutral-400">
               {text.recentEventsDescription}
             </p>
 
-            <div className="mt-6 overflow-hidden rounded-3xl border border-white/10">
+            <div className="mt-4 overflow-x-auto rounded-2xl border border-white/10 sm:mt-6 sm:rounded-3xl">
               <div className="overflow-x-auto overscroll-x-contain">
                 <table className="min-w-full border-collapse text-sm">
-                  <thead className="sticky top-0 z-10 bg-[#111111]">
+                  <thead className="bg-[#111111]">
                     <tr className="border-b border-white/10 text-left">
                       <th className="px-5 py-3 font-medium text-neutral-300">{text.timestamp}</th>
                       <th className="px-5 py-3 font-medium text-neutral-300">{text.company}</th>
