@@ -1129,6 +1129,64 @@ function ChartCard({
   )
 }
 
+
+function AnimatedNumber({
+  value,
+  suffix = '',
+}: {
+  value: number
+  suffix?: string
+}) {
+  const [displayValue, setDisplayValue] = useState(0)
+
+  useEffect(() => {
+    const duration = 700
+    const start = performance.now()
+    const from = 0
+    const to = Number.isFinite(value) ? value : 0
+
+    function tick(now: number) {
+      const progress = Math.min((now - start) / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setDisplayValue(Math.round(from + (to - from) * eased))
+
+      if (progress < 1) {
+        requestAnimationFrame(tick)
+      }
+    }
+
+    const frame = requestAnimationFrame(tick)
+
+    return () => cancelAnimationFrame(frame)
+  }, [value])
+
+  return (
+    <>
+      {displayValue}
+      {suffix}
+    </>
+  )
+}
+
+function parseDisplayNumber(value: string | number) {
+  if (typeof value === 'number') {
+    return { numberValue: value, suffix: '', canAnimate: true }
+  }
+
+  const trimmed = value.trim()
+  const match = trimmed.match(/^(\d+)(%)?$/)
+
+  if (!match) {
+    return { numberValue: 0, suffix: '', canAnimate: false }
+  }
+
+  return {
+    numberValue: Number(match[1]),
+    suffix: match[2] ?? '',
+    canAnimate: true,
+  }
+}
+
 function KpiCard({
   label,
   value,
@@ -1155,7 +1213,15 @@ function KpiCard({
     <div className={`min-w-0 overflow-hidden rounded-2xl border px-4 py-4 transition duration-300 hover:-translate-y-1 hover:scale-[1.01] sm:rounded-3xl sm:px-5 sm:py-5 ${toneClasses}`}>
       <div className="text-sm font-medium text-neutral-300">{label}</div>
       <div className="mt-4 text-3xl font-semibold leading-none text-white sm:text-4xl">
-        {value}
+        {(() => {
+          const parsed = parseDisplayNumber(value)
+
+          return parsed.canAnimate ? (
+            <AnimatedNumber value={parsed.numberValue} suffix={parsed.suffix} />
+          ) : (
+            value
+          )
+        })()}
       </div>
       <div className="mt-3 text-xs leading-5 text-neutral-500">{sublabel}</div>
     </div>
