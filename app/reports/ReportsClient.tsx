@@ -2249,8 +2249,18 @@ export default function ReportsClient({
                 className="rounded-3xl border border-white/10 bg-black/20 p-5 transition hover:bg-white/[0.06]"
               >
                 <div className="flex items-center justify-between gap-3">
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-sm font-semibold text-black">
-                    {index + 1}
+                  <span
+                    className={`inline-flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold shadow-lg ${
+                      index === 0
+                        ? 'bg-amber-300 text-black shadow-amber-500/20'
+                        : index === 1
+                          ? 'bg-neutral-200 text-black shadow-white/10'
+                          : index === 2
+                            ? 'bg-orange-300 text-black shadow-orange-500/20'
+                            : 'bg-white/10 text-white'
+                    }`}
+                  >
+                    {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1}
                   </span>
                   <span className="rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
                     {percentage(item.exportSucceededCount, item.generatorOpenedCount)}
