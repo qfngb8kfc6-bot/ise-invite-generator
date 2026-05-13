@@ -1110,7 +1110,7 @@ function ChartCard({
         <p className="text-sm leading-6 text-neutral-400">{description}</p>
       </div>
 
-      <div className="mt-6 h-[280px] min-w-0 sm:h-[360px]">
+      <div className="mt-5 h-[220px] min-w-0 sm:h-[320px] lg:h-[340px]">
         {!hasData ? (
           <div className="flex h-full items-center justify-center rounded-2xl border border-white/10 bg-black/20 text-sm text-neutral-500">
             {emptyMessage}
@@ -1923,7 +1923,7 @@ export default function ReportsClient({
           <form
             method="get"
             action="/reports"
-            className="mt-6 grid gap-3 lg:grid-cols-[minmax(0,1fr)_180px_180px_auto] lg:items-end"
+            className="mt-6 grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_160px_160px_auto] lg:items-end"
           >
             <div>
               <label htmlFor="report-search" className="mb-2 block text-sm font-medium text-neutral-300">
@@ -1948,7 +1948,7 @@ export default function ReportsClient({
                 name="startDate"
                 type="date"
                 defaultValue={summary.appliedStartDate ?? ''}
-                className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition focus:border-white/25"
+                className="min-w-0 w-full max-w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition focus:border-white/25"
               />
             </div>
 
@@ -1961,7 +1961,7 @@ export default function ReportsClient({
                 name="endDate"
                 type="date"
                 defaultValue={summary.appliedEndDate ?? ''}
-                className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition focus:border-white/25"
+                className="min-w-0 w-full max-w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition focus:border-white/25"
               />
             </div>
 
@@ -2305,14 +2305,14 @@ export default function ReportsClient({
                   width={width}
                   height={height}
                   data={topExhibitorsChartData}
-                  margin={{ top: 12, right: 8, left: -20, bottom: 72 }}
+                  margin={{ top: 8, right: 4, left: -28, bottom: 38 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
                   <XAxis
                     dataKey="name"
-                    angle={-24}
+                    angle={-12}
                     textAnchor="end"
-                    height={84}
+                    height={52}
                     interval={0}
                     stroke={CHART_COLORS.axis}
                   />
@@ -2325,7 +2325,7 @@ export default function ReportsClient({
                       color: '#fff',
                     }}
                   />
-                  <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: 20 }} />
+                  <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: 6, fontSize: 11 }} />
                   <Bar dataKey="exports" name={text.exportSucceededLegend} fill={CHART_COLORS.green} isAnimationActive={false} />
                   <Bar dataKey="opens" name={text.generatorOpenLegend} fill={CHART_COLORS.violet} isAnimationActive={false} />
                   <Bar dataKey="totalEvents" name={text.totalEventLegend} fill={CHART_COLORS.blue} isAnimationActive={false} />
@@ -2348,14 +2348,14 @@ export default function ReportsClient({
                   width={width}
                   height={height}
                   data={formatUsageChartData}
-                  margin={{ top: 12, right: 8, left: -20, bottom: 72 }}
+                  margin={{ top: 8, right: 4, left: -28, bottom: 38 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.grid} />
                   <XAxis
                     dataKey="format"
-                    angle={-22}
+                    angle={-12}
                     textAnchor="end"
-                    height={84}
+                    height={52}
                     interval={0}
                     stroke={CHART_COLORS.axis}
                   />
@@ -2368,7 +2368,7 @@ export default function ReportsClient({
                       color: '#fff',
                     }}
                   />
-                  <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: 20 }} />
+                  <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: 6, fontSize: 11 }} />
                   <Bar dataKey="count" name={text.count} fill={CHART_COLORS.amber} isAnimationActive={false} />
                 </BarChart>
               )}
@@ -2404,7 +2404,7 @@ export default function ReportsClient({
                       color: '#fff',
                     }}
                   />
-                  <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: 20 }} />
+                  <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: 6, fontSize: 11 }} />
                   <Line
                     type="monotone"
                     dataKey="exportsSucceeded"
@@ -2455,7 +2455,7 @@ export default function ReportsClient({
                       color: '#fff',
                     }}
                   />
-                  <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: 20 }} />
+                  <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: 6, fontSize: 11 }} />
                   <Line
                     type="monotone"
                     dataKey="exportsFailed"

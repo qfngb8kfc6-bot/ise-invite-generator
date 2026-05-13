@@ -829,7 +829,7 @@ export default function GeneratorPageClient({
                     type="file"
                     accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml"
                     onChange={handleLogoUpload}
-                    className="block w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-neutral-300 file:mr-4 file:rounded-xl file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-white/15"
+                    className="block w-full max-w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-neutral-300 file:mr-4 file:rounded-xl file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-white/15"
                   />
                   {logoFileName ? (
                     <p className="mt-2 text-xs text-neutral-500">
@@ -859,7 +859,7 @@ export default function GeneratorPageClient({
                 </div>
               </div>
 
-              <div className="mt-5 rounded-2xl border border-white/10 bg-black/20 p-4 sm:mt-6 sm:rounded-3xl sm:p-5">
+              <div className="mt-5 overflow-hidden rounded-2xl border border-white/10 bg-black/20 p-4 sm:mt-6 sm:rounded-3xl sm:p-5">
                 <h3 className="text-sm font-semibold text-white">
                   {ui.generatorVerifiedSourceData}
                 </h3>
@@ -963,8 +963,8 @@ export default function GeneratorPageClient({
               <div className="xl:sticky xl:top-6">
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-3 sm:rounded-3xl sm:p-4">
                   <div className="overflow-hidden rounded-2xl border border-white/10 bg-neutral-950 p-2 sm:p-4">
-                    <div className="w-full overflow-x-auto">
-                      <div className="w-[760px] origin-top-left scale-[0.44] sm:scale-[0.68] lg:scale-[0.72]">
+                    <div className="flex w-full justify-center overflow-hidden">
+                      <div className="w-[1200px] origin-top scale-[0.255] sm:scale-[0.48] md:scale-[0.58] lg:scale-[0.72]">
                         <InvitePreview
                           companyName={companyName}
                           standNumber={displayStandNumber}
