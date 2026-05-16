@@ -15,7 +15,7 @@
     "jose": "^6.2.1",
     "jspdf": "^4.2.1",
     "jszip": "^3.10.1",
-    "next": "^16.1.7",
+    "next": "16.1.7",
     "pg": "^8.20.0",
     "postgres": "^3.4.8",
     "qrcode": "^1.5.4",
@@ -31,7 +31,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "16.1.7",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
