@@ -266,6 +266,23 @@ type ReportsText = {
   timestamp: string
   event: string
   noEventsRecordedYet: string
+  livePlatformStatus: string
+  analyticsEngineOperational: string
+  analyticsEngineDescription: string
+  events: string
+  exhibitors: string
+  totalEngagement: string
+  combinedTrackedActions: string
+  exportSuccess: string
+  successfulExportCompletionRate: string
+  activeExhibitors: string
+  exhibitorsWithEngagement: string
+  exhibitorsWithNoExports: string
+  iseReportsTitle: string
+  liveAnalytics: string
+  topPerformerLeaderboard: string
+  topPerformerLeaderboardDescription: string
+  viewAllTopPerformers: string
 }
 
 const enReportsText: ReportsText = {
@@ -402,6 +419,25 @@ const enReportsText: ReportsText = {
   timestamp: 'Timestamp',
   event: 'Event',
   noEventsRecordedYet: 'No events recorded yet.',
+  livePlatformStatus: 'LIVE PLATFORM STATUS',
+  analyticsEngineOperational: 'Analytics engine operational',
+  analyticsEngineDescription:
+    'Real-time exhibitor engagement, export tracking, and invitation activity monitoring for ISE 2027.',
+  events: 'Events',
+  exhibitors: 'Exhibitors',
+  totalEngagement: 'Total Engagement',
+  combinedTrackedActions: 'Combined tracked actions',
+  exportSuccess: 'Export Success',
+  successfulExportCompletionRate: 'Successful export completion rate',
+  activeExhibitors: 'Active Exhibitors',
+  exhibitorsWithEngagement: 'Exhibitors with engagement',
+  exhibitorsWithNoExports: 'Exhibitors with no exports',
+  iseReportsTitle: 'ISE 2027 Exhibitor Reports',
+  liveAnalytics: 'Live analytics',
+  topPerformerLeaderboard: 'Top performer leaderboard',
+  topPerformerLeaderboardDescription:
+    'Exhibitors ranked by open-to-export conversion, then successful exports.',
+  viewAllTopPerformers: 'View all top performers',
 }
 
 const reportsText: Record<LanguageKey, ReportsText> = {
@@ -1685,25 +1721,17 @@ export default function ReportsClient({
                   <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-400" />
                 </div>
 
-                <span className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-300">
-                  LIVE PLATFORM STATUS
-                </span>
+                <span className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-300">{text.livePlatformStatus}</span>
               </div>
 
-              <div className="mt-3 text-2xl font-semibold text-white">
-                Analytics engine operational
-              </div>
+              <div className="mt-3 text-2xl font-semibold text-white">{text.analyticsEngineOperational}</div>
 
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-neutral-400">
-                Real-time exhibitor engagement, export tracking, and invitation activity monitoring for ISE 2027.
-              </p>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-neutral-400">{text.analyticsEngineDescription}</p>
             </div>
 
             <div className="grid grid-cols-3 gap-3">
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
-                <div className="text-xs uppercase tracking-[0.18em] text-neutral-500">
-                  Events
-                </div>
+                <div className="text-xs uppercase tracking-[0.18em] text-neutral-500">{text.events}</div>
 
                 <div className="mt-2 text-2xl font-semibold text-white">
                   <AnimatedNumber value={summary.totalEvents} />
@@ -1711,9 +1739,7 @@ export default function ReportsClient({
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
-                <div className="text-xs uppercase tracking-[0.18em] text-neutral-500">
-                  Exhibitors
-                </div>
+                <div className="text-xs uppercase tracking-[0.18em] text-neutral-500">{text.exhibitors}</div>
 
                 <div className="mt-2 text-2xl font-semibold text-white">
                   <AnimatedNumber value={summary.totalExhibitors} />
@@ -1721,9 +1747,7 @@ export default function ReportsClient({
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
-                <div className="text-xs uppercase tracking-[0.18em] text-neutral-500">
-                  Exports
-                </div>
+                <div className="text-xs uppercase tracking-[0.18em] text-neutral-500">{text.exports}</div>
 
                 <div className="mt-2 text-2xl font-semibold text-white">
                   <AnimatedNumber value={summary.totalExportsSucceeded} />
@@ -1736,37 +1760,27 @@ export default function ReportsClient({
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
   <div className="premium-card rounded-2xl border-blue-500/20 bg-blue-500/[0.08] p-4 backdrop-blur-xl sm:rounded-3xl sm:p-5">
-    <div className="text-xs uppercase tracking-[0.18em] text-blue-300">
-      Total Engagement
-    </div>
+    <div className="text-xs uppercase tracking-[0.18em] text-blue-300">{text.totalEngagement}</div>
 
     <div className="mt-3 bg-gradient-to-r from-white to-neutral-400 bg-clip-text text-4xl font-semibold text-transparent">
       {summary.totalEvents}
     </div>
 
-    <div className="mt-2 text-sm text-neutral-400">
-      Combined tracked actions
-    </div>
+    <div className="mt-2 text-sm text-neutral-400">{text.combinedTrackedActions}</div>
   </div>
 
   <div className="premium-card rounded-2xl border-emerald-500/20 bg-emerald-500/[0.08] p-4 backdrop-blur-xl sm:rounded-3xl sm:p-5">
-    <div className="text-xs uppercase tracking-[0.18em] text-emerald-300">
-      Export Success
-    </div>
+    <div className="text-xs uppercase tracking-[0.18em] text-emerald-300">{text.exportSuccess}</div>
 
     <div className="mt-3 bg-gradient-to-r from-white to-neutral-400 bg-clip-text text-4xl font-semibold text-transparent">
       {exportSuccessRate}
     </div>
 
-    <div className="mt-2 text-sm text-neutral-400">
-      Successful export completion rate
-    </div>
+    <div className="mt-2 text-sm text-neutral-400">{text.successfulExportCompletionRate}</div>
   </div>
 
   <div className="premium-card rounded-2xl border-amber-500/20 bg-amber-500/[0.08] p-4 backdrop-blur-xl sm:rounded-3xl sm:p-5">
-    <div className="text-xs uppercase tracking-[0.18em] text-amber-300">
-      Active Exhibitors
-    </div>
+    <div className="text-xs uppercase tracking-[0.18em] text-amber-300">{text.activeExhibitors}</div>
 
     <div className="mt-3 bg-gradient-to-r from-white to-neutral-400 bg-clip-text text-4xl font-semibold text-transparent">
       {
@@ -1776,9 +1790,7 @@ export default function ReportsClient({
       }
     </div>
 
-    <div className="mt-2 text-sm text-neutral-400">
-      Exhibitors with engagement
-    </div>
+    <div className="mt-2 text-sm text-neutral-400">{text.exhibitorsWithEngagement}</div>
   </div>
 
   <div className="premium-card rounded-2xl border-red-500/20 bg-red-500/[0.08] p-4 backdrop-blur-xl sm:rounded-3xl sm:p-5">
@@ -1790,9 +1802,7 @@ export default function ReportsClient({
       {needsAttention.length}
     </div>
 
-    <div className="mt-2 text-sm text-neutral-400">
-      Exhibitors with no exports
-    </div>
+    <div className="mt-2 text-sm text-neutral-400">{text.exhibitorsWithNoExports}</div>
   </div>
 </div>
         <div className="-mx-3 border-b border-white/10 bg-black/70 px-3 py-3 sm:-mx-6 sm:px-6 sm:py-4 lg:-mx-8 lg:px-8">
@@ -1802,14 +1812,10 @@ export default function ReportsClient({
                 <span className="inline-flex rounded-full border border-blue-400/25 bg-blue-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-300">
                   ISE 2027
                 </span>
-                <span className="inline-flex rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-300">
-                  Live analytics
-                </span>
+                <span className="inline-flex rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-300">{text.liveAnalytics}</span>
               </div>
 
-              <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-4xl">
-                ISE 2027 Exhibitor Reports
-              </h1>
+              <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-4xl">{text.iseReportsTitle}</h1>
 
               <div className="mt-3 flex flex-wrap gap-2 text-xs text-neutral-400 sm:text-sm">
                 <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">
@@ -2222,19 +2228,15 @@ export default function ReportsClient({
         <Card className="p-4 sm:p-6 lg:p-7">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h2 className="text-xl font-semibold text-white sm:text-2xl">Top performer leaderboard</h2>
-              <p className="mt-1 text-sm leading-6 text-neutral-400">
-                Exhibitors ranked by open-to-export conversion, then successful exports.
-              </p>
+              <h2 className="text-xl font-semibold text-white sm:text-2xl">{text.topPerformerLeaderboard}</h2>
+              <p className="mt-1 text-sm leading-6 text-neutral-400">{text.topPerformerLeaderboardDescription}</p>
             </div>
 
             <button
               type="button"
               onClick={() => activateFocusFilter('topPerformers')}
               className="inline-flex w-fit rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-neutral-300 transition hover:bg-white/10"
-            >
-              View all top performers
-            </button>
+            >{text.viewAllTopPerformers}</button>
           </div>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -2273,7 +2275,7 @@ export default function ReportsClient({
 
                 <div className="mt-4 space-y-2 text-sm text-neutral-400">
                   <div className="flex justify-between gap-3">
-                    <span>Exports</span>
+                    <span>{text.exports}</span>
                     <span className="font-medium text-white">{item.exportSucceededCount}</span>
                   </div>
                   <div className="flex justify-between gap-3">
