@@ -1,22 +1,34 @@
 import { NextResponse } from 'next/server'
-import { env } from '@/lib/env'
-import { getAllExhibitors } from '@/lib/exhibitors'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
+function getBooleanEnv(name: string, fallback = false): boolean {
+  const value = process.env[name]?.trim().toLowerCase()
+
+  if (!value) return fallback
+
+  return value === 'true' || value === '1' || value === 'yes'
+}
+
 export async function GET() {
+  const exhibitorDataSource =
+    process.env.EXHIBITOR_DATA_SOURCE?.trim() === 'mys' ? 'mys' : 'mock'
+
+  const allowMockFallback = getBooleanEnv('ALLOW_MOCK_FALLBACK', true)
+  const showCode = process.env.MYS_SHOWCODE?.trim() || ''
+
   try {
+    const { getAllExhibitors } = await import('@/lib/exhibitors')
     const exhibitors = await getAllExhibitors()
 
     return NextResponse.json(
       {
         ok: true,
-        showCode: env.MYS_SHOWCODE || '',
-        exhibitorDataSource: env.EXHIBITOR_DATA_SOURCE,
-        allowMockFallback: env.ALLOW_MOCK_FALLBACK,
-        isLiveMys:
-          env.EXHIBITOR_DATA_SOURCE === 'mys' && env.ALLOW_MOCK_FALLBACK === false,
+        showCode,
+        exhibitorDataSource,
+        allowMockFallback,
+        isLiveMys: exhibitorDataSource === 'mys' && allowMockFallback === false,
         exhibitorCount: exhibitors.length,
       },
       {
@@ -29,11 +41,10 @@ export async function GET() {
     return NextResponse.json(
       {
         ok: false,
-        showCode: env.MYS_SHOWCODE || '',
-        exhibitorDataSource: env.EXHIBITOR_DATA_SOURCE,
-        allowMockFallback: env.ALLOW_MOCK_FALLBACK,
-        isLiveMys:
-          env.EXHIBITOR_DATA_SOURCE === 'mys' && env.ALLOW_MOCK_FALLBACK === false,
+        showCode,
+        exhibitorDataSource,
+        allowMockFallback,
+        isLiveMys: exhibitorDataSource === 'mys' && allowMockFallback === false,
         exhibitorCount: 0,
         error:
           error instanceof Error
