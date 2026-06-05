@@ -104,13 +104,10 @@ export default function GeneratorPageClient({ initialToken }: Props) {
 
         const exhibitor = data.exhibitor
 
-        console.log('EXHIBITOR DATA FROM SESSION', JSON.stringify(exhibitor, null, 2))
-
         setCompanyName(exhibitor.companyName || exhibitor.name || companyName)
         setStandNumber(exhibitor.standNumber || exhibitor.stand || standNumber)
         setInvitationCode(exhibitor.invitationCode || exhibitor.code || invitationCode)
         setRegistrationUrl(exhibitor.registrationUrl || registrationUrl)
-        setLogoUrl(exhibitor.logoUrl || '')
 
         if (exhibitor.theme) {
           setTheme(exhibitor.theme)

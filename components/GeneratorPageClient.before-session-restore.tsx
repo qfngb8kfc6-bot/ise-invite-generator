@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import InvitePreview from '@/components/InvitePreview'
 import { useSiteLanguage } from '@/components/LanguageSwitcher'
 import {
@@ -11,7 +11,6 @@ import {
   type ExportFormatKey,
 } from '@/lib/export'
 import { themes } from '@/lib/themes'
-import { translations } from '@/lib/translations'
 import type { ThemeKey } from '@/lib/types'
 
 type Props = {
@@ -21,10 +20,8 @@ type Props = {
 export default function GeneratorPageClient({ initialToken }: Props) {
   const exportPreviewRef = useRef<HTMLDivElement | null>(null)
   const [language] = useSiteLanguage()
-  const text = translations[language].ui
   const [isExporting, setIsExporting] = useState(false)
   const [exportError, setExportError] = useState<string | null>(null)
-  const [sessionMessage, setSessionMessage] = useState<string | null>(null)
   const [companyName, setCompanyName] = useState('Samsung')
   const [standNumber, setStandNumber] = useState('5C300')
   const [invitationCode, setInvitationCode] = useState('ISE2027')
@@ -59,7 +56,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
 
       image.onload = () => {
         if (image.width < 300 || image.height < 120) {
-          setLogoMessage('{text.generatorLogoUpload}ed, but recommended minimum size is 300 × 120px for best export quality.')
+          setLogoMessage('Logo uploaded, but recommended minimum size is 300 × 120px for best export quality.')
         }
 
         setLogoUrl(result)
@@ -79,51 +76,6 @@ export default function GeneratorPageClient({ initialToken }: Props) {
     setLogoUrl('')
     setLogoMessage(null)
   }
-
-  useEffect(() => {
-    async function loadSession() {
-      if (!initialToken) return
-
-      try {
-        setSessionMessage('Loading verified exhibitor details...')
-
-        const response = await fetch('/api/session', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ token: initialToken }),
-        })
-
-        const data = await response.json()
-
-        if (!response.ok || !data?.ok || !data?.exhibitor) {
-          setSessionMessage(data?.error || 'Could not verify exhibitor session.')
-          return
-        }
-
-        const exhibitor = data.exhibitor
-
-        console.log('EXHIBITOR DATA FROM SESSION', JSON.stringify(exhibitor, null, 2))
-
-        setCompanyName(exhibitor.companyName || exhibitor.name || companyName)
-        setStandNumber(exhibitor.standNumber || exhibitor.stand || standNumber)
-        setInvitationCode(exhibitor.invitationCode || exhibitor.code || invitationCode)
-        setRegistrationUrl(exhibitor.registrationUrl || registrationUrl)
-        setLogoUrl(exhibitor.logoUrl || '')
-
-        if (exhibitor.theme) {
-          setTheme(exhibitor.theme)
-        }
-
-        setSessionMessage('Verified exhibitor details loaded.')
-      } catch {
-        setSessionMessage('Could not load exhibitor details.')
-      }
-    }
-
-    loadSession()
-  }, [initialToken])
 
   async function runExport(type: 'pdf' | 'zip' | ExportFormatKey) {
     if (!exportPreviewRef.current) {
@@ -166,25 +118,19 @@ export default function GeneratorPageClient({ initialToken }: Props) {
             </div>
 
             <h1 className="mt-4 text-3xl font-semibold leading-tight">
-              {text.generatorTitle}
+              Exhibitor Invitation Generator
             </h1>
 
             <p className="mt-3 text-sm leading-6 text-white/45">
-              {text.generatorInputsDescription}
+              Create premium invitation assets, QR exports, and marketing packs for exhibitors in real time.
             </p>
           </div>
 
           <div className="flex-1 overflow-y-auto px-7 py-5">
             <div className="space-y-6">
               <section>
-                <h2 className="text-xl font-semibold">{text.generatorInputsTitle}</h2>
-                <p className="mt-1 text-sm text-white/40">{text.generatorInputsDescription}</p>
-
-                {sessionMessage ? (
-                  <div className="mt-4 rounded-2xl border border-blue-400/20 bg-blue-500/10 px-4 py-3 text-xs text-blue-100">
-                    {sessionMessage}
-                  </div>
-                ) : null}
+                <h2 className="text-xl font-semibold">Brand details</h2>
+                <p className="mt-1 text-sm text-white/40">Configure exhibitor information.</p>
 
                 <div className="mt-4 space-y-3">
                   <input value={companyName} onChange={(e) => setCompanyName(e.target.value)} className="w-full rounded-2xl border border-white/10 bg-black/35 px-4 py-4 outline-none focus:border-blue-400" />
@@ -197,7 +143,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
                   <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
                     <div className="mb-3 flex items-center justify-between gap-3">
                       <div>
-                        <div className="text-sm font-medium text-white/70">{text.generatorLogoUpload}</div>
+                        <div className="text-sm font-medium text-white/70">Logo upload</div>
                         <div className="mt-1 text-xs text-white/35">PNG/JPG/WebP. Max 3MB. Recommended 300 × 120px minimum.</div>
                       </div>
 
@@ -213,7 +159,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
                     </div>
 
                     <label className="flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-4 text-sm text-white/55 transition hover:border-blue-400/40 hover:bg-blue-500/10">
-                      {text.generatorLogoUpload}
+                      {logoUrl ? 'Change logo' : 'Upload logo'}
                       <input
                         type="file"
                         accept="image/png,image/jpeg,image/webp,image/svg+xml"
@@ -232,7 +178,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold">{text.generatorTheme}</h2>
+                <h2 className="text-xl font-semibold">Visual theme</h2>
                 <div className="mt-5 grid gap-3">
                   {Object.entries(themes).map(([key, item]) => {
                     const active = theme === key
@@ -249,7 +195,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
                         <div className="absolute inset-0 bg-black/75" />
                         <div className="relative">
                           <div className="text-xl font-semibold">{item.label}</div>
-                          <div className="mt-1 text-sm text-white/45">{text.generatorPreviewDescription}</div>
+                          <div className="mt-1 text-sm text-white/45">Premium invitation theme</div>
                         </div>
                       </button>
                     )
@@ -261,10 +207,10 @@ export default function GeneratorPageClient({ initialToken }: Props) {
 
           <div className="border-t border-white/10 bg-black/30 p-4">
             <div className="grid grid-cols-2 gap-3">
-              <button disabled={isExporting} onClick={() => runExport('square')} className="rounded-2xl bg-blue-600 py-3 font-semibold disabled:opacity-50">{text.generatorPngSquare}</button>
-              <button disabled={isExporting} onClick={() => runExport('pdf')} className="rounded-2xl border border-white/10 bg-white/5 py-3 font-semibold disabled:opacity-50">{text.generatorPdf}</button>
+              <button disabled={isExporting} onClick={() => runExport('square')} className="rounded-2xl bg-blue-600 py-3 font-semibold disabled:opacity-50">PNG Square</button>
+              <button disabled={isExporting} onClick={() => runExport('pdf')} className="rounded-2xl border border-white/10 bg-white/5 py-3 font-semibold disabled:opacity-50">Export PDF</button>
               <button disabled={isExporting} onClick={() => runExport('linkedin')} className="rounded-2xl border border-white/10 bg-white/5 py-3 font-semibold disabled:opacity-50">LinkedIn</button>
-              <button disabled={isExporting} onClick={() => runExport('zip')} className="rounded-2xl border border-white/10 bg-white/5 py-3 font-semibold disabled:opacity-50">{text.generatorZipPack}</button>
+              <button disabled={isExporting} onClick={() => runExport('zip')} className="rounded-2xl border border-white/10 bg-white/5 py-3 font-semibold disabled:opacity-50">ZIP Pack</button>
             </div>
 
             {exportError ? (
