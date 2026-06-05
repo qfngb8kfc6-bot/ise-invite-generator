@@ -15,22 +15,22 @@ export const themes: Record<ThemeKey, ThemeConfig> = {
   },
   unifiedCommunications: {
     label: 'Unified Communications',
-    backgroundImage: '/themes/audio.jpg',
+    backgroundImage: '/themes/unified-communications.jpg',
   },
   educationTechnology: {
     label: 'Education Technology',
-    backgroundImage: '/themes/residential.jpg',
+    backgroundImage: '/themes/education-technology.jpg',
   },
   digitalSignage: {
     label: 'Digital Signage',
-    backgroundImage: '/themes/lighting.jpg',
+    backgroundImage: '/themes/digital-signage.jpg',
   },
   smartBuilding: {
     label: 'Smart Building',
-    backgroundImage: '/themes/residential.jpg',
+    backgroundImage: '/themes/smart-building.jpg',
   },
   contentProduction: {
     label: 'Content Production',
-    backgroundImage: '/themes/audio.jpg',
+    backgroundImage: '/themes/content-production.jpg',
   },
 }
