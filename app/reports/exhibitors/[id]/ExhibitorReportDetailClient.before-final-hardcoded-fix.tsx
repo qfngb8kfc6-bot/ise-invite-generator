@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
-import { useSiteLanguage } from '@/components/LanguageSwitcher'
 import {
   BarChart,
   Bar,
@@ -15,7 +14,6 @@ import {
   Legend,
 } from 'recharts'
 import MeasuredChart from '@/components/charts/MeasuredChart'
-import type { LanguageKey } from '@/lib/types'
 
 type ExhibitorSummary = {
   exhibitorId: string
@@ -89,170 +87,6 @@ type Summary = {
   appliedStartDate: string | null
   appliedEndDate: string | null
   funnel: FunnelSummary
-}
-
-const detailText: Record<LanguageKey, {
-  totalEvents: string
-  linksGenerated: string
-  generatorOpens: string
-  exportsSucceeded: string
-  exportsFailed: string
-  openToExport: string
-  conversion: string
-  successfulExportsFromGeneratorOpens: string
-  failures: string
-  failedExportAttemptsInView: string
-  sessionVerified: string
-  verifiedSessionsRecorded: string
-  needsReview: string
-  yes: string
-  no: string
-  quickStatusFlagForFollowUp: string
-}> = {
-  en: {
-    totalEvents: 'Total Events',
-    linksGenerated: 'Links Generated',
-    generatorOpens: 'Generator Opens',
-    exportsSucceeded: 'Exports Succeeded',
-    exportsFailed: 'Exports Failed',
-    openToExport: 'Open → Export',
-    conversion: 'Conversion',
-    successfulExportsFromGeneratorOpens: 'Successful exports from generator opens',
-    failures: 'Failures',
-    failedExportAttemptsInView: 'Failed export attempts in this view',
-    sessionVerified: 'Session verified',
-    verifiedSessionsRecorded: 'Verified sessions recorded',
-    needsReview: 'Needs review',
-    yes: 'Yes',
-    no: 'No',
-    quickStatusFlagForFollowUp: 'Quick status flag for follow-up',
-  },
-  es: {
-    totalEvents: 'Eventos totales',
-    linksGenerated: 'Enlaces generados',
-    generatorOpens: 'Aperturas del generador',
-    exportsSucceeded: 'Exportaciones correctas',
-    exportsFailed: 'Exportaciones fallidas',
-    openToExport: 'Apertura → exportación',
-    conversion: 'Conversión',
-    successfulExportsFromGeneratorOpens: 'Exportaciones correctas desde aperturas del generador',
-    failures: 'Fallos',
-    failedExportAttemptsInView: 'Intentos de exportación fallidos en esta vista',
-    sessionVerified: 'Sesión verificada',
-    verifiedSessionsRecorded: 'Sesiones verificadas registradas',
-    needsReview: 'Requiere revisión',
-    yes: 'Sí',
-    no: 'No',
-    quickStatusFlagForFollowUp: 'Indicador rápido para seguimiento',
-  },
-  de: {
-    totalEvents: 'Ereignisse gesamt',
-    linksGenerated: 'Links erstellt',
-    generatorOpens: 'Generator-Aufrufe',
-    exportsSucceeded: 'Exporte erfolgreich',
-    exportsFailed: 'Exporte fehlgeschlagen',
-    openToExport: 'Öffnung → Export',
-    conversion: 'Konversion',
-    successfulExportsFromGeneratorOpens: 'Erfolgreiche Exporte aus Generator-Aufrufen',
-    failures: 'Fehler',
-    failedExportAttemptsInView: 'Fehlgeschlagene Exportversuche in dieser Ansicht',
-    sessionVerified: 'Sitzung verifiziert',
-    verifiedSessionsRecorded: 'Verifizierte Sitzungen erfasst',
-    needsReview: 'Prüfung erforderlich',
-    yes: 'Ja',
-    no: 'Nein',
-    quickStatusFlagForFollowUp: 'Schneller Statushinweis für Nachverfolgung',
-  },
-  fr: {
-    totalEvents: 'Événements totaux',
-    linksGenerated: 'Liens générés',
-    generatorOpens: 'Ouvertures du générateur',
-    exportsSucceeded: 'Exports réussis',
-    exportsFailed: 'Exports échoués',
-    openToExport: 'Ouverture → export',
-    conversion: 'Conversion',
-    successfulExportsFromGeneratorOpens: 'Exports réussis depuis les ouvertures du générateur',
-    failures: 'Échecs',
-    failedExportAttemptsInView: "Tentatives d'export échouées dans cette vue",
-    sessionVerified: 'Session vérifiée',
-    verifiedSessionsRecorded: 'Sessions vérifiées enregistrées',
-    needsReview: 'À vérifier',
-    yes: 'Oui',
-    no: 'Non',
-    quickStatusFlagForFollowUp: 'Indicateur rapide pour le suivi',
-  },
-  it: {
-    totalEvents: 'Eventi totali',
-    linksGenerated: 'Link generati',
-    generatorOpens: 'Aperture del generatore',
-    exportsSucceeded: 'Esportazioni riuscite',
-    exportsFailed: 'Esportazioni fallite',
-    openToExport: 'Apertura → esportazione',
-    conversion: 'Conversione',
-    successfulExportsFromGeneratorOpens: 'Esportazioni riuscite dalle aperture del generatore',
-    failures: 'Errori',
-    failedExportAttemptsInView: 'Tentativi di esportazione falliti in questa vista',
-    sessionVerified: 'Sessione verificata',
-    verifiedSessionsRecorded: 'Sessioni verificate registrate',
-    needsReview: 'Richiede revisione',
-    yes: 'Sì',
-    no: 'No',
-    quickStatusFlagForFollowUp: 'Indicatore rapido per follow-up',
-  },
-  pt: {
-    totalEvents: 'Eventos totais',
-    linksGenerated: 'Links gerados',
-    generatorOpens: 'Aberturas do gerador',
-    exportsSucceeded: 'Exportações bem-sucedidas',
-    exportsFailed: 'Exportações falhadas',
-    openToExport: 'Abertura → exportação',
-    conversion: 'Conversão',
-    successfulExportsFromGeneratorOpens: 'Exportações bem-sucedidas a partir das aberturas do gerador',
-    failures: 'Falhas',
-    failedExportAttemptsInView: 'Tentativas de exportação falhadas nesta vista',
-    sessionVerified: 'Sessão verificada',
-    verifiedSessionsRecorded: 'Sessões verificadas registadas',
-    needsReview: 'Requer revisão',
-    yes: 'Sim',
-    no: 'Não',
-    quickStatusFlagForFollowUp: 'Indicador rápido para acompanhamento',
-  },
-  nl: {
-    totalEvents: 'Totaal aantal events',
-    linksGenerated: 'Links gegenereerd',
-    generatorOpens: 'Generator geopend',
-    exportsSucceeded: 'Exports geslaagd',
-    exportsFailed: 'Exports mislukt',
-    openToExport: 'Openen → export',
-    conversion: 'Conversie',
-    successfulExportsFromGeneratorOpens: 'Geslaagde exports vanuit geopende generatoren',
-    failures: 'Mislukkingen',
-    failedExportAttemptsInView: 'Mislukte exportpogingen in deze weergave',
-    sessionVerified: 'Sessie geverifieerd',
-    verifiedSessionsRecorded: 'Geverifieerde sessies geregistreerd',
-    needsReview: 'Controle nodig',
-    yes: 'Ja',
-    no: 'Nee',
-    quickStatusFlagForFollowUp: 'Snelle statusindicator voor opvolging',
-  },
-  'zh-CN': {
-    totalEvents: '总事件',
-    linksGenerated: '已生成链接',
-    generatorOpens: '生成器打开次数',
-    exportsSucceeded: '导出成功',
-    exportsFailed: '导出失败',
-    openToExport: '打开 → 导出',
-    conversion: '转化率',
-    successfulExportsFromGeneratorOpens: '从生成器打开到成功导出的次数',
-    failures: '失败',
-    failedExportAttemptsInView: '当前视图中的导出失败尝试',
-    sessionVerified: '会话已验证',
-    verifiedSessionsRecorded: '已记录的验证会话',
-    needsReview: '需要审核',
-    yes: '是',
-    no: '否',
-    quickStatusFlagForFollowUp: '用于后续跟进的快速状态标记',
-  },
 }
 
 type Props = {
@@ -654,8 +488,6 @@ export default function ExhibitorReportDetailClient({
   summary,
   currentRange,
 }: Props) {
-  const [language] = useSiteLanguage()
-  const text = detailText[language] ?? detailText.en
   const [chartsReady, setChartsReady] = useState(false)
 
   useEffect(() => {
@@ -860,11 +692,11 @@ export default function ExhibitorReportDetailClient({
         ) : null}
 
         <section className="grid gap-4 md:grid-cols-3 xl:grid-cols-6">
-          <KpiCard label={text.totalEvents} value={exhibitor.totalEvents} />
-          <KpiCard label={text.linksGenerated} value={exhibitor.linkGeneratedCount} />
-          <KpiCard label={text.generatorOpens} value={exhibitor.generatorOpenedCount} tone="blue" />
-          <KpiCard label={text.exportsSucceeded} value={exhibitor.exportSucceededCount} tone="green" />
-          <KpiCard label={text.exportsFailed} value={exhibitor.exportFailedCount} tone="red" />
+          <KpiCard label="Total Events" value={exhibitor.totalEvents} />
+          <KpiCard label="Links Generated" value={exhibitor.linkGeneratedCount} />
+          <KpiCard label="Generator Opens" value={exhibitor.generatorOpenedCount} tone="blue" />
+          <KpiCard label="Exports Succeeded" value={exhibitor.exportSucceededCount} tone="green" />
+          <KpiCard label="Exports Failed" value={exhibitor.exportFailedCount} tone="red" />
           <KpiCard
             label="Open → Export"
             value={percentage(exhibitor.exportSucceededCount, exhibitor.generatorOpenedCount)}
@@ -879,32 +711,32 @@ export default function ExhibitorReportDetailClient({
               exhibitor.exportSucceededCount,
               exhibitor.generatorOpenedCount
             )}
-            subtitle={text.successfulExportsFromGeneratorOpens}
+            subtitle="Successful exports from generator opens"
             tone="emerald"
           />
 
           <InsightCard
             title="Failures"
             value={String(exhibitor.exportFailedCount)}
-            subtitle={text.failedExportAttemptsInView}
+            subtitle="Failed export attempts in this view"
             tone="blue"
           />
 
           <InsightCard
-            title={text.sessionVerified}
+            title="Session verified"
             value={String(exhibitor.sessionVerifiedCount)}
             subtitle="Verified sessions recorded"
             tone="amber"
           />
 
           <InsightCard
-            title={text.needsReview}
+            title="Needs review"
             value={
               exhibitor.generatedLinkButNeverExported || exhibitor.exportFailedCount > 0
                 ? 'Yes'
                 : 'No'
             }
-            subtitle={text.quickStatusFlagForFollowUp}
+            subtitle="Quick status flag for follow-up"
             tone={
               exhibitor.generatedLinkButNeverExported || exhibitor.exportFailedCount > 0
                 ? 'red'
@@ -995,7 +827,7 @@ export default function ExhibitorReportDetailClient({
                 <span className="font-medium text-white">{exhibitor.exhibitorId}</span>
               </div>
               <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
-                <span>{text.sessionVerified}</span>
+                <span>Session verified</span>
                 <span className="font-medium text-white">{exhibitor.sessionVerifiedCount}</span>
               </div>
               <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
