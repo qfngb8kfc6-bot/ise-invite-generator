@@ -152,9 +152,8 @@ export default function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#050816]/85 backdrop-blur-2xl">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.22),transparent_34%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.12),transparent_30%)]" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-blue-400/40 to-transparent" />
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_70%)] pointer-events-none" />
 
       <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
         <Link
@@ -172,21 +171,15 @@ export default function SiteHeader() {
           </div>
 
           <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="truncate bg-gradient-to-r from-white to-neutral-300 bg-clip-text text-sm font-semibold tracking-wide text-transparent sm:text-base">
-                {title}
+            <div className="truncate bg-gradient-to-r from-white to-neutral-400 bg-clip-text text-sm font-semibold tracking-wide text-transparent sm:text-base">
+              {title}
+            </div>
+
+            {subtitle ? (
+              <div className="mt-1 truncate text-xs tracking-wide text-neutral-500">
+                {subtitle}
               </div>
-
-              {isGenerator ? (
-                <span className="hidden rounded-full border border-blue-400/25 bg-blue-500/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-blue-200 sm:inline-flex">
-                  Official exhibitor tool
-                </span>
-              ) : null}
-            </div>
-
-            <div className="mt-1 truncate text-xs tracking-wide text-neutral-500">
-              {subtitle || 'Powered by ISE 2027'}
-            </div>
+            ) : null}
           </div>
         </Link>
 

@@ -1795,7 +1795,7 @@ export default function ReportsClient({
 
   <div className="premium-card rounded-2xl border-red-500/20 bg-red-500/[0.08] p-4 backdrop-blur-xl sm:rounded-3xl sm:p-5">
     <div className="text-xs uppercase tracking-[0.18em] text-red-300">
-      {text.needsAttention}
+      Needs Attention
     </div>
 
     <div className="mt-3 bg-gradient-to-r from-white to-neutral-400 bg-clip-text text-4xl font-semibold text-transparent">
