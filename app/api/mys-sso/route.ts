@@ -20,12 +20,28 @@ export async function GET(request: NextRequest) {
   try {
     const valueGuid = normaliseParam(request.nextUrl.searchParams.get('valueguid'))
     const showId = normaliseParam(request.nextUrl.searchParams.get('showid'))
+    const exhid = normaliseParam(request.nextUrl.searchParams.get('exhid'))
 
-    if (!valueGuid || !showId) {
+    if (!showId) {
       return NextResponse.json(
         {
           ok: false,
-          error: 'Missing valueguid or showid',
+          error: 'Missing showid',
+        },
+        {
+          status: 400,
+          headers: {
+            'Cache-Control': 'no-store',
+          },
+        }
+      )
+    }
+
+    if (!valueGuid && !exhid) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: 'Missing valueguid or exhid',
         },
         {
           status: 400,
@@ -53,14 +69,14 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const identity = await resolveMysSsoIdentity(valueGuid, showId)
-    const exhibitor = await getExhibitorById(identity.exhibitorId)
+    const exhibitorId = exhid || (await resolveMysSsoIdentity(valueGuid, showId)).exhibitorId
+    const exhibitor = await getExhibitorById(exhibitorId)
 
     if (!exhibitor) {
       return NextResponse.json(
         {
           ok: false,
-          error: `Exhibitor not found for ExhID ${identity.exhibitorId}`,
+          error: `Exhibitor not found for ExhID ${exhibitorId}`,
         },
         {
           status: 404,
@@ -77,6 +93,12 @@ export async function GET(request: NextRequest) {
       exhibitorId: exhibitor.id,
       companyName: exhibitor.companyName,
       eventType: 'session_verified',
+      metadata: {
+        source: 'mys-sso',
+        showId,
+        valueGuidPresent: Boolean(valueGuid),
+        exhidPresent: Boolean(exhid),
+      },
     })
 
     const baseUrl = trimTrailingSlash(
