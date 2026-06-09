@@ -1,6 +1,20 @@
+import { themes } from '@/lib/themes'
+import { translations } from '@/lib/translations'
+import RequestInvitationForm from './RequestInvitationForm'
+
 export const dynamic = 'force-dynamic'
 
 export default function RequestInvitationPage() {
+  const themeOptions = Object.entries(themes).map(([key, theme]) => ({
+    key,
+    label: theme.label,
+  }))
+
+  const languageOptions = Object.entries(translations).map(([key, bundle]) => ({
+    key,
+    label: bundle.ui.languageName,
+  }))
+
   return (
     <main className="min-h-screen bg-[#020617] px-4 py-16 text-white">
       <div className="mx-auto max-w-2xl">
@@ -15,45 +29,11 @@ export default function RequestInvitationPage() {
             </h1>
 
             <p className="mt-4 text-sm leading-7 text-white/50">
-              Submit your company details and logo. Once invitation codes are available, your card link can be generated from this request.
+              Submit your company details, logo, sector and language preference. Once invitation codes are available, your invitation card can be generated from this request.
             </p>
           </div>
 
-          <form action="/api/request-invitation" method="post" encType="multipart/form-data" className="space-y-5">
-            <div>
-              <label className="mb-2 block text-sm font-medium text-white/70">
-                Company name
-              </label>
-              <input
-                name="companyName"
-                required
-                minLength={2}
-                maxLength={120}
-                className="w-full rounded-2xl border border-white/10 bg-black/35 px-4 py-4 outline-none focus:border-blue-400"
-                placeholder="Your company name"
-              />
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-white/70">
-                Company logo
-              </label>
-              <input
-                name="logo"
-                type="file"
-                accept="image/png,image/jpeg,image/webp,image/svg+xml"
-                required
-                className="w-full rounded-2xl border border-white/10 bg-black/35 px-4 py-4 text-sm text-white/70 file:mr-4 file:rounded-xl file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-white"
-              />
-              <p className="mt-2 text-xs text-white/35">
-                Max 3MB. Recommended minimum 300 × 120px.
-              </p>
-            </div>
-
-            <button className="w-full rounded-2xl bg-blue-600 px-5 py-4 font-semibold transition hover:bg-blue-500">
-              Submit request
-            </button>
-          </form>
+          <RequestInvitationForm themes={themeOptions} languages={languageOptions} />
         </div>
       </div>
     </main>

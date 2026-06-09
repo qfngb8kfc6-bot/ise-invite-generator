@@ -321,8 +321,28 @@ function normaliseMysExhibitor(input: unknown): Exhibitor | null {
 
   const registrationUrl = buildRegistrationUrl(record, invitationCode, id)
 
+
   const logoUrl =
-    getFirstNullableString(record, ['colorlogo', 'logo', 'logoUrl', 'imageUrl']) || null
+    getFirstNullableString(record, [
+      'colorlogo',
+      'colorLogo',
+      'color_logo',
+      'logo',
+      'logoUrl',
+      'logoURL',
+      'logo_url',
+      'imageUrl',
+      'imageURL',
+      'image_url',
+      'profileLogo',
+      'profilelogo',
+      'companyLogo',
+      'companylogo',
+      'company_logo',
+      'thumbnail',
+      'thumbnailUrl',
+      'thumbnail_url',
+    ]) || null
 
   if (!id || !companyName || !standNumber || !registrationUrl) {
     return null
