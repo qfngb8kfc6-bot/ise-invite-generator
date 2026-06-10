@@ -309,17 +309,35 @@ function normaliseMysExhibitor(input: unknown): Exhibitor | null {
   if (!outer) return null
 
   const record = asRecord(outer.exhibitor) ?? outer
+
+  console.log(
+    '[MYS FULL RECORD]',
+    JSON.stringify(record, null, 2)
+  )
+
   if (!record) return null
 
   const id = getFirstString(record, ['exhid', 'exhID', 'id', 'exhibitorId', 'alt_id'])
   const companyName = getFirstString(record, ['exhname', 'legal_name', 'companyName', 'name'])
   const standNumber = getMysPrimaryBoothNumber(record)
 
+  const inviteUrl = getFirstString(record, ['inviteurl', 'inviteUrl', 'inviteURL'])
+
   const invitationCode =
-    getFirstString(record, ['promocode', 'promoCode', 'invitecode', 'invitationCode']) ||
+    getFirstString(record, [
+      'promocode',
+      'promoCode',
+      'promo_code',
+      'invitecode',
+      'inviteCode',
+      'invitationCode',
+      'actioncode',
+      'actionCode',
+    ]) ||
+    (inviteUrl ? new URL(inviteUrl).searchParams.get('actioncode') || '' : '') ||
     buildFallbackInvitationCode(id, standNumber)
 
-  const registrationUrl = buildRegistrationUrl(record, invitationCode, id)
+  const registrationUrl = inviteUrl || buildRegistrationUrl(record, invitationCode, id)
 
 
   const logoUrl =
