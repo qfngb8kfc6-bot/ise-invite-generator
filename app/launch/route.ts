@@ -215,10 +215,11 @@ async function resolveValueGuid(
 }
 
 function errorRedirect(
-  request: NextRequest,
+  _request: NextRequest,
   reason: string
 ): NextResponse {
-  const url = new URL('/sso-error', request.url)
+  const baseUrl = trimTrailingSlash(env.NEXT_PUBLIC_APP_URL)
+  const url = new URL('/sso-error', baseUrl)
   url.searchParams.set('reason', reason)
 
   return NextResponse.redirect(url)
