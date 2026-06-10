@@ -25,6 +25,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
   const [isExporting, setIsExporting] = useState(false)
   const [exportError, setExportError] = useState<string | null>(null)
   const [sessionMessage, setSessionMessage] = useState<string | null>(null)
+  const [exhibitorId, setExhibitorId] = useState('')
   const [companyName, setCompanyName] = useState('Samsung')
   const [standNumber, setStandNumber] = useState('5C300')
   const [invitationCode, setInvitationCode] = useState('ISE2027')
@@ -32,6 +33,14 @@ export default function GeneratorPageClient({ initialToken }: Props) {
   const [logoUrl, setLogoUrl] = useState('')
   const [logoMessage, setLogoMessage] = useState<string | null>(null)
   const [theme, setTheme] = useState<ThemeKey>('audio')
+
+  const appBaseUrl =
+    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ||
+    (typeof window !== 'undefined' ? window.location.origin : '')
+
+  const qrTrackingUrl = exhibitorId
+    ? `${appBaseUrl}/r/${encodeURIComponent(exhibitorId)}`
+    : registrationUrl
 
   function handleLogoUpload(file: File | null) {
     setLogoMessage(null)
@@ -104,6 +113,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
 
         const exhibitor = data.exhibitor
 
+        setExhibitorId(exhibitor.id || exhibitor.exhibitorId || '')
         setCompanyName(exhibitor.companyName || exhibitor.name || companyName)
         setStandNumber(exhibitor.standNumber || exhibitor.stand || standNumber)
         setInvitationCode(exhibitor.invitationCode || exhibitor.code || invitationCode)
@@ -281,7 +291,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
               standNumber={standNumber}
               invitationCode={invitationCode}
               logoUrl={logoUrl}
-              registrationUrl={registrationUrl}
+              registrationUrl={qrTrackingUrl}
               theme={theme}
               language={language}
             />
@@ -296,7 +306,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
             standNumber={standNumber}
             invitationCode={invitationCode}
             logoUrl={logoUrl}
-            registrationUrl={registrationUrl}
+            registrationUrl={qrTrackingUrl}
             theme={theme}
             language={language}
           />

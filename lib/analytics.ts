@@ -812,6 +812,7 @@ export async function getAnalyticsSummary(options?: {
         exportClickedCount: 0,
         exportSucceededCount: 0,
         exportFailedCount: 0,
+        qrScannedCount: 0,
         lastActivityAt: null,
         formats: {},
         generatedLinkButNeverExported: false,
@@ -848,6 +849,9 @@ export async function getAnalyticsSummary(options?: {
         break
       case 'export_failed':
         summary.exportFailedCount += 1
+        break
+      case 'qr_scanned':
+        summary.qrScannedCount += 1
         break
     }
 

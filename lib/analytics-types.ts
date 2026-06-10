@@ -6,6 +6,7 @@ export type AnalyticsEventType =
   | 'export_succeeded'
   | 'export_failed'
   | 'mys_sso_login'
+  | 'qr_scanned'
 
 export type AnalyticsEnvironment = "development" | "preview" | "production" | "test";
 
@@ -49,6 +50,7 @@ export interface ExhibitorAnalyticsSummary {
   exportClickedCount: number;
   exportSucceededCount: number;
   exportFailedCount: number;
+  qrScannedCount: number;
   lastActivityAt: string | null;
   formats: Record<string, number>;
   generatedLinkButNeverExported: boolean;
