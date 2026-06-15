@@ -767,7 +767,7 @@ function Input({
   return (
     <input
       {...props}
-      className={`w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/20 focus:bg-black/40 ${className}`}
+      className={`w-full rounded-2xl border border-white/14 bg-black/58 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/20 focus:bg-black/62 ${className}`}
     />
   )
 }
@@ -779,7 +779,7 @@ function Textarea({
   return (
     <textarea
       {...props}
-      className={`w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/20 focus:bg-black/40 ${className}`}
+      className={`w-full rounded-2xl border border-white/14 bg-black/58 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/20 focus:bg-black/62 ${className}`}
     />
   )
 }
@@ -796,8 +796,8 @@ function ActionButton({
     variant === 'primary'
       ? 'bg-white text-black hover:bg-neutral-200'
       : variant === 'ghost'
-      ? 'bg-transparent text-neutral-300 hover:bg-white/5 border border-white/10'
-      : 'bg-white/5 text-white hover:bg-white/10 border border-white/10'
+      ? 'bg-transparent text-neutral-300 hover:bg-white/5 border border-white/14'
+      : 'bg-white/5 text-white hover:bg-white/10 border border-white/14'
 
   return (
     <button
@@ -821,7 +821,7 @@ function InfoItem({
   wrap?: boolean
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+    <div className="rounded-2xl border border-white/14 bg-black/20 p-4">
       <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-neutral-500">
         {label}
       </div>
@@ -1112,7 +1112,7 @@ export default function ToolsPage() {
             </div>
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl border border-white/10 bg-black/25 px-4 py-3 backdrop-blur-xl">
+              <div className="rounded-2xl border border-white/14 bg-black/25 px-4 py-3 backdrop-blur-xl">
                 <div className="text-[11px] uppercase tracking-[0.14em] text-neutral-500">
                   {t.latestLookup}
                 </div>
@@ -1120,7 +1120,7 @@ export default function ToolsPage() {
                   {lookupResult?.exhibitorId ?? '—'}
                 </div>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-black/25 px-4 py-3 backdrop-blur-xl">
+              <div className="rounded-2xl border border-white/14 bg-black/25 px-4 py-3 backdrop-blur-xl">
                 <div className="text-[11px] uppercase tracking-[0.14em] text-neutral-500">
                   {t.bulkResults}
                 </div>
@@ -1128,7 +1128,7 @@ export default function ToolsPage() {
                   {bulkSummary.total}
                 </div>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-black/25 px-4 py-3 backdrop-blur-xl">
+              <div className="rounded-2xl border border-white/14 bg-black/25 px-4 py-3 backdrop-blur-xl">
                 <div className="text-[11px] uppercase tracking-[0.14em] text-neutral-500">
                   {t.sessionHistory}
                 </div>
@@ -1180,7 +1180,7 @@ export default function ToolsPage() {
               </div>
 
               {lookupResult ? (
-                <div className="rounded-2xl border border-white/10 bg-black/25 p-4 backdrop-blur-xl sm:rounded-3xl sm:p-5">
+                <div className="rounded-2xl border border-white/14 bg-black/25 p-4 backdrop-blur-xl sm:rounded-3xl sm:p-5">
                   <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
                     <div className="min-w-0 flex-1">
                       <div className="grid gap-4 sm:grid-cols-2">
@@ -1304,7 +1304,7 @@ export default function ToolsPage() {
               <InfoItem label={t.createdAt} value={formatTimestamp(result.createdAt)} />
             </div>
 
-            <div className="mt-4 rounded-2xl border border-white/10 bg-black/20 p-4">
+            <div className="mt-4 rounded-2xl border border-white/14 bg-black/20 p-4">
               <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-neutral-500">
                 {t.launchUrl}
               </div>
@@ -1340,10 +1340,10 @@ export default function ToolsPage() {
               </div>
             </div>
 
-            <div className="overflow-hidden rounded-2xl border border-white/10 sm:rounded-3xl">
+            <div className="overflow-hidden rounded-2xl border border-white/14 sm:rounded-3xl">
               <div className="overflow-x-auto">
                 <table className="min-w-[980px] w-full border-collapse text-sm">
-                  <thead className="bg-white/[0.04] text-left text-neutral-300">
+                  <thead className="bg-black/58 text-left text-neutral-300">
                     <tr>
                       <th className="px-4 py-3 font-medium">{t.exhibitorId}</th>
                       <th className="px-4 py-3 font-medium">{t.company}</th>
@@ -1358,7 +1358,7 @@ export default function ToolsPage() {
                     {bulkResults.map((item) => (
                       <tr
                         key={`${item.exhibitorId}-${item.createdAt}`}
-                        className="border-t border-white/5 align-top"
+                        className="border-t border-white/10 align-top"
                       >
                         <td className="px-4 py-4 font-mono text-white">
                           {item.exhibitorId}
@@ -1442,7 +1442,7 @@ export default function ToolsPage() {
               {history.map((item) => (
                 <div
                   key={`${item.exhibitorId}-${item.createdAt}-${item.launchUrl.slice(0, 8)}`}
-                  className="rounded-2xl border border-white/10 bg-black/25 p-4 backdrop-blur-xl sm:rounded-3xl sm:p-5"
+                  className="rounded-2xl border border-white/14 bg-black/25 p-4 backdrop-blur-xl sm:rounded-3xl sm:p-5"
                 >
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="min-w-0 flex-1">

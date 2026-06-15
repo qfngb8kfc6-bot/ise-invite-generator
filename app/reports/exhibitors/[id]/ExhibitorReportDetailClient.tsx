@@ -513,7 +513,7 @@ function ChartCard({
   children: ReactNode
 }) {
   return (
-    <div className="min-w-0 rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
+    <div className="min-w-0 rounded-3xl border border-white/12 bg-black/54 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
       <h2 className="text-xl font-semibold text-white">{title}</h2>
       <p className="mt-1 text-sm text-neutral-400">{description}</p>
 
@@ -552,7 +552,7 @@ function KpiCard({
       ? 'border-amber-500/20 bg-amber-500/10'
       : tone === 'red'
       ? 'border-red-500/20 bg-red-500/10'
-      : 'border-white/10 bg-white/[0.04]'
+      : 'border-white/10 bg-black/46'
 
   return (
     <div className={`rounded-3xl border p-5 shadow-[0_20px_60px_rgba(0,0,0,0.25)] ${toneClasses}`}>
@@ -695,7 +695,7 @@ export default function ExhibitorReportDetailClient({
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#262626_0%,_#0a0a0a_38%,_#000_100%)] px-4 py-6 text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-6">
-        <header className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
+        <header className="rounded-3xl border border-white/12 bg-black/54 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
           <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
             <div>
               <div className="flex flex-wrap gap-3">
@@ -792,7 +792,7 @@ export default function ExhibitorReportDetailClient({
           </div>
         </header>
 
-        <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
+        <section className="rounded-3xl border border-white/12 bg-black/54 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
           <form
             method="get"
             action={`/reports/exhibitors/${encodeURIComponent(exhibitor.exhibitorId)}`}
@@ -949,7 +949,7 @@ export default function ExhibitorReportDetailClient({
             </MeasuredChart>
           </ChartCard>
 
-          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
+          <div className="rounded-3xl border border-white/12 bg-black/54 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
             <h2 className="text-xl font-semibold text-white">Funnel step breakdown</h2>
             <p className="mt-1 text-sm text-neutral-400">
               Conversion from each previous step.
@@ -981,7 +981,7 @@ export default function ExhibitorReportDetailClient({
         </section>
 
         <section className="grid gap-6 xl:grid-cols-2">
-          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
+          <div className="rounded-3xl border border-white/12 bg-black/54 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
             <h2 className="text-xl font-semibold text-white">Exhibitor summary</h2>
             <p className="mt-1 text-sm text-neutral-400">
               Core engagement and status for this exhibitor.
@@ -1151,7 +1151,7 @@ export default function ExhibitorReportDetailClient({
           </ChartCard>
         </section>
 
-        <section className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
+        <section className="rounded-3xl border border-white/12 bg-black/54 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
           <h2 className="text-xl font-semibold text-white">Recent events</h2>
           <p className="mt-1 text-sm text-neutral-400">
             Most recent analytics events for this exhibitor.

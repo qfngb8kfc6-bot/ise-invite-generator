@@ -218,24 +218,24 @@ export default function GeneratorPageClient({ initialToken }: Props) {
   }
 
   const pageClassName = isLightMode
-    ? 'h-[calc(100vh-92px)] overflow-hidden bg-slate-100 text-slate-950'
-    : 'h-[calc(100vh-92px)] overflow-hidden bg-[#020617] text-white'
+    ? 'h-[calc(100vh-92px)] overflow-hidden bg-transparent text-slate-950'
+    : 'h-[calc(100vh-92px)] overflow-hidden bg-transparent text-white'
 
   const sidebarClassName = isLightMode
-    ? 'flex h-full min-h-0 flex-col border-r border-slate-200 bg-white'
-    : 'flex h-full min-h-0 flex-col border-r border-white/10 bg-[#050816]/95'
+    ? 'flex h-full min-h-0 flex-col border-r border-white/20 bg-white/58 shadow-[0_24px_80px_rgba(0,0,0,0.14)] backdrop-blur-xl'
+    : 'flex h-full min-h-0 flex-col border-r border-white/10 bg-black/36 shadow-[0_24px_80px_rgba(0,0,0,0.28)] backdrop-blur-xl'
 
   const previewClassName = isLightMode
-    ? 'relative hidden h-full min-h-0 items-center justify-center overflow-hidden bg-slate-200 lg:flex'
-    : 'relative hidden h-full min-h-0 items-center justify-center overflow-hidden bg-[#02050f] lg:flex'
+    ? 'relative hidden h-full min-h-0 items-center justify-center overflow-hidden bg-white/12 backdrop-blur-[2px] lg:flex'
+    : 'relative hidden h-full min-h-0 items-center justify-center overflow-hidden bg-black/18 backdrop-blur-[2px] lg:flex'
 
   const inputClassName = isLightMode
-    ? 'w-full rounded-2xl border border-slate-200 bg-white px-4 py-4 text-slate-950 outline-none focus:border-blue-500'
-    : 'w-full rounded-2xl border border-white/10 bg-black/35 px-4 py-4 text-white outline-none focus:border-blue-400'
+    ? 'w-full rounded-2xl border border-slate-200 bg-white/86 px-4 py-4 text-slate-950 outline-none backdrop-blur-xl focus:border-blue-500'
+    : 'w-full rounded-2xl border border-white/10 bg-black/50 px-4 py-4 text-white outline-none backdrop-blur-xl focus:border-blue-400'
 
   const compactInputClassName = isLightMode
-    ? 'rounded-2xl border border-slate-200 bg-white px-4 py-4 text-slate-950 outline-none focus:border-blue-500'
-    : 'rounded-2xl border border-white/10 bg-black/35 px-4 py-4 text-white outline-none focus:border-blue-400'
+    ? 'rounded-2xl border border-slate-200 bg-white/86 px-4 py-4 text-slate-950 outline-none backdrop-blur-xl focus:border-blue-500'
+    : 'rounded-2xl border border-white/10 bg-black/50 px-4 py-4 text-white outline-none backdrop-blur-xl focus:border-blue-400'
 
   const labelClassName = isLightMode
     ? 'mb-2 block text-sm font-medium text-slate-700'
@@ -246,8 +246,8 @@ export default function GeneratorPageClient({ initialToken }: Props) {
     : 'text-sm text-white/45'
 
   const panelClassName = isLightMode
-    ? 'rounded-2xl border border-slate-200 bg-slate-50 p-4'
-    : 'rounded-2xl border border-white/10 bg-black/25 p-4'
+    ? 'rounded-2xl border border-slate-200 bg-white/68 p-4 shadow-sm backdrop-blur-xl'
+    : 'rounded-2xl border border-white/10 bg-black/30 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.20)] backdrop-blur-xl'
 
   const secondaryButtonClassName = isLightMode
     ? 'rounded-2xl border border-slate-200 bg-slate-50 py-3 font-semibold text-slate-800 disabled:opacity-50'
@@ -298,8 +298,8 @@ export default function GeneratorPageClient({ initialToken }: Props) {
                   <div
                     className={
                       isLightMode
-                        ? 'mt-4 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-xs text-blue-700'
-                        : 'mt-4 rounded-2xl border border-blue-400/20 bg-blue-500/10 px-4 py-3 text-xs text-blue-100'
+                        ? 'mt-4 rounded-2xl border border-blue-200 bg-white/70 px-4 py-3 text-xs text-blue-700 backdrop-blur-xl'
+                        : 'mt-4 rounded-2xl border border-blue-400/20 bg-black/28 px-4 py-3 text-xs text-blue-100 backdrop-blur-xl'
                     }
                   >
                     {sessionMessage}

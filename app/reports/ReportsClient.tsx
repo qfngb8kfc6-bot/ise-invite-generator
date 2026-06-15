@@ -1739,7 +1739,7 @@ export default function ReportsClient({
             </div>
 
             <div className="grid grid-cols-3 gap-3">
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+              <div className="rounded-2xl border border-white/10 bg-black/42 px-4 py-3">
                 <div className="text-xs uppercase tracking-[0.18em] text-neutral-500">{text.events}</div>
 
                 <div className="mt-2 text-2xl font-semibold text-white">
@@ -1747,7 +1747,7 @@ export default function ReportsClient({
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+              <div className="rounded-2xl border border-white/10 bg-black/42 px-4 py-3">
                 <div className="text-xs uppercase tracking-[0.18em] text-neutral-500">{text.exhibitors}</div>
 
                 <div className="mt-2 text-2xl font-semibold text-white">
@@ -1755,7 +1755,7 @@ export default function ReportsClient({
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+              <div className="rounded-2xl border border-white/10 bg-black/42 px-4 py-3">
                 <div className="text-xs uppercase tracking-[0.18em] text-neutral-500">{text.exports}</div>
 
                 <div className="mt-2 text-2xl font-semibold text-white">
@@ -1827,7 +1827,7 @@ export default function ReportsClient({
               <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-4xl">{text.iseReportsTitle}</h1>
 
               <div className="mt-3 flex flex-wrap gap-2 text-xs text-neutral-400 sm:text-sm">
-                <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">
+                <span className="rounded-full border border-white/10 bg-black/46 px-3 py-1">
                   {text.range}:{' '}
                   <span className="font-medium text-white">
                     {summary.appliedStartDate || summary.appliedEndDate
@@ -1835,13 +1835,13 @@ export default function ReportsClient({
                       : getRangeLabel(currentRange, text)}
                   </span>
                 </span>
-                <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">
+                <span className="rounded-full border border-white/10 bg-black/46 px-3 py-1">
                   {text.search}:{' '}
                   <span className="font-medium text-white">
                     {summary.appliedSearchQuery || '—'}
                   </span>
                 </span>
-                <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">
+                <span className="rounded-full border border-white/10 bg-black/46 px-3 py-1">
                   {text.exhibitor}:{' '}
                   <span className="font-medium text-white">
                     {summary.appliedExhibitorName
@@ -1849,7 +1849,7 @@ export default function ReportsClient({
                       : '—'}
                   </span>
                 </span>
-                <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">
+                <span className="rounded-full border border-white/10 bg-black/46 px-3 py-1">
                   {text.dates}:{' '}
                   <span className="font-medium text-white">
                     {summary.appliedStartDate || summary.appliedEndDate
@@ -1996,7 +1996,7 @@ export default function ReportsClient({
 
           <form
             onSubmit={handleApplyExhibitorFilter}
-            className="mt-4 grid gap-3 rounded-3xl border border-white/10 bg-white/[0.03] p-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end"
+            className="mt-4 grid gap-3 rounded-3xl border border-white/10 bg-black/42 p-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end"
           >
             <div>
               <label htmlFor="exhibitor-picker" className="mb-2 block text-sm font-medium text-neutral-300">
@@ -2111,7 +2111,7 @@ export default function ReportsClient({
           <div className="mt-4 overflow-x-auto rounded-2xl border border-white/10 sm:mt-6 sm:rounded-3xl">
             <div className="overflow-x-auto overscroll-x-contain">
               <table className="min-w-full border-collapse text-sm">
-                 <thead className="sticky top-0 z-10 bg-[#111111]/95 backdrop-blur-xl">                  <tr className="border-b border-white/10 text-left">
+                 <thead className="sticky top-0 z-10 bg-black/82 backdrop-blur-xl">                  <tr className="border-b border-white/10 text-left">
                     <th className="px-5 py-3 font-medium text-neutral-300">{text.format}</th>
                     <th className="px-5 py-3 font-medium text-neutral-300">{text.successfulExports}</th>
                     <th className="px-5 py-3 font-medium text-neutral-300">{text.share}</th>
@@ -2126,7 +2126,7 @@ export default function ReportsClient({
                     </tr>
                   ) : (
                     exportFormatRows.map((row) => (
-                      <tr key={row.format} className="border-b border-white/5 transition hover:bg-white/[0.03] last:border-b-0">
+                      <tr key={row.format} className="border-b border-white/5 transition hover:bg-black/42 last:border-b-0">
                         <td className="px-5 py-4 font-medium text-white">{row.label}</td>
                         <td className="px-5 py-4 text-neutral-300">{row.count}</td>
                         <td className="px-5 py-4 text-neutral-300">
@@ -2534,7 +2534,7 @@ export default function ReportsClient({
                           : text.generatedLinksButNoSuccessfulExports
 
                       return (
-                        <tr key={item.exhibitorId} className="border-b border-white/5 transition hover:bg-white/[0.03] last:border-b-0">
+                        <tr key={item.exhibitorId} className="border-b border-white/5 transition hover:bg-black/42 last:border-b-0">
                           <td className="px-5 py-4 text-white">{item.companyName}</td>
                           <td className="px-5 py-4 text-neutral-300">{item.exhibitorId}</td>
                           <td className="px-5 py-4 text-neutral-300">{item.linkGeneratedCount}</td>
@@ -2659,7 +2659,7 @@ export default function ReportsClient({
             <div className="overflow-x-auto rounded-2xl border border-white/10 sm:rounded-3xl">
               <div className="overflow-x-auto overscroll-x-contain">
                 <table className="min-w-[1080px] w-full border-collapse text-xs sm:text-sm">
-                  <thead className="sticky top-0 z-10 bg-[#111111]/95 backdrop-blur-xl">
+                  <thead className="sticky top-0 z-10 bg-black/82 backdrop-blur-xl">
                     <tr className="border-b border-white/10 text-left">
                       <th className="px-5 py-4 font-medium text-neutral-300">
                         <button type="button" onClick={() => handleSort('companyName')} className="font-medium hover:underline">
@@ -2721,7 +2721,7 @@ export default function ReportsClient({
                         const status = getLastActiveStatus(item.lastActivityAt, text)
 
                         return (
-                          <tr key={item.exhibitorId} className="border-b border-white/5 align-top transition hover:bg-white/[0.03] last:border-b-0">
+                          <tr key={item.exhibitorId} className="border-b border-white/5 align-top transition hover:bg-black/42 last:border-b-0">
                             <td className="px-5 py-4">
                               <Link
                                 href={buildExhibitorDetailHref(item.exhibitorId, {
@@ -2811,7 +2811,7 @@ export default function ReportsClient({
             <div className="mt-4 overflow-x-auto rounded-2xl border border-white/10 sm:mt-6 sm:rounded-3xl">
               <div className="overflow-x-auto overscroll-x-contain">
                 <table className="min-w-full border-collapse text-sm">
-                  <thead className="sticky top-0 z-10 bg-[#111111]/95 backdrop-blur-xl">
+                  <thead className="sticky top-0 z-10 bg-black/82 backdrop-blur-xl">
                     <tr className="border-b border-white/10 text-left">
                       <th className="px-5 py-3 font-medium text-neutral-300">{text.step}</th>
                       <th className="px-5 py-3 font-medium text-neutral-300">{text.count}</th>
@@ -2821,7 +2821,7 @@ export default function ReportsClient({
                   </thead>
                   <tbody>
                     {funnelRows.map((item) => (
-                      <tr key={item.key} className="border-b border-white/5 transition hover:bg-white/[0.03] last:border-b-0">
+                      <tr key={item.key} className="border-b border-white/5 transition hover:bg-black/42 last:border-b-0">
                         <td className="px-5 py-4 font-medium text-white">{item.label}</td>
                         <td className="px-5 py-4 text-neutral-300">{item.count}</td>
                         <td className="px-5 py-4 text-neutral-300">{item.rateFromPrevious}</td>
@@ -2843,7 +2843,7 @@ export default function ReportsClient({
             <div className="mt-4 overflow-x-auto rounded-2xl border border-white/10 sm:mt-6 sm:rounded-3xl">
               <div className="overflow-x-auto overscroll-x-contain">
                 <table className="min-w-full border-collapse text-sm">
-                  <thead className="sticky top-0 z-10 bg-[#111111]/95 backdrop-blur-xl">
+                  <thead className="sticky top-0 z-10 bg-black/82 backdrop-blur-xl">
                     <tr className="border-b border-white/10 text-left">
                       <th className="px-5 py-3 font-medium text-neutral-300">{text.timestamp}</th>
                       <th className="px-5 py-3 font-medium text-neutral-300">{text.company}</th>
@@ -2860,7 +2860,7 @@ export default function ReportsClient({
                       </tr>
                     ) : (
                       summary.recentEvents.slice(0, 12).map((event) => (
-                        <tr key={event.id} className="border-b border-white/5 transition hover:bg-white/[0.03] last:border-b-0">
+                        <tr key={event.id} className="border-b border-white/5 transition hover:bg-black/42 last:border-b-0">
                           <td className="px-5 py-4 text-neutral-300">{formatDate(event.timestamp)}</td>
                           <td className="px-5 py-4">
                             <Link
