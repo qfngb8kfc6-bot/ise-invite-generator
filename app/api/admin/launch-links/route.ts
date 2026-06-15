@@ -1,22 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
 import ExcelJS from 'exceljs'
-import { signLaunch } from '@/lib/launch-signature'
-import { env } from '@/lib/env'
 import { getAllExhibitors } from '@/lib/exhibitors'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
+
+type ExhibitorList = Awaited<ReturnType<typeof getAllExhibitors>>
+type SignLaunchFn = (exhibitorId: string) => string
 
 function escapeCsv(value: string): string {
   const normalized = value.replace(/"/g, '""')
   return `"${normalized}"`
 }
 
-function buildLaunchUrl(exhibitorId: string): string {
-  const baseUrl = env.NEXT_PUBLIC_APP_URL.replace(/\/+$/, '')
+function buildLaunchUrl(
+  exhibitorId: string,
+  baseUrl: string,
+  signLaunch: SignLaunchFn
+): string {
+  const cleanBaseUrl = baseUrl.replace(/\/+$/, '')
   const sig = signLaunch(exhibitorId)
 
-  return `${baseUrl}/launch/${encodeURIComponent(exhibitorId)}?sig=${encodeURIComponent(sig)}`
+  return `${cleanBaseUrl}/launch/${encodeURIComponent(exhibitorId)}?sig=${encodeURIComponent(sig)}`
 }
 
 function getRequestedFormat(request: NextRequest): 'csv' | 'xlsx' {
@@ -33,7 +38,11 @@ function getRequestedFormat(request: NextRequest): 'csv' | 'xlsx' {
   return 'xlsx'
 }
 
-function buildCsv(exhibitors: Awaited<ReturnType<typeof getAllExhibitors>>): string {
+function buildCsv(
+  exhibitors: ExhibitorList,
+  baseUrl: string,
+  signLaunch: SignLaunchFn
+): string {
   const csvLines = [
     'exhibitor_id,company_name,stand_number,launch_url',
     ...exhibitors.map((exhibitor) =>
@@ -41,7 +50,7 @@ function buildCsv(exhibitors: Awaited<ReturnType<typeof getAllExhibitors>>): str
         escapeCsv(exhibitor.id),
         escapeCsv(exhibitor.companyName),
         escapeCsv(exhibitor.standNumber),
-        escapeCsv(buildLaunchUrl(exhibitor.id)),
+        escapeCsv(buildLaunchUrl(exhibitor.id, baseUrl, signLaunch)),
       ].join(',')
     ),
   ]
@@ -50,7 +59,9 @@ function buildCsv(exhibitors: Awaited<ReturnType<typeof getAllExhibitors>>): str
 }
 
 async function buildXlsxBlob(
-  exhibitors: Awaited<ReturnType<typeof getAllExhibitors>>
+  exhibitors: ExhibitorList,
+  baseUrl: string,
+  signLaunch: SignLaunchFn
 ): Promise<Blob> {
   const workbook = new ExcelJS.Workbook()
   const worksheet = workbook.addWorksheet('Launch Links')
@@ -69,7 +80,7 @@ async function buildXlsxBlob(
       exhibitorId: exhibitor.id,
       companyName: exhibitor.companyName,
       standNumber: exhibitor.standNumber,
-      launchUrl: buildLaunchUrl(exhibitor.id),
+      launchUrl: buildLaunchUrl(exhibitor.id, baseUrl, signLaunch),
     })
   }
 
@@ -112,7 +123,13 @@ async function buildXlsxBlob(
 
 export async function GET(request: NextRequest) {
   try {
+    const [{ signLaunch }, { env }] = await Promise.all([
+      import('@/lib/launch-signature'),
+      import('@/lib/env'),
+    ])
+
     const exhibitors = await getAllExhibitors()
+    const baseUrl = env.NEXT_PUBLIC_APP_URL
 
     if (exhibitors.length === 0) {
       return NextResponse.json(
@@ -132,7 +149,7 @@ export async function GET(request: NextRequest) {
     const format = getRequestedFormat(request)
 
     if (format === 'csv') {
-      const csv = buildCsv(exhibitors)
+      const csv = buildCsv(exhibitors, baseUrl, signLaunch)
 
       return new Response(csv, {
         status: 200,
@@ -144,7 +161,7 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    const xlsxBlob = await buildXlsxBlob(exhibitors)
+    const xlsxBlob = await buildXlsxBlob(exhibitors, baseUrl, signLaunch)
 
     return new Response(xlsxBlob, {
       status: 200,
