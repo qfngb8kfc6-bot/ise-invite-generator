@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import ExcelJS from 'exceljs'
-import { getAllExhibitors } from '@/lib/exhibitors'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-type ExhibitorList = Awaited<ReturnType<typeof getAllExhibitors>>
+type LaunchExhibitor = {
+  id: string
+  companyName: string
+  standNumber: string
+}
+
 type SignLaunchFn = (exhibitorId: string) => string
 
 function escapeCsv(value: string): string {
@@ -39,7 +43,7 @@ function getRequestedFormat(request: NextRequest): 'csv' | 'xlsx' {
 }
 
 function buildCsv(
-  exhibitors: ExhibitorList,
+  exhibitors: LaunchExhibitor[],
   baseUrl: string,
   signLaunch: SignLaunchFn
 ): string {
@@ -59,7 +63,7 @@ function buildCsv(
 }
 
 async function buildXlsxBlob(
-  exhibitors: ExhibitorList,
+  exhibitors: LaunchExhibitor[],
   baseUrl: string,
   signLaunch: SignLaunchFn
 ): Promise<Blob> {
@@ -123,9 +127,10 @@ async function buildXlsxBlob(
 
 export async function GET(request: NextRequest) {
   try {
-    const [{ signLaunch }, { env }] = await Promise.all([
+    const [{ signLaunch }, { env }, { getAllExhibitors }] = await Promise.all([
       import('@/lib/launch-signature'),
       import('@/lib/env'),
+      import('@/lib/exhibitors'),
     ])
 
     const exhibitors = await getAllExhibitors()
