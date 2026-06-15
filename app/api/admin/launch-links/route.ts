@@ -127,14 +127,14 @@ async function buildXlsxBlob(
 
 export async function GET(request: NextRequest) {
   try {
-    const [{ signLaunch }, { env }, { getAllExhibitors }] = await Promise.all([
+    const [{ signLaunch }, { getAllExhibitors }] = await Promise.all([
       import('@/lib/launch-signature'),
-      import('@/lib/env'),
       import('@/lib/exhibitors'),
     ])
 
     const exhibitors = await getAllExhibitors()
-    const baseUrl = env.NEXT_PUBLIC_APP_URL
+    const baseUrl =
+      process.env.NEXT_PUBLIC_APP_URL?.trim() || 'https://invitations.iseurope.org'
 
     if (exhibitors.length === 0) {
       return NextResponse.json(
