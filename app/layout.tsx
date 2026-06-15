@@ -1,11 +1,25 @@
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import localFont from 'next/font/local'
+import { Geist_Mono } from 'next/font/google'
 import SiteHeader from '@/components/SiteHeader'
 import './globals.css'
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
+const avantGarde = localFont({
+  src: [
+    {
+      path: '../public/fonts/avant-garde-gothic-pro-book.otf',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/avant-garde-gothic-pro-medium-oblique.otf',
+      weight: '500',
+      style: 'italic',
+    },
+  ],
+  variable: '--font-avant-garde',
+  display: 'swap',
+  fallback: ['Helvetica', 'Arial', 'sans-serif'],
 })
 
 const geistMono = Geist_Mono({
@@ -57,7 +71,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-[#020617] text-white antialiased selection:bg-white selection:text-black`}
+        className={`${avantGarde.className} ${avantGarde.variable} ${geistMono.variable} min-h-screen bg-[#020617] text-white antialiased selection:bg-white selection:text-black`}
       >
         <div className="fixed inset-0 -z-20 bg-[#020617]" />
         <div
