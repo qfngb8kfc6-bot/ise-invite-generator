@@ -1,10 +1,23 @@
 import 'server-only'
 
 import crypto from 'crypto'
-import { env } from '@/lib/env'
+
+function getRequiredEnv(name: string): string {
+  const value = process.env[name]?.trim()
+
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${name}`)
+  }
+
+  return value
+}
+
+function getOptionalEnv(name: string): string {
+  return process.env[name]?.trim() || ''
+}
 
 function getSecret(): string {
-  return env.LAUNCH_SIGNATURE_SECRET
+  return getRequiredEnv('LAUNCH_SIGNATURE_SECRET')
 }
 
 export function signLaunch(exhibitorId: string): string {
@@ -35,7 +48,7 @@ export function verifyLaunchSignature(
 }
 
 export function buildRegistrationUrl(invitationCode: string): string {
-  const base = env.EBO_REGISTRATION_BASE_URL?.trim() || ''
+  const base = getOptionalEnv('EBO_REGISTRATION_BASE_URL')
 
   if (!base) {
     return ''
