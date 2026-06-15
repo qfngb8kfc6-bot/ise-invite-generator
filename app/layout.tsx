@@ -80,8 +80,7 @@ export default function RootLayout({
             backgroundImage: "url('/branding/ise-background.jpeg')",
           }}
         />
-        <div className="fixed inset-0 -z-10 bg-[linear-gradient(90deg,rgba(2,6,23,0.88)_0%,rgba(2,6,23,0.68)_42%,rgba(2,6,23,0.28)_100%)]" />
-        <div className="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,rgba(45,63,143,0.24),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(236,72,153,0.18),transparent_34%)]" />
+        <div className="fixed inset-0 -z-10 bg-[linear-gradient(90deg,rgba(2,6,23,0.28)_0%,rgba(2,6,23,0.16)_40%,rgba(2,6,23,0.02)_100%)]" />
         <SiteHeader />
         {children}
       </body>

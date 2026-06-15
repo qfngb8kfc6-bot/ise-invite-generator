@@ -4,18 +4,18 @@ import { useEffect, useRef, useState } from 'react'
 import InvitePreview from '@/components/InvitePreview'
 import { useSiteLanguage } from '@/components/LanguageSwitcher'
 import {
-  exportPdf,
-  exportPng,
-  exportZipPack,
-  makeExportBaseName,
-  type ExportFormatKey,
+ exportPdf,
+ exportPng,
+ exportZipPack,
+ makeExportBaseName,
+ type ExportFormatKey,
 } from '@/lib/export'
 import { themes } from '@/lib/themes'
 import { translations } from '@/lib/translations'
 import type { LanguageKey, ThemeKey } from '@/lib/types'
 
 type Props = {
-  initialToken?: string
+ initialToken?: string
 }
 
 type DisplayMode = 'dark' | 'light'
@@ -24,500 +24,500 @@ const CARD_LANGUAGE_STORAGE_KEY = 'ise-card-language'
 const DISPLAY_MODE_STORAGE_KEY = 'ise-generator-display-mode'
 
 export default function GeneratorPageClient({ initialToken }: Props) {
-  const exportPreviewRef = useRef<HTMLDivElement | null>(null)
+ const exportPreviewRef = useRef<HTMLDivElement | null>(null)
 
-  const [generatorLanguage] = useSiteLanguage()
-  const text = translations[generatorLanguage].ui
+ const [generatorLanguage] = useSiteLanguage()
+ const text = translations[generatorLanguage].ui
 
-  const [cardLanguage, setCardLanguage] = useState<LanguageKey>(() => {
-    if (typeof window === 'undefined') return 'en'
+ const [cardLanguage, setCardLanguage] = useState<LanguageKey>(() => {
+  if (typeof window === 'undefined') return 'en'
 
-    const saved = window.localStorage.getItem(CARD_LANGUAGE_STORAGE_KEY)
+  const saved = window.localStorage.getItem(CARD_LANGUAGE_STORAGE_KEY)
 
-    if (saved && saved in translations) {
-      return saved as LanguageKey
-    }
-
-    return 'en'
-  })
-
-  const [displayMode, setDisplayMode] = useState<DisplayMode>(() => {
-    if (typeof window === 'undefined') return 'dark'
-
-    const saved = window.localStorage.getItem(DISPLAY_MODE_STORAGE_KEY)
-
-    if (saved === 'light' || saved === 'dark') {
-      return saved
-    }
-
-    return 'dark'
-  })
-
-  const [isExporting, setIsExporting] = useState(false)
-  const [exportError, setExportError] = useState<string | null>(null)
-  const [sessionMessage, setSessionMessage] = useState<string | null>(null)
-
-  const [exhibitorId, setExhibitorId] = useState('')
-  const [companyName, setCompanyName] = useState('Samsung')
-  const [standNumber, setStandNumber] = useState('5C300')
-  const [invitationCode, setInvitationCode] = useState('ISE2027')
-  const [registrationUrl, setRegistrationUrl] = useState('https://registration.example.com')
-  const [logoUrl, setLogoUrl] = useState('')
-  const [logoMessage, setLogoMessage] = useState<string | null>(null)
-  const [theme, setTheme] = useState<ThemeKey>('audio')
-
-  const isLightMode = displayMode === 'light'
-
-  const appBaseUrl =
-    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ||
-    (typeof window !== 'undefined' ? window.location.origin : '')
-
-  const qrTrackingUrl = exhibitorId
-    ? `${appBaseUrl}/r/${encodeURIComponent(exhibitorId)}`
-    : registrationUrl
-
-  useEffect(() => {
-    window.localStorage.setItem(CARD_LANGUAGE_STORAGE_KEY, cardLanguage)
-  }, [cardLanguage])
-
-  useEffect(() => {
-    window.localStorage.setItem(DISPLAY_MODE_STORAGE_KEY, displayMode)
-  }, [displayMode])
-
-  function handleLogoUpload(file: File | null) {
-    setLogoMessage(null)
-
-    if (!file) return
-
-    const maxSizeMb = 3
-    const maxSizeBytes = maxSizeMb * 1024 * 1024
-
-    if (file.size > maxSizeBytes) {
-      setLogoMessage(`Logo is too large. Maximum size is ${maxSizeMb}MB.`)
-      return
-    }
-
-    if (!file.type.startsWith('image/')) {
-      setLogoMessage('Please upload a valid image file.')
-      return
-    }
-
-    const reader = new FileReader()
-
-    reader.onload = () => {
-      const result = typeof reader.result === 'string' ? reader.result : ''
-      const image = new Image()
-
-      image.onload = () => {
-        if (image.width < 300 || image.height < 120) {
-          setLogoMessage(
-            'Logo uploaded, but recommended minimum size is 300 × 120px for best export quality.'
-          )
-        }
-
-        setLogoUrl(result)
-      }
-
-      image.onerror = () => {
-        setLogoMessage('Could not read this logo image.')
-      }
-
-      image.src = result
-    }
-
-    reader.readAsDataURL(file)
+  if (saved && saved in translations) {
+   return saved as LanguageKey
   }
 
-  function removeLogo() {
-    setLogoUrl('')
-    setLogoMessage(null)
+  return 'en'
+ })
+
+ const [displayMode, setDisplayMode] = useState<DisplayMode>(() => {
+  if (typeof window === 'undefined') return 'dark'
+
+  const saved = window.localStorage.getItem(DISPLAY_MODE_STORAGE_KEY)
+
+  if (saved === 'light' || saved === 'dark') {
+   return saved
   }
 
-  useEffect(() => {
-    async function loadSession() {
-      if (!initialToken) return
+  return 'dark'
+ })
 
-      try {
-        setSessionMessage('Loading verified exhibitor details...')
+ const [isExporting, setIsExporting] = useState(false)
+ const [exportError, setExportError] = useState<string | null>(null)
+ const [sessionMessage, setSessionMessage] = useState<string | null>(null)
 
-        const response = await fetch('/api/session', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ token: initialToken }),
-        })
+ const [exhibitorId, setExhibitorId] = useState('')
+ const [companyName, setCompanyName] = useState('Samsung')
+ const [standNumber, setStandNumber] = useState('5C300')
+ const [invitationCode, setInvitationCode] = useState('ISE2027')
+ const [registrationUrl, setRegistrationUrl] = useState('https://registration.example.com')
+ const [logoUrl, setLogoUrl] = useState('')
+ const [logoMessage, setLogoMessage] = useState<string | null>(null)
+ const [theme, setTheme] = useState<ThemeKey>('audio')
 
-        const data = await response.json()
+ const isLightMode = displayMode === 'light'
 
-        if (!response.ok || !data?.ok || !data?.exhibitor) {
-          setSessionMessage(data?.error || 'Could not verify exhibitor session.')
-          return
-        }
+ const appBaseUrl =
+  process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ||
+  (typeof window !== 'undefined' ? window.location.origin : '')
 
-        const exhibitor = data.exhibitor
+ const qrTrackingUrl = exhibitorId
+  ? `${appBaseUrl}/r/${encodeURIComponent(exhibitorId)}`
+  : registrationUrl
 
-        setExhibitorId(exhibitor.id || exhibitor.exhibitorId || '')
-        setCompanyName(exhibitor.companyName || exhibitor.name || companyName)
-        setStandNumber(exhibitor.standNumber || exhibitor.stand || standNumber)
-        setInvitationCode(exhibitor.invitationCode || exhibitor.code || invitationCode)
-        setRegistrationUrl(exhibitor.registrationUrl || registrationUrl)
-        setLogoUrl(exhibitor.logoUrl || '')
+ useEffect(() => {
+  window.localStorage.setItem(CARD_LANGUAGE_STORAGE_KEY, cardLanguage)
+ }, [cardLanguage])
 
-        if (exhibitor.theme) {
-          setTheme(exhibitor.theme)
-        }
+ useEffect(() => {
+  window.localStorage.setItem(DISPLAY_MODE_STORAGE_KEY, displayMode)
+ }, [displayMode])
 
-        if (exhibitor.language && exhibitor.language in translations) {
-          setCardLanguage(exhibitor.language as LanguageKey)
-        }
+ function handleLogoUpload(file: File | null) {
+  setLogoMessage(null)
 
-        setSessionMessage('Verified exhibitor details loaded.')
-      } catch {
-        setSessionMessage('Could not load exhibitor details.')
-      }
-    }
+  if (!file) return
 
-    loadSession()
-  }, [
-    initialToken,
-    companyName,
-    standNumber,
-    invitationCode,
-    registrationUrl,
-  ])
+  const maxSizeMb = 3
+  const maxSizeBytes = maxSizeMb * 1024 * 1024
 
-  async function runExport(type: 'pdf' | 'zip' | ExportFormatKey) {
-    if (!exportPreviewRef.current) {
-      setExportError('Preview element not found.')
-      return
-    }
-
-    try {
-      setIsExporting(true)
-      setExportError(null)
-
-      const baseName = makeExportBaseName(companyName, standNumber)
-
-      if (type === 'pdf') {
-        await exportPdf(exportPreviewRef.current, baseName)
-        return
-      }
-
-      if (type === 'zip') {
-        await exportZipPack(exportPreviewRef.current, baseName)
-        return
-      }
-
-      await exportPng(exportPreviewRef.current, type, baseName)
-    } catch (error) {
-      setExportError(error instanceof Error ? error.message : 'Export failed.')
-    } finally {
-      setIsExporting(false)
-    }
+  if (file.size > maxSizeBytes) {
+   setLogoMessage(`Logo is too large. Maximum size is ${maxSizeMb}MB.`)
+   return
   }
 
-  const pageClassName = isLightMode
-    ? 'h-[calc(100vh-92px)] overflow-hidden bg-transparent text-slate-950'
-    : 'h-[calc(100vh-92px)] overflow-hidden bg-transparent text-white'
+  if (!file.type.startsWith('image/')) {
+   setLogoMessage('Please upload a valid image file.')
+   return
+  }
 
-  const sidebarClassName = isLightMode
-    ? 'flex h-full min-h-0 flex-col border-r border-white/20 bg-white/58 shadow-[0_24px_80px_rgba(0,0,0,0.14)] backdrop-blur-xl'
-    : 'flex h-full min-h-0 flex-col border-r border-white/10 bg-black/36 shadow-[0_24px_80px_rgba(0,0,0,0.28)] backdrop-blur-xl'
+  const reader = new FileReader()
 
-  const previewClassName = isLightMode
-    ? 'relative hidden h-full min-h-0 items-center justify-center overflow-hidden bg-white/12 backdrop-blur-[2px] lg:flex'
-    : 'relative hidden h-full min-h-0 items-center justify-center overflow-hidden bg-black/18 backdrop-blur-[2px] lg:flex'
+  reader.onload = () => {
+   const result = typeof reader.result === 'string' ? reader.result : ''
+   const image = new Image()
 
-  const inputClassName = isLightMode
-    ? 'w-full rounded-2xl border border-slate-200 bg-white/86 px-4 py-4 text-slate-950 outline-none backdrop-blur-xl focus:border-blue-500'
-    : 'w-full rounded-2xl border border-white/10 bg-black/50 px-4 py-4 text-white outline-none backdrop-blur-xl focus:border-blue-400'
+   image.onload = () => {
+    if (image.width < 300 || image.height < 120) {
+     setLogoMessage(
+      'Logo uploaded, but recommended minimum size is 300 × 120px for best export quality.'
+     )
+    }
 
-  const compactInputClassName = isLightMode
-    ? 'rounded-2xl border border-slate-200 bg-white/86 px-4 py-4 text-slate-950 outline-none backdrop-blur-xl focus:border-blue-500'
-    : 'rounded-2xl border border-white/10 bg-black/50 px-4 py-4 text-white outline-none backdrop-blur-xl focus:border-blue-400'
+    setLogoUrl(result)
+   }
 
-  const labelClassName = isLightMode
-    ? 'mb-2 block text-sm font-medium text-slate-700'
-    : 'mb-2 block text-sm font-medium text-white/70'
+   image.onerror = () => {
+    setLogoMessage('Could not read this logo image.')
+   }
 
-  const helperClassName = isLightMode
-    ? 'text-sm text-slate-500'
-    : 'text-sm text-white/45'
+   image.src = result
+  }
 
-  const panelClassName = isLightMode
-    ? 'rounded-2xl border border-slate-200 bg-white/68 p-4 shadow-sm backdrop-blur-xl'
-    : 'rounded-2xl border border-white/10 bg-black/30 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.20)] backdrop-blur-xl'
+  reader.readAsDataURL(file)
+ }
 
-  const secondaryButtonClassName = isLightMode
-    ? 'rounded-2xl border border-slate-200 bg-slate-50 py-3 font-semibold text-slate-800 disabled:opacity-50'
-    : 'rounded-2xl border border-white/10 bg-white/5 py-3 font-semibold text-white disabled:opacity-50'
+ function removeLogo() {
+  setLogoUrl('')
+  setLogoMessage(null)
+ }
 
-  return (
-    <main className={pageClassName}>
-      <div className="grid h-full lg:grid-cols-[460px_1fr]">
-        <aside className={sidebarClassName}>
-          <div className={isLightMode ? 'border-b border-slate-200 px-7 py-5' : 'border-b border-white/10 px-7 py-5'}>
-            <div className="flex items-center justify-between gap-3">
-              <div className="inline-flex items-center gap-2 rounded-full border border-blue-400/25 bg-blue-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-blue-500">
-                <span className="h-2 w-2 rounded-full bg-blue-400" />
-                ISE 2027
-              </div>
+ useEffect(() => {
+  async function loadSession() {
+   if (!initialToken) return
 
-              <button
-                type="button"
-                onClick={() => setDisplayMode((current) => (current === 'dark' ? 'light' : 'dark'))}
-                className={
-                  isLightMode
-                    ? 'rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50'
-                    : 'rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white/80 hover:bg-white/10'
-                }
-              >
-                {isLightMode ? 'Dark mode' : 'Light mode'}
-              </button>
-            </div>
+   try {
+    setSessionMessage('Loading verified exhibitor details...')
 
-            <h1 className="mt-4 text-3xl font-semibold leading-tight">
-              {text.generatorTitle}
-            </h1>
+    const response = await fetch('/api/session', {
+     method: 'POST',
+     headers: {
+      'Content-Type': 'application/json',
+     },
+     body: JSON.stringify({ token: initialToken }),
+    })
 
-            <p className={`mt-3 leading-6 ${helperClassName}`}>
-              {text.generatorInputsDescription}
-            </p>
-          </div>
+    const data = await response.json()
 
-          <div className="flex-1 overflow-y-auto px-7 py-5">
-            <div className="space-y-6">
-              <section>
-                <h2 className="text-xl font-semibold">{text.generatorInputsTitle}</h2>
-                <p className={`mt-1 ${helperClassName}`}>
-                  Edit the details that appear on the invitation card.
-                </p>
+    if (!response.ok || !data?.ok || !data?.exhibitor) {
+     setSessionMessage(data?.error || 'Could not verify exhibitor session.')
+     return
+    }
 
-                {sessionMessage ? (
-                  <div
-                    className={
-                      isLightMode
-                        ? 'mt-4 rounded-2xl border border-blue-200 bg-white/70 px-4 py-3 text-xs text-blue-700 backdrop-blur-xl'
-                        : 'mt-4 rounded-2xl border border-blue-400/20 bg-black/28 px-4 py-3 text-xs text-blue-100 backdrop-blur-xl'
-                    }
-                  >
-                    {sessionMessage}
-                  </div>
-                ) : null}
+    const exhibitor = data.exhibitor
 
-                <div className="mt-4 space-y-4">
-                  <label className="block">
-                    <span className={labelClassName}>Company name</span>
-                    <input
-                      value={companyName}
-                      onChange={(event) => setCompanyName(event.target.value)}
-                      className={inputClassName}
-                    />
-                  </label>
+    setExhibitorId(exhibitor.id || exhibitor.exhibitorId || '')
+    setCompanyName(exhibitor.companyName || exhibitor.name || companyName)
+    setStandNumber(exhibitor.standNumber || exhibitor.stand || standNumber)
+    setInvitationCode(exhibitor.invitationCode || exhibitor.code || invitationCode)
+    setRegistrationUrl(exhibitor.registrationUrl || registrationUrl)
+    setLogoUrl(exhibitor.logoUrl || '')
 
-                  <div className="grid grid-cols-2 gap-3">
-                    <label className="block">
-                      <span className={labelClassName}>Stand number</span>
-                      <input
-                        value={standNumber}
-                        onChange={(event) => setStandNumber(event.target.value)}
-                        className={compactInputClassName}
-                      />
-                    </label>
+    if (exhibitor.theme) {
+     setTheme(exhibitor.theme)
+    }
 
-                    <label className="block">
-                      <span className={labelClassName}>Invitation code</span>
-                      <input
-                        value={invitationCode}
-                        onChange={(event) => setInvitationCode(event.target.value)}
-                        className={compactInputClassName}
-                      />
-                    </label>
-                  </div>
+    if (exhibitor.language && exhibitor.language in translations) {
+     setCardLanguage(exhibitor.language as LanguageKey)
+    }
 
-                  <label className="block">
-                    <span className={labelClassName}>Registration URL</span>
-                    <input
-                      value={registrationUrl}
-                      onChange={(event) => setRegistrationUrl(event.target.value)}
-                      className={inputClassName}
-                    />
-                  </label>
+    setSessionMessage('Verified exhibitor details loaded.')
+   } catch {
+    setSessionMessage('Could not load exhibitor details.')
+   }
+  }
 
-                  <label className="block">
-                    <span className={labelClassName}>Invitation card language</span>
-                    <select
-                      value={cardLanguage}
-                      onChange={(event) => setCardLanguage(event.target.value as LanguageKey)}
-                      className={inputClassName}
-                    >
-                      {Object.entries(translations).map(([key, bundle]) => (
-                        <option key={key} value={key} className="text-black">
-                          {bundle.ui.languageName}
-                        </option>
-                      ))}
-                    </select>
+  loadSession()
+ }, [
+  initialToken,
+  companyName,
+  standNumber,
+  invitationCode,
+  registrationUrl,
+ ])
 
-                    <p className={`mt-2 text-xs ${isLightMode ? 'text-slate-500' : 'text-white/40'}`}>
-                      This changes the invitation card and exported files only. The main website language switcher controls the generator interface.
-                    </p>
-                  </label>
+ async function runExport(type: 'pdf' | 'zip' | ExportFormatKey) {
+  if (!exportPreviewRef.current) {
+   setExportError('Preview element not found.')
+   return
+  }
 
-                  <div className={panelClassName}>
-                    <div className="mb-3 flex items-center justify-between gap-3">
-                      <div>
-                        <div className={isLightMode ? 'text-sm font-medium text-slate-700' : 'text-sm font-medium text-white/70'}>
-                          {text.generatorLogoUpload}
-                        </div>
-                        <div className={isLightMode ? 'mt-1 text-xs text-slate-500' : 'mt-1 text-xs text-white/35'}>
-                          PNG/JPG/WebP. Max 3MB. Recommended 300 × 120px minimum.
-                        </div>
-                      </div>
+  try {
+   setIsExporting(true)
+   setExportError(null)
 
-                      {logoUrl ? (
-                        <button
-                          type="button"
-                          onClick={removeLogo}
-                          className={
-                            isLightMode
-                              ? 'rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-600 hover:bg-slate-100'
-                              : 'rounded-xl border border-white/10 px-3 py-2 text-xs text-white/70 hover:bg-white/10'
-                          }
-                        >
-                          Remove
-                        </button>
-                      ) : null}
-                    </div>
+   const baseName = makeExportBaseName(companyName, standNumber)
 
-                    <label
-                      className={
-                        isLightMode
-                          ? 'flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white px-4 py-4 text-sm text-slate-500 transition hover:border-blue-400 hover:bg-blue-50'
-                          : 'flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-4 text-sm text-white/55 transition hover:border-blue-400/40 hover:bg-blue-500/10'
-                      }
-                    >
-                      {text.generatorLogoUpload}
-                      <input
-                        type="file"
-                        accept="image/png,image/jpeg,image/webp,image/svg+xml"
-                        onChange={(event) => handleLogoUpload(event.target.files?.[0] ?? null)}
-                        className="hidden"
-                      />
-                    </label>
+   if (type === 'pdf') {
+    await exportPdf(exportPreviewRef.current, baseName)
+    return
+   }
 
-                    {logoMessage ? (
-                      <div className="mt-3 rounded-xl border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-xs text-amber-700">
-                        {logoMessage}
-                      </div>
-                    ) : null}
-                  </div>
-                </div>
-              </section>
+   if (type === 'zip') {
+    await exportZipPack(exportPreviewRef.current, baseName)
+    return
+   }
 
-              <section>
-                <h2 className="text-xl font-semibold">{text.generatorTheme}</h2>
-                <p className={`mt-1 ${helperClassName}`}>
-                  Choose the sector image used on the invitation card.
-                </p>
+   await exportPng(exportPreviewRef.current, type, baseName)
+  } catch (error) {
+   setExportError(error instanceof Error ? error.message : 'Export failed.')
+  } finally {
+   setIsExporting(false)
+  }
+ }
 
-                <div className="mt-5 grid gap-3">
-                  {Object.entries(themes).map(([key, item]) => {
-                    const active = theme === key
+ const pageClassName = isLightMode
+  ? 'h-[calc(100vh-92px)] overflow-hidden bg-transparent text-slate-950'
+  : 'h-[calc(100vh-92px)] overflow-hidden bg-transparent text-white'
 
-                    return (
-                      <button
-                        key={key}
-                        type="button"
-                        onClick={() => setTheme(key as ThemeKey)}
-                        className={`relative overflow-hidden rounded-3xl border p-5 text-left transition ${
-                          active
-                            ? 'border-blue-400'
-                            : isLightMode
-                              ? 'border-slate-200'
-                              : 'border-white/10'
-                        }`}
-                      >
-                        <div
-                          className="absolute inset-0 bg-cover bg-center opacity-25"
-                          style={{ backgroundImage: `url(${item.backgroundImage})` }}
-                        />
-                        <div className={isLightMode ? 'absolute inset-0 bg-white/80' : 'absolute inset-0 bg-black/75'} />
-                        <div className="relative">
-                          <div className="text-xl font-semibold">{item.label}</div>
-                          <div className={`mt-1 ${helperClassName}`}>
-                            {text.generatorPreviewDescription}
-                          </div>
-                        </div>
-                      </button>
-                    )
-                  })}
-                </div>
-              </section>
-            </div>
-          </div>
+ const sidebarClassName = isLightMode
+  ? 'flex h-full min-h-0 flex-col border-r border-white/20 bg-white/58 shadow-[0_24px_80px_rgba(0,0,0,0.14)] '
+  : 'flex h-full min-h-0 flex-col border-r border-white/10 bg-black/36 shadow-[0_24px_80px_rgba(0,0,0,0.28)] '
 
-          <div className={isLightMode ? 'border-t border-slate-200 bg-white p-4' : 'border-t border-white/10 bg-black/30 p-4'}>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                disabled={isExporting}
-                onClick={() => runExport('square')}
-                className="rounded-2xl bg-blue-600 py-3 font-semibold text-white disabled:opacity-50"
-              >
-                {text.generatorPngSquare}
-              </button>
+ const previewClassName = isLightMode
+  ? 'relative hidden h-full min-h-0 items-center justify-center overflow-hidden bg-white/12 -[2px] lg:flex'
+  : 'relative hidden h-full min-h-0 items-center justify-center overflow-hidden bg-black/18 -[2px] lg:flex'
 
-              <button disabled={isExporting} onClick={() => runExport('pdf')} className={secondaryButtonClassName}>
-                {text.generatorPdf}
-              </button>
+ const inputClassName = isLightMode
+  ? 'w-full rounded-2xl border border-slate-200 bg-white/86 px-4 py-4 text-slate-950 outline-none focus:border-blue-500'
+  : 'w-full rounded-2xl border border-white/10 bg-black/50 px-4 py-4 text-white outline-none focus:border-blue-400'
 
-              <button disabled={isExporting} onClick={() => runExport('linkedin')} className={secondaryButtonClassName}>
-                LinkedIn
-              </button>
+ const compactInputClassName = isLightMode
+  ? 'rounded-2xl border border-slate-200 bg-white/86 px-4 py-4 text-slate-950 outline-none focus:border-blue-500'
+  : 'rounded-2xl border border-white/10 bg-black/50 px-4 py-4 text-white outline-none focus:border-blue-400'
 
-              <button disabled={isExporting} onClick={() => runExport('zip')} className={secondaryButtonClassName}>
-                {text.generatorZipPack}
-              </button>
-            </div>
+ const labelClassName = isLightMode
+  ? 'mb-2 block text-sm font-medium text-slate-700'
+  : 'mb-2 block text-sm font-medium text-white/70'
 
-            {exportError ? (
-              <div className="mt-4 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-                {exportError}
-              </div>
-            ) : null}
-          </div>
-        </aside>
+ const helperClassName = isLightMode
+  ? 'text-sm text-slate-500'
+  : 'text-sm text-white/45'
 
-        <section className={previewClassName}>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.18),transparent_65%)]" />
+ const panelClassName = isLightMode
+  ? 'rounded-2xl border border-slate-200 bg-white/68 p-4 shadow-sm '
+  : 'rounded-2xl border border-white/10 bg-black/30 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.20)] '
 
-          <div className="relative scale-[0.54] xl:scale-[0.62] 2xl:scale-[0.72]">
-            <InvitePreview
-              companyName={companyName}
-              standNumber={standNumber}
-              invitationCode={invitationCode}
-              logoUrl={logoUrl}
-              registrationUrl={qrTrackingUrl}
-              theme={theme}
-              language={cardLanguage}
-            />
-          </div>
-        </section>
+ const secondaryButtonClassName = isLightMode
+  ? 'rounded-2xl border border-slate-200 bg-slate-50 py-3 font-semibold text-slate-800 disabled:opacity-50'
+  : 'rounded-2xl border border-white/10 bg-white/5 py-3 font-semibold text-white disabled:opacity-50'
+
+ return (
+  <main className={pageClassName}>
+   <div className="grid h-full lg:grid-cols-[460px_1fr]">
+    <aside className={sidebarClassName}>
+     <div className={isLightMode ? 'border-b border-slate-200 px-7 py-5' : 'border-b border-white/10 px-7 py-5'}>
+      <div className="flex items-center justify-between gap-3">
+       <div className="inline-flex items-center gap-2 rounded-full border border-blue-400/25 bg-blue-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-blue-500">
+        <span className="h-2 w-2 rounded-full bg-blue-400" />
+        ISE 2027
+       </div>
+
+       <button
+        type="button"
+        onClick={() => setDisplayMode((current) => (current === 'dark' ? 'light' : 'dark'))}
+        className={
+         isLightMode
+          ? 'rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50'
+          : 'rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white/80 hover:bg-white/10'
+        }
+       >
+        {isLightMode ? 'Dark mode' : 'Light mode'}
+       </button>
       </div>
 
-      <div className="pointer-events-none absolute -left-[99999px] top-0">
-        <div ref={exportPreviewRef}>
-          <InvitePreview
-            companyName={companyName}
-            standNumber={standNumber}
-            invitationCode={invitationCode}
-            logoUrl={logoUrl}
-            registrationUrl={qrTrackingUrl}
-            theme={theme}
-            language={cardLanguage}
+      <h1 className="mt-4 text-3xl font-semibold leading-tight">
+       {text.generatorTitle}
+      </h1>
+
+      <p className={`mt-3 leading-6 ${helperClassName}`}>
+       {text.generatorInputsDescription}
+      </p>
+     </div>
+
+     <div className="flex-1 overflow-y-auto px-7 py-5">
+      <div className="space-y-6">
+       <section>
+        <h2 className="text-xl font-semibold">{text.generatorInputsTitle}</h2>
+        <p className={`mt-1 ${helperClassName}`}>
+         Edit the details that appear on the invitation card.
+        </p>
+
+        {sessionMessage ? (
+         <div
+          className={
+           isLightMode
+            ? 'mt-4 rounded-2xl border border-blue-200 bg-white/70 px-4 py-3 text-xs text-blue-700 '
+            : 'mt-4 rounded-2xl border border-blue-400/20 bg-black/28 px-4 py-3 text-xs text-blue-100 '
+          }
+         >
+          {sessionMessage}
+         </div>
+        ) : null}
+
+        <div className="mt-4 space-y-4">
+         <label className="block">
+          <span className={labelClassName}>Company name</span>
+          <input
+           value={companyName}
+           onChange={(event) => setCompanyName(event.target.value)}
+           className={inputClassName}
           />
+         </label>
+
+         <div className="grid grid-cols-2 gap-3">
+          <label className="block">
+           <span className={labelClassName}>Stand number</span>
+           <input
+            value={standNumber}
+            onChange={(event) => setStandNumber(event.target.value)}
+            className={compactInputClassName}
+           />
+          </label>
+
+          <label className="block">
+           <span className={labelClassName}>Invitation code</span>
+           <input
+            value={invitationCode}
+            onChange={(event) => setInvitationCode(event.target.value)}
+            className={compactInputClassName}
+           />
+          </label>
+         </div>
+
+         <label className="block">
+          <span className={labelClassName}>Registration URL</span>
+          <input
+           value={registrationUrl}
+           onChange={(event) => setRegistrationUrl(event.target.value)}
+           className={inputClassName}
+          />
+         </label>
+
+         <label className="block">
+          <span className={labelClassName}>Invitation card language</span>
+          <select
+           value={cardLanguage}
+           onChange={(event) => setCardLanguage(event.target.value as LanguageKey)}
+           className={inputClassName}
+          >
+           {Object.entries(translations).map(([key, bundle]) => (
+            <option key={key} value={key} className="text-black">
+             {bundle.ui.languageName}
+            </option>
+           ))}
+          </select>
+
+          <p className={`mt-2 text-xs ${isLightMode ? 'text-slate-500' : 'text-white/40'}`}>
+           This changes the invitation card and exported files only. The main website language switcher controls the generator interface.
+          </p>
+         </label>
+
+         <div className={panelClassName}>
+          <div className="mb-3 flex items-center justify-between gap-3">
+           <div>
+            <div className={isLightMode ? 'text-sm font-medium text-slate-700' : 'text-sm font-medium text-white/70'}>
+             {text.generatorLogoUpload}
+            </div>
+            <div className={isLightMode ? 'mt-1 text-xs text-slate-500' : 'mt-1 text-xs text-white/35'}>
+             PNG/JPG/WebP. Max 3MB. Recommended 300 × 120px minimum.
+            </div>
+           </div>
+
+           {logoUrl ? (
+            <button
+             type="button"
+             onClick={removeLogo}
+             className={
+              isLightMode
+               ? 'rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-600 hover:bg-slate-100'
+               : 'rounded-xl border border-white/10 px-3 py-2 text-xs text-white/70 hover:bg-white/10'
+             }
+            >
+             Remove
+            </button>
+           ) : null}
+          </div>
+
+          <label
+           className={
+            isLightMode
+             ? 'flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white px-4 py-4 text-sm text-slate-500 transition hover:border-blue-400 hover:bg-blue-50'
+             : 'flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-4 text-sm text-white/55 transition hover:border-blue-400/40 hover:bg-blue-500/10'
+           }
+          >
+           {text.generatorLogoUpload}
+           <input
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/svg+xml"
+            onChange={(event) => handleLogoUpload(event.target.files?.[0] ?? null)}
+            className="hidden"
+           />
+          </label>
+
+          {logoMessage ? (
+           <div className="mt-3 rounded-xl border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-xs text-amber-700">
+            {logoMessage}
+           </div>
+          ) : null}
+         </div>
         </div>
+       </section>
+
+       <section>
+        <h2 className="text-xl font-semibold">{text.generatorTheme}</h2>
+        <p className={`mt-1 ${helperClassName}`}>
+         Choose the sector image used on the invitation card.
+        </p>
+
+        <div className="mt-5 grid gap-3">
+         {Object.entries(themes).map(([key, item]) => {
+          const active = theme === key
+
+          return (
+           <button
+            key={key}
+            type="button"
+            onClick={() => setTheme(key as ThemeKey)}
+            className={`relative overflow-hidden rounded-3xl border p-5 text-left transition ${
+             active
+              ? 'border-blue-400'
+              : isLightMode
+               ? 'border-slate-200'
+               : 'border-white/10'
+            }`}
+           >
+            <div
+             className="absolute inset-0 bg-cover bg-center opacity-25"
+             style={{ backgroundImage: `url(${item.backgroundImage})` }}
+            />
+            <div className={isLightMode ? 'absolute inset-0 bg-white/80' : 'absolute inset-0 bg-black/75'} />
+            <div className="relative">
+             <div className="text-xl font-semibold">{item.label}</div>
+             <div className={`mt-1 ${helperClassName}`}>
+              {text.generatorPreviewDescription}
+             </div>
+            </div>
+           </button>
+          )
+         })}
+        </div>
+       </section>
       </div>
-    </main>
-  )
+     </div>
+
+     <div className={isLightMode ? 'border-t border-slate-200 bg-white p-4' : 'border-t border-white/10 bg-black/30 p-4'}>
+      <div className="grid grid-cols-2 gap-3">
+       <button
+        disabled={isExporting}
+        onClick={() => runExport('square')}
+        className="rounded-2xl bg-blue-600 py-3 font-semibold text-white disabled:opacity-50"
+       >
+        {text.generatorPngSquare}
+       </button>
+
+       <button disabled={isExporting} onClick={() => runExport('pdf')} className={secondaryButtonClassName}>
+        {text.generatorPdf}
+       </button>
+
+       <button disabled={isExporting} onClick={() => runExport('linkedin')} className={secondaryButtonClassName}>
+        LinkedIn
+       </button>
+
+       <button disabled={isExporting} onClick={() => runExport('zip')} className={secondaryButtonClassName}>
+        {text.generatorZipPack}
+       </button>
+      </div>
+
+      {exportError ? (
+       <div className="mt-4 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+        {exportError}
+       </div>
+      ) : null}
+     </div>
+    </aside>
+
+    <section className={previewClassName}>
+     <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.18),transparent_65%)]" />
+
+     <div className="relative scale-[0.54] xl:scale-[0.62] 2xl:scale-[0.72]">
+      <InvitePreview
+       companyName={companyName}
+       standNumber={standNumber}
+       invitationCode={invitationCode}
+       logoUrl={logoUrl}
+       registrationUrl={qrTrackingUrl}
+       theme={theme}
+       language={cardLanguage}
+      />
+     </div>
+    </section>
+   </div>
+
+   <div className="pointer-events-none absolute -left-[99999px] top-0">
+    <div ref={exportPreviewRef}>
+     <InvitePreview
+      companyName={companyName}
+      standNumber={standNumber}
+      invitationCode={invitationCode}
+      logoUrl={logoUrl}
+      registrationUrl={qrTrackingUrl}
+      theme={theme}
+      language={cardLanguage}
+     />
+    </div>
+   </div>
+  </main>
+ )
 }
