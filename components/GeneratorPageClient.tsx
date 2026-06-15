@@ -12,19 +12,51 @@ import {
 } from '@/lib/export'
 import { themes } from '@/lib/themes'
 import { translations } from '@/lib/translations'
-import type { ThemeKey } from '@/lib/types'
+import type { LanguageKey, ThemeKey } from '@/lib/types'
 
 type Props = {
   initialToken?: string
 }
 
+type DisplayMode = 'dark' | 'light'
+
+const CARD_LANGUAGE_STORAGE_KEY = 'ise-card-language'
+const DISPLAY_MODE_STORAGE_KEY = 'ise-generator-display-mode'
+
 export default function GeneratorPageClient({ initialToken }: Props) {
   const exportPreviewRef = useRef<HTMLDivElement | null>(null)
-  const [language] = useSiteLanguage()
-  const text = translations[language].ui
+
+  const [generatorLanguage] = useSiteLanguage()
+  const text = translations[generatorLanguage].ui
+
+  const [cardLanguage, setCardLanguage] = useState<LanguageKey>(() => {
+    if (typeof window === 'undefined') return 'en'
+
+    const saved = window.localStorage.getItem(CARD_LANGUAGE_STORAGE_KEY)
+
+    if (saved && saved in translations) {
+      return saved as LanguageKey
+    }
+
+    return 'en'
+  })
+
+  const [displayMode, setDisplayMode] = useState<DisplayMode>(() => {
+    if (typeof window === 'undefined') return 'dark'
+
+    const saved = window.localStorage.getItem(DISPLAY_MODE_STORAGE_KEY)
+
+    if (saved === 'light' || saved === 'dark') {
+      return saved
+    }
+
+    return 'dark'
+  })
+
   const [isExporting, setIsExporting] = useState(false)
   const [exportError, setExportError] = useState<string | null>(null)
   const [sessionMessage, setSessionMessage] = useState<string | null>(null)
+
   const [exhibitorId, setExhibitorId] = useState('')
   const [companyName, setCompanyName] = useState('Samsung')
   const [standNumber, setStandNumber] = useState('5C300')
@@ -34,6 +66,8 @@ export default function GeneratorPageClient({ initialToken }: Props) {
   const [logoMessage, setLogoMessage] = useState<string | null>(null)
   const [theme, setTheme] = useState<ThemeKey>('audio')
 
+  const isLightMode = displayMode === 'light'
+
   const appBaseUrl =
     process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ||
     (typeof window !== 'undefined' ? window.location.origin : '')
@@ -41,6 +75,14 @@ export default function GeneratorPageClient({ initialToken }: Props) {
   const qrTrackingUrl = exhibitorId
     ? `${appBaseUrl}/r/${encodeURIComponent(exhibitorId)}`
     : registrationUrl
+
+  useEffect(() => {
+    window.localStorage.setItem(CARD_LANGUAGE_STORAGE_KEY, cardLanguage)
+  }, [cardLanguage])
+
+  useEffect(() => {
+    window.localStorage.setItem(DISPLAY_MODE_STORAGE_KEY, displayMode)
+  }, [displayMode])
 
   function handleLogoUpload(file: File | null) {
     setLogoMessage(null)
@@ -68,7 +110,9 @@ export default function GeneratorPageClient({ initialToken }: Props) {
 
       image.onload = () => {
         if (image.width < 300 || image.height < 120) {
-          setLogoMessage('{text.generatorLogoUpload}ed, but recommended minimum size is 300 × 120px for best export quality.')
+          setLogoMessage(
+            'Logo uploaded, but recommended minimum size is 300 × 120px for best export quality.'
+          )
         }
 
         setLogoUrl(result)
@@ -124,6 +168,10 @@ export default function GeneratorPageClient({ initialToken }: Props) {
           setTheme(exhibitor.theme)
         }
 
+        if (exhibitor.language && exhibitor.language in translations) {
+          setCardLanguage(exhibitor.language as LanguageKey)
+        }
+
         setSessionMessage('Verified exhibitor details loaded.')
       } catch {
         setSessionMessage('Could not load exhibitor details.')
@@ -131,7 +179,13 @@ export default function GeneratorPageClient({ initialToken }: Props) {
     }
 
     loadSession()
-  }, [initialToken])
+  }, [
+    initialToken,
+    companyName,
+    standNumber,
+    invitationCode,
+    registrationUrl,
+  ])
 
   async function runExport(type: 'pdf' | 'zip' | ExportFormatKey) {
     if (!exportPreviewRef.current) {
@@ -163,21 +217,71 @@ export default function GeneratorPageClient({ initialToken }: Props) {
     }
   }
 
+  const pageClassName = isLightMode
+    ? 'h-[calc(100vh-92px)] overflow-hidden bg-slate-100 text-slate-950'
+    : 'h-[calc(100vh-92px)] overflow-hidden bg-[#020617] text-white'
+
+  const sidebarClassName = isLightMode
+    ? 'flex h-full min-h-0 flex-col border-r border-slate-200 bg-white'
+    : 'flex h-full min-h-0 flex-col border-r border-white/10 bg-[#050816]/95'
+
+  const previewClassName = isLightMode
+    ? 'relative hidden h-full min-h-0 items-center justify-center overflow-hidden bg-slate-200 lg:flex'
+    : 'relative hidden h-full min-h-0 items-center justify-center overflow-hidden bg-[#02050f] lg:flex'
+
+  const inputClassName = isLightMode
+    ? 'w-full rounded-2xl border border-slate-200 bg-white px-4 py-4 text-slate-950 outline-none focus:border-blue-500'
+    : 'w-full rounded-2xl border border-white/10 bg-black/35 px-4 py-4 text-white outline-none focus:border-blue-400'
+
+  const compactInputClassName = isLightMode
+    ? 'rounded-2xl border border-slate-200 bg-white px-4 py-4 text-slate-950 outline-none focus:border-blue-500'
+    : 'rounded-2xl border border-white/10 bg-black/35 px-4 py-4 text-white outline-none focus:border-blue-400'
+
+  const labelClassName = isLightMode
+    ? 'mb-2 block text-sm font-medium text-slate-700'
+    : 'mb-2 block text-sm font-medium text-white/70'
+
+  const helperClassName = isLightMode
+    ? 'text-sm text-slate-500'
+    : 'text-sm text-white/45'
+
+  const panelClassName = isLightMode
+    ? 'rounded-2xl border border-slate-200 bg-slate-50 p-4'
+    : 'rounded-2xl border border-white/10 bg-black/25 p-4'
+
+  const secondaryButtonClassName = isLightMode
+    ? 'rounded-2xl border border-slate-200 bg-slate-50 py-3 font-semibold text-slate-800 disabled:opacity-50'
+    : 'rounded-2xl border border-white/10 bg-white/5 py-3 font-semibold text-white disabled:opacity-50'
+
   return (
-    <main className="h-[calc(100vh-92px)] overflow-hidden bg-[#020617] text-white">
-      <div className="grid h-full lg:grid-cols-[420px_1fr]">
-        <aside className="flex h-full min-h-0 flex-col border-r border-white/10 bg-[#050816]/95">
-          <div className="border-b border-white/10 px-7 py-5">
-            <div className="inline-flex items-center gap-2 rounded-full border border-blue-400/25 bg-blue-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-blue-300">
-              <span className="h-2 w-2 rounded-full bg-blue-400" />
-              ISE 2027
+    <main className={pageClassName}>
+      <div className="grid h-full lg:grid-cols-[460px_1fr]">
+        <aside className={sidebarClassName}>
+          <div className={isLightMode ? 'border-b border-slate-200 px-7 py-5' : 'border-b border-white/10 px-7 py-5'}>
+            <div className="flex items-center justify-between gap-3">
+              <div className="inline-flex items-center gap-2 rounded-full border border-blue-400/25 bg-blue-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-blue-500">
+                <span className="h-2 w-2 rounded-full bg-blue-400" />
+                ISE 2027
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setDisplayMode((current) => (current === 'dark' ? 'light' : 'dark'))}
+                className={
+                  isLightMode
+                    ? 'rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50'
+                    : 'rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white/80 hover:bg-white/10'
+                }
+              >
+                {isLightMode ? 'Dark mode' : 'Light mode'}
+              </button>
             </div>
 
             <h1 className="mt-4 text-3xl font-semibold leading-tight">
               {text.generatorTitle}
             </h1>
 
-            <p className="mt-3 text-sm leading-6 text-white/45">
+            <p className={`mt-3 leading-6 ${helperClassName}`}>
               {text.generatorInputsDescription}
             </p>
           </div>
@@ -186,41 +290,113 @@ export default function GeneratorPageClient({ initialToken }: Props) {
             <div className="space-y-6">
               <section>
                 <h2 className="text-xl font-semibold">{text.generatorInputsTitle}</h2>
-                <p className="mt-1 text-sm text-white/40">{text.generatorInputsDescription}</p>
+                <p className={`mt-1 ${helperClassName}`}>
+                  Edit the details that appear on the invitation card.
+                </p>
 
                 {sessionMessage ? (
-                  <div className="mt-4 rounded-2xl border border-blue-400/20 bg-blue-500/10 px-4 py-3 text-xs text-blue-100">
+                  <div
+                    className={
+                      isLightMode
+                        ? 'mt-4 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-xs text-blue-700'
+                        : 'mt-4 rounded-2xl border border-blue-400/20 bg-blue-500/10 px-4 py-3 text-xs text-blue-100'
+                    }
+                  >
                     {sessionMessage}
                   </div>
                 ) : null}
 
-                <div className="mt-4 space-y-3">
-                  <input value={companyName} onChange={(e) => setCompanyName(e.target.value)} className="w-full rounded-2xl border border-white/10 bg-black/35 px-4 py-4 outline-none focus:border-blue-400" />
-                  <div className="grid grid-cols-2 gap-3">
-                    <input value={standNumber} onChange={(e) => setStandNumber(e.target.value)} className="rounded-2xl border border-white/10 bg-black/35 px-4 py-4 outline-none focus:border-blue-400" />
-                    <input value={invitationCode} onChange={(e) => setInvitationCode(e.target.value)} className="rounded-2xl border border-white/10 bg-black/35 px-4 py-4 outline-none focus:border-blue-400" />
-                  </div>
-                  <input value={registrationUrl} onChange={(e) => setRegistrationUrl(e.target.value)} className="w-full rounded-2xl border border-white/10 bg-black/35 px-4 py-4 outline-none focus:border-blue-400" />
+                <div className="mt-4 space-y-4">
+                  <label className="block">
+                    <span className={labelClassName}>Company name</span>
+                    <input
+                      value={companyName}
+                      onChange={(event) => setCompanyName(event.target.value)}
+                      className={inputClassName}
+                    />
+                  </label>
 
-                  <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <label className="block">
+                      <span className={labelClassName}>Stand number</span>
+                      <input
+                        value={standNumber}
+                        onChange={(event) => setStandNumber(event.target.value)}
+                        className={compactInputClassName}
+                      />
+                    </label>
+
+                    <label className="block">
+                      <span className={labelClassName}>Invitation code</span>
+                      <input
+                        value={invitationCode}
+                        onChange={(event) => setInvitationCode(event.target.value)}
+                        className={compactInputClassName}
+                      />
+                    </label>
+                  </div>
+
+                  <label className="block">
+                    <span className={labelClassName}>Registration URL</span>
+                    <input
+                      value={registrationUrl}
+                      onChange={(event) => setRegistrationUrl(event.target.value)}
+                      className={inputClassName}
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className={labelClassName}>Invitation card language</span>
+                    <select
+                      value={cardLanguage}
+                      onChange={(event) => setCardLanguage(event.target.value as LanguageKey)}
+                      className={inputClassName}
+                    >
+                      {Object.entries(translations).map(([key, bundle]) => (
+                        <option key={key} value={key} className="text-black">
+                          {bundle.ui.languageName}
+                        </option>
+                      ))}
+                    </select>
+
+                    <p className={`mt-2 text-xs ${isLightMode ? 'text-slate-500' : 'text-white/40'}`}>
+                      This changes the invitation card and exported files only. The main website language switcher controls the generator interface.
+                    </p>
+                  </label>
+
+                  <div className={panelClassName}>
                     <div className="mb-3 flex items-center justify-between gap-3">
                       <div>
-                        <div className="text-sm font-medium text-white/70">{text.generatorLogoUpload}</div>
-                        <div className="mt-1 text-xs text-white/35">PNG/JPG/WebP. Max 3MB. Recommended 300 × 120px minimum.</div>
+                        <div className={isLightMode ? 'text-sm font-medium text-slate-700' : 'text-sm font-medium text-white/70'}>
+                          {text.generatorLogoUpload}
+                        </div>
+                        <div className={isLightMode ? 'mt-1 text-xs text-slate-500' : 'mt-1 text-xs text-white/35'}>
+                          PNG/JPG/WebP. Max 3MB. Recommended 300 × 120px minimum.
+                        </div>
                       </div>
 
                       {logoUrl ? (
                         <button
                           type="button"
                           onClick={removeLogo}
-                          className="rounded-xl border border-white/10 px-3 py-2 text-xs text-white/70 hover:bg-white/10"
+                          className={
+                            isLightMode
+                              ? 'rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-600 hover:bg-slate-100'
+                              : 'rounded-xl border border-white/10 px-3 py-2 text-xs text-white/70 hover:bg-white/10'
+                          }
                         >
                           Remove
                         </button>
                       ) : null}
                     </div>
 
-                    <label className="flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-4 text-sm text-white/55 transition hover:border-blue-400/40 hover:bg-blue-500/10">
+                    <label
+                      className={
+                        isLightMode
+                          ? 'flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white px-4 py-4 text-sm text-slate-500 transition hover:border-blue-400 hover:bg-blue-50'
+                          : 'flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-4 text-sm text-white/55 transition hover:border-blue-400/40 hover:bg-blue-500/10'
+                      }
+                    >
                       {text.generatorLogoUpload}
                       <input
                         type="file"
@@ -231,7 +407,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
                     </label>
 
                     {logoMessage ? (
-                      <div className="mt-3 rounded-xl border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-xs text-amber-100">
+                      <div className="mt-3 rounded-xl border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-xs text-amber-700">
                         {logoMessage}
                       </div>
                     ) : null}
@@ -241,23 +417,37 @@ export default function GeneratorPageClient({ initialToken }: Props) {
 
               <section>
                 <h2 className="text-xl font-semibold">{text.generatorTheme}</h2>
+                <p className={`mt-1 ${helperClassName}`}>
+                  Choose the sector image used on the invitation card.
+                </p>
+
                 <div className="mt-5 grid gap-3">
                   {Object.entries(themes).map(([key, item]) => {
                     const active = theme === key
+
                     return (
                       <button
                         key={key}
                         type="button"
                         onClick={() => setTheme(key as ThemeKey)}
                         className={`relative overflow-hidden rounded-3xl border p-5 text-left transition ${
-                          active ? 'border-blue-400' : 'border-white/10'
+                          active
+                            ? 'border-blue-400'
+                            : isLightMode
+                              ? 'border-slate-200'
+                              : 'border-white/10'
                         }`}
                       >
-                        <div className="absolute inset-0 bg-cover bg-center opacity-25" style={{ backgroundImage: `url(${item.backgroundImage})` }} />
-                        <div className="absolute inset-0 bg-black/75" />
+                        <div
+                          className="absolute inset-0 bg-cover bg-center opacity-25"
+                          style={{ backgroundImage: `url(${item.backgroundImage})` }}
+                        />
+                        <div className={isLightMode ? 'absolute inset-0 bg-white/80' : 'absolute inset-0 bg-black/75'} />
                         <div className="relative">
                           <div className="text-xl font-semibold">{item.label}</div>
-                          <div className="mt-1 text-sm text-white/45">{text.generatorPreviewDescription}</div>
+                          <div className={`mt-1 ${helperClassName}`}>
+                            {text.generatorPreviewDescription}
+                          </div>
                         </div>
                       </button>
                     )
@@ -267,12 +457,27 @@ export default function GeneratorPageClient({ initialToken }: Props) {
             </div>
           </div>
 
-          <div className="border-t border-white/10 bg-black/30 p-4">
+          <div className={isLightMode ? 'border-t border-slate-200 bg-white p-4' : 'border-t border-white/10 bg-black/30 p-4'}>
             <div className="grid grid-cols-2 gap-3">
-              <button disabled={isExporting} onClick={() => runExport('square')} className="rounded-2xl bg-blue-600 py-3 font-semibold disabled:opacity-50">{text.generatorPngSquare}</button>
-              <button disabled={isExporting} onClick={() => runExport('pdf')} className="rounded-2xl border border-white/10 bg-white/5 py-3 font-semibold disabled:opacity-50">{text.generatorPdf}</button>
-              <button disabled={isExporting} onClick={() => runExport('linkedin')} className="rounded-2xl border border-white/10 bg-white/5 py-3 font-semibold disabled:opacity-50">LinkedIn</button>
-              <button disabled={isExporting} onClick={() => runExport('zip')} className="rounded-2xl border border-white/10 bg-white/5 py-3 font-semibold disabled:opacity-50">{text.generatorZipPack}</button>
+              <button
+                disabled={isExporting}
+                onClick={() => runExport('square')}
+                className="rounded-2xl bg-blue-600 py-3 font-semibold text-white disabled:opacity-50"
+              >
+                {text.generatorPngSquare}
+              </button>
+
+              <button disabled={isExporting} onClick={() => runExport('pdf')} className={secondaryButtonClassName}>
+                {text.generatorPdf}
+              </button>
+
+              <button disabled={isExporting} onClick={() => runExport('linkedin')} className={secondaryButtonClassName}>
+                LinkedIn
+              </button>
+
+              <button disabled={isExporting} onClick={() => runExport('zip')} className={secondaryButtonClassName}>
+                {text.generatorZipPack}
+              </button>
             </div>
 
             {exportError ? (
@@ -283,8 +488,9 @@ export default function GeneratorPageClient({ initialToken }: Props) {
           </div>
         </aside>
 
-        <section className="relative hidden h-full min-h-0 items-center justify-center overflow-hidden bg-[#02050f] lg:flex">
+        <section className={previewClassName}>
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.18),transparent_65%)]" />
+
           <div className="relative scale-[0.54] xl:scale-[0.62] 2xl:scale-[0.72]">
             <InvitePreview
               companyName={companyName}
@@ -293,7 +499,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
               logoUrl={logoUrl}
               registrationUrl={qrTrackingUrl}
               theme={theme}
-              language={language}
+              language={cardLanguage}
             />
           </div>
         </section>
@@ -308,7 +514,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
             logoUrl={logoUrl}
             registrationUrl={qrTrackingUrl}
             theme={theme}
-            language={language}
+            language={cardLanguage}
           />
         </div>
       </div>

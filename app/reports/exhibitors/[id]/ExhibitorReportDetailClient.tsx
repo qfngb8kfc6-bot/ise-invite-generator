@@ -27,6 +27,7 @@ type ExhibitorSummary = {
   exportClickedCount: number
   exportSucceededCount: number
   exportFailedCount: number
+  qrScannedCount: number
   lastActivityAt: string | null
   formats: Record<string, number>
   generatedLinkButNeverExported: boolean
@@ -859,10 +860,11 @@ export default function ExhibitorReportDetailClient({
           />
         ) : null}
 
-        <section className="grid gap-4 md:grid-cols-3 xl:grid-cols-6">
+        <section className="grid gap-4 md:grid-cols-3 xl:grid-cols-7">
           <KpiCard label={text.totalEvents} value={exhibitor.totalEvents} />
           <KpiCard label={text.linksGenerated} value={exhibitor.linkGeneratedCount} />
           <KpiCard label={text.generatorOpens} value={exhibitor.generatorOpenedCount} tone="blue" />
+          <KpiCard label="QR Scans" value={exhibitor.qrScannedCount} tone="blue" />
           <KpiCard label={text.exportsSucceeded} value={exhibitor.exportSucceededCount} tone="green" />
           <KpiCard label={text.exportsFailed} value={exhibitor.exportFailedCount} tone="red" />
           <KpiCard

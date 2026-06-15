@@ -27,6 +27,7 @@ type ExhibitorSummary = {
   exportClickedCount: number
   exportSucceededCount: number
   exportFailedCount: number
+  qrScannedCount: number
   lastActivityAt: string | null
   formats: Record<string, number>
   generatedLinkButNeverExported: boolean
@@ -116,6 +117,7 @@ type SortKey =
   | 'generatorOpenedCount'
   | 'exportSucceededCount'
   | 'exportFailedCount'
+  | 'qrScannedCount'
   | 'conversionRate'
   | 'lastActivityAt'
 
@@ -185,6 +187,8 @@ type ReportsText = {
   uniqueExhibitors: string
   generatorOpens: string
   sessionsOpened: string
+  qrScans: string
+  qrScansDescription: string
   exportsSucceeded: string
   exportsFailed: string
   openToExport: string
@@ -336,6 +340,8 @@ const enReportsText: ReportsText = {
   uniqueExhibitors: 'Unique exhibitors',
   generatorOpens: 'Generator opens',
   sessionsOpened: 'Sessions opened',
+  qrScans: 'QR scans',
+  qrScansDescription: 'Invitation QR scans recorded',
   exportsSucceeded: 'Exports succeeded',
   exportsFailed: 'Exports failed',
   openToExport: 'Open → Export',
@@ -981,6 +987,9 @@ function compareValues(
       break
     case 'exportFailedCount':
       result = a.exportFailedCount - b.exportFailedCount
+      break
+    case 'qrScannedCount':
+      result = a.qrScannedCount - b.qrScannedCount
       break
     case 'conversionRate':
       result = conversionRateValue(a) - conversionRateValue(b)
@@ -2162,6 +2171,12 @@ export default function ReportsClient({
               tone="blue"
             />
             <KpiCard
+              label={text.qrScans}
+              value={summary.exhibitorSummaries.reduce((sum, item) => sum + item.qrScannedCount, 0)}
+              sublabel={text.qrScansDescription}
+              tone="blue"
+            />
+            <KpiCard
               label={text.exportsSucceeded}
               value={summary.totalExportsSucceeded}
               sublabel={text.successfulExports}
@@ -2643,7 +2658,7 @@ export default function ReportsClient({
 
             <div className="overflow-x-auto rounded-2xl border border-white/10 sm:rounded-3xl">
               <div className="overflow-x-auto overscroll-x-contain">
-                <table className="min-w-[980px] w-full border-collapse text-xs sm:text-sm">
+                <table className="min-w-[1080px] w-full border-collapse text-xs sm:text-sm">
                   <thead className="sticky top-0 z-10 bg-[#111111]/95 backdrop-blur-xl">
                     <tr className="border-b border-white/10 text-left">
                       <th className="px-5 py-4 font-medium text-neutral-300">
@@ -2672,6 +2687,11 @@ export default function ReportsClient({
                         </button>
                       </th>
                       <th className="px-5 py-4 font-medium text-neutral-300">
+                        <button type="button" onClick={() => handleSort('qrScannedCount')} className="font-medium hover:underline">
+                          {text.qrScans}{sortIndicator('qrScannedCount')}
+                        </button>
+                      </th>
+                      <th className="px-5 py-4 font-medium text-neutral-300">
                         <button type="button" onClick={() => handleSort('exportFailedCount')} className="font-medium hover:underline">
                           {text.failedExportsColumn}{sortIndicator('exportFailedCount')}
                         </button>
@@ -2692,7 +2712,7 @@ export default function ReportsClient({
                   <tbody>
                     {paginatedExhibitorRows.length === 0 ? (
                       <tr>
-                        <td className="px-5 py-6 text-neutral-500" colSpan={9}>
+                        <td className="px-5 py-6 text-neutral-500" colSpan={10}>
                           {text.noExhibitorsMatch}
                         </td>
                       </tr>
@@ -2718,6 +2738,7 @@ export default function ReportsClient({
                             <td className="px-5 py-4 text-neutral-300">{item.totalEvents}</td>
                             <td className="px-5 py-4 text-neutral-300">{item.generatorOpenedCount}</td>
                             <td className="px-5 py-4 text-neutral-300">{item.exportSucceededCount}</td>
+                            <td className="px-5 py-4 text-neutral-300">{item.qrScannedCount}</td>
                             <td className="px-5 py-4 text-neutral-300">{item.exportFailedCount}</td>
                             <td className="px-5 py-4 text-neutral-300">
                               {percentage(item.exportSucceededCount, item.generatorOpenedCount)}

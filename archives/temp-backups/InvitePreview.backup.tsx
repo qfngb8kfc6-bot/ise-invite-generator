@@ -25,21 +25,21 @@ function replaceYear(text: string, year: string) {
 function getFallbackInviteText(language: LanguageKey) {
   switch (language) {
     case 'es':
-      return { logoUnavailable: 'Logotipo no disponible', companyName: 'Nombre de la empresa', booth: 'Número de stand', booths: 'Números de stand', invitationCode: 'Código de invitación', qrUnavailable: 'QR no disponible', scanToRegister: 'Escanee para registrarse', registrationUrlUnavailable: 'URL de registro no disponible', freePass: 'Pase gratuito para visitantes' }
+      return { logoUnavailable: 'Logotipo no disponible', companyName: 'Nombre de la empresa', booth: 'Stand', booths: 'Stands', qrUnavailable: 'QR no disponible', scanToRegister: 'Escanee para registrarse', registrationUrlUnavailable: 'URL de registro no disponible', freePass: 'Pase gratuito para visitantes' }
     case 'de':
-      return { logoUnavailable: 'Logo nicht verfügbar', companyName: 'Firmenname', booth: 'Standnummer', booths: 'Standnummern', invitationCode: 'Einladungscode', qrUnavailable: 'QR nicht verfügbar', scanToRegister: 'Zum Registrieren scannen', registrationUrlUnavailable: 'Registrierungs-URL nicht verfügbar', freePass: 'Kostenloser Besucherpass' }
+      return { logoUnavailable: 'Logo nicht verfügbar', companyName: 'Firmenname', booth: 'Stand', booths: 'Stände', qrUnavailable: 'QR nicht verfügbar', scanToRegister: 'Zum Registrieren scannen', registrationUrlUnavailable: 'Registrierungs-URL nicht verfügbar', freePass: 'Kostenloser Besucherpass' }
     case 'fr':
-      return { logoUnavailable: 'Logo indisponible', companyName: 'Nom de l’entreprise', booth: 'Numéro de stand', booths: 'Numéros de stand', invitationCode: 'Code d’invitation', qrUnavailable: 'QR indisponible', scanToRegister: 'Scanner pour s’inscrire', registrationUrlUnavailable: 'URL d’inscription indisponible', freePass: 'Pass visiteur gratuit' }
+      return { logoUnavailable: 'Logo indisponible', companyName: 'Nom de l’entreprise', booth: 'Stand', booths: 'Stands', qrUnavailable: 'QR indisponible', scanToRegister: 'Scanner pour s’inscrire', registrationUrlUnavailable: 'URL d’inscription indisponible', freePass: 'Pass visiteur gratuit' }
     case 'it':
-      return { logoUnavailable: 'Logo non disponibile', companyName: 'Nome azienda', booth: 'Numero stand', booths: 'Numeri stand', invitationCode: 'Codice di invito', qrUnavailable: 'QR non disponibile', scanToRegister: 'Scansiona per registrarti', registrationUrlUnavailable: 'URL di registrazione non disponibile', freePass: 'Pass visitatore gratuito' }
+      return { logoUnavailable: 'Logo non disponibile', companyName: 'Nome azienda', booth: 'Stand', booths: 'Stand', qrUnavailable: 'QR non disponibile', scanToRegister: 'Scansiona per registrarti', registrationUrlUnavailable: 'URL di registrazione non disponibile', freePass: 'Pass visitatore gratuito' }
     case 'pt':
-      return { logoUnavailable: 'Logótipo indisponível', companyName: 'Nome da empresa', booth: 'Número do stand', booths: 'Números dos stands', invitationCode: 'Código de convite', qrUnavailable: 'QR indisponível', scanToRegister: 'Digitalize para se registar', registrationUrlUnavailable: 'URL de registo indisponível', freePass: 'Passe gratuito de visitante' }
+      return { logoUnavailable: 'Logótipo indisponível', companyName: 'Nome da empresa', booth: 'Stand', booths: 'Stands', qrUnavailable: 'QR indisponível', scanToRegister: 'Digitalize para se registar', registrationUrlUnavailable: 'URL de registo indisponível', freePass: 'Passe gratuito de visitante' }
     case 'nl':
-      return { logoUnavailable: 'Logo niet beschikbaar', companyName: 'Bedrijfsnaam', booth: 'Standnummer', booths: 'Standnummers', invitationCode: 'Uitnodigingscode', qrUnavailable: 'QR niet beschikbaar', scanToRegister: 'Scan om te registreren', registrationUrlUnavailable: 'Registratie-URL niet beschikbaar', freePass: 'Gratis bezoekerspas' }
+      return { logoUnavailable: 'Logo niet beschikbaar', companyName: 'Bedrijfsnaam', booth: 'Stand', booths: 'Stands', qrUnavailable: 'QR niet beschikbaar', scanToRegister: 'Scan om te registreren', registrationUrlUnavailable: 'Registratie-URL niet beschikbaar', freePass: 'Gratis bezoekerspas' }
     case 'zh-CN':
-      return { logoUnavailable: '暂无标志', companyName: '公司名称', booth: '展位号', booths: '展位号', invitationCode: '邀请码', qrUnavailable: '二维码不可用', scanToRegister: '扫码注册', registrationUrlUnavailable: '注册链接不可用', freePass: '免费观众通行证' }
+      return { logoUnavailable: '暂无标志', companyName: '公司名称', booth: '展位', booths: '展位', qrUnavailable: '二维码不可用', scanToRegister: '扫码注册', registrationUrlUnavailable: '注册链接不可用', freePass: '免费观众通行证' }
     default:
-      return { logoUnavailable: 'Logo unavailable', companyName: 'Company name', booth: 'Stand number', booths: 'Stand numbers', invitationCode: 'Invitation code', qrUnavailable: 'QR unavailable', scanToRegister: 'Scan to register', registrationUrlUnavailable: 'Registration URL unavailable', freePass: 'Free visitor pass' }
+      return { logoUnavailable: 'Logo unavailable', companyName: 'Company name', booth: 'Stand', booths: 'Stands', qrUnavailable: 'QR unavailable', scanToRegister: 'Scan to register', registrationUrlUnavailable: 'Registration URL unavailable', freePass: 'Free visitor pass' }
   }
 }
 
@@ -52,7 +52,7 @@ export default function InvitePreview({
   theme,
   language,
 }: InvitePreviewProps) {
-  const [failedLogoUrl, setFailedLogoUrl] = useState('')
+  const [logoError, setLogoError] = useState(false)
   const [qrDataUrl, setQrDataUrl] = useState('')
 
   const text = translations[language].invite
@@ -84,6 +84,10 @@ export default function InvitePreview({
 
     generateQr()
   }, [registrationUrl])
+
+  useEffect(() => {
+    setLogoError(false)
+  }, [logoUrl])
 
   return (
     <div className="w-[1200px] overflow-hidden rounded-[46px] border border-white/15 bg-[#020617] shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
@@ -131,12 +135,12 @@ export default function InvitePreview({
 
           <div className="relative">
             <div className="flex h-28 items-center">
-              {logoUrl && failedLogoUrl !== logoUrl ? (
+              {logoUrl && !logoError ? (
                 <img
                   src={logoUrl}
                   alt={`${companyName} logo`}
                   className="max-h-24 max-w-[330px] object-contain"
-                  onError={() => setFailedLogoUrl(logoUrl)}
+                  onError={() => setLogoError(true)}
                 />
               ) : (
                 <div className="flex h-24 w-[330px] items-center justify-center rounded-[28px] border border-zinc-200 bg-zinc-50 text-sm font-semibold text-zinc-400">
@@ -161,7 +165,7 @@ export default function InvitePreview({
 
               <div className="rounded-[30px] border border-zinc-200 bg-zinc-50 p-5">
                 <div className="text-xs font-bold uppercase tracking-[0.24em] text-zinc-400">
-                  {fallbackText.invitationCode}
+                  {text.codeLabel.replace(':', '').replace('：', '')}
                 </div>
                 <div className="mt-3 break-all text-2xl font-semibold tracking-tight text-zinc-950">
                   {invitationCode || '—'}

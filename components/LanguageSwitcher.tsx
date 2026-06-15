@@ -36,11 +36,9 @@ export function setStoredLanguage(language: LanguageKey) {
 }
 
 export function useSiteLanguage(): [LanguageKey, (language: LanguageKey) => void] {
-  const [language, setLanguageState] = useState<LanguageKey>('en')
+  const [language, setLanguageState] = useState<LanguageKey>(() => getStoredLanguage())
 
   useEffect(() => {
-    setLanguageState(getStoredLanguage())
-
     function handleLanguageChange(event: Event) {
       const customEvent = event as CustomEvent<LanguageKey>
       const nextLanguage = customEvent.detail
