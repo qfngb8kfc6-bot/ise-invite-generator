@@ -491,7 +491,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
     <section className={previewClassName}>
      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.18),transparent_65%)]" />
 
-     <div className="relative scale-[0.54] xl:scale-[0.62] 2xl:scale-[0.72]">
+     <div className="relative scale-[0.44] xl:scale-[0.53] 2xl:scale-[0.60]">
       <InvitePreview
        companyName={companyName}
        standNumber={standNumber}

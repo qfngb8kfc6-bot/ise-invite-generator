@@ -220,6 +220,7 @@ export default function SiteHeader() {
   const isTools = pathname.startsWith('/tools')
   const isReports = pathname.startsWith('/reports')
   const isGenerator = pathname.startsWith('/generator')
+  const isAdminArea = isHome || isTools || isReports
 
   useEffect(() => {
     document.documentElement.dataset.iseMode = displayMode
@@ -277,7 +278,7 @@ export default function SiteHeader() {
       />
 
       <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-        <Link href="/" className="group flex min-w-0 items-center gap-4">
+        <div className="group flex min-w-0 items-center gap-4">
           <div
             className={
               isLight
@@ -329,26 +330,28 @@ export default function SiteHeader() {
               {subtitle}
             </div>
           </div>
-        </Link>
+        </div>
 
         <div className="flex items-center gap-3">
-          <nav className="hidden items-center gap-2 md:flex">
-            <NavButton href="/" active={isHome} mode={displayMode}>
-              {text.homeNav}
-            </NavButton>
+          {isAdminArea ? (
+            <nav className="hidden items-center gap-2 md:flex">
+              <NavButton href="/" active={isHome} mode={displayMode}>
+                {text.homeNav}
+              </NavButton>
 
-            <NavButton href="/generator" active={isGenerator} mode={displayMode}>
-              {text.generatorNav}
-            </NavButton>
+              <NavButton href="/generator" active={isGenerator} mode={displayMode}>
+                {text.generatorNav}
+              </NavButton>
 
-            <NavButton href="/tools" active={isTools} mode={displayMode}>
-              {text.toolsNav}
-            </NavButton>
+              <NavButton href="/tools" active={isTools} mode={displayMode}>
+                {text.toolsNav}
+              </NavButton>
 
-            <NavButton href="/reports" active={isReports} mode={displayMode}>
-              {text.reportsNav}
-            </NavButton>
-          </nav>
+              <NavButton href="/reports" active={isReports} mode={displayMode}>
+                {text.reportsNav}
+              </NavButton>
+            </nav>
+          ) : null}
 
           <button
             type="button"
@@ -378,31 +381,33 @@ export default function SiteHeader() {
         </div>
       </div>
 
-      <div
-        className={
-          isLight
-            ? 'border-t border-slate-200 px-4 py-3 md:hidden'
-            : 'border-t border-white/5 px-4 py-3 md:hidden'
-        }
-      >
-        <div className="flex items-center gap-2 overflow-x-auto">
-          <NavButton href="/" active={isHome} mode={displayMode}>
-            {text.homeNav}
-          </NavButton>
+      {isAdminArea ? (
+        <div
+          className={
+            isLight
+              ? 'border-t border-slate-200 px-4 py-3 md:hidden'
+              : 'border-t border-white/5 px-4 py-3 md:hidden'
+          }
+        >
+          <div className="flex items-center gap-2 overflow-x-auto">
+            <NavButton href="/" active={isHome} mode={displayMode}>
+              {text.homeNav}
+            </NavButton>
 
-          <NavButton href="/generator" active={isGenerator} mode={displayMode}>
-            {text.generatorNav}
-          </NavButton>
+            <NavButton href="/generator" active={isGenerator} mode={displayMode}>
+              {text.generatorNav}
+            </NavButton>
 
-          <NavButton href="/tools" active={isTools} mode={displayMode}>
-            {text.toolsNav}
-          </NavButton>
+            <NavButton href="/tools" active={isTools} mode={displayMode}>
+              {text.toolsNav}
+            </NavButton>
 
-          <NavButton href="/reports" active={isReports} mode={displayMode}>
-            {text.reportsNav}
-          </NavButton>
+            <NavButton href="/reports" active={isReports} mode={displayMode}>
+              {text.reportsNav}
+            </NavButton>
+          </div>
         </div>
-      </div>
+      ) : null}
     </header>
   )
 }
