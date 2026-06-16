@@ -1123,7 +1123,7 @@ function Card({
   return (
     <section
       id={id}
-      className={`relative min-w-0 overflow-hidden rounded-2xl border border-white/14 bg-[#0b0b0b] shadow-[0_20px_70px_rgba(0,0,0,0.45)] sm:rounded-3xl ${className}`}
+      className={`relative min-w-0 overflow-hidden rounded-2xl border border-white/20 bg-[#020617]/96 shadow-[0_22px_80px_rgba(0,0,0,0.42)] sm:rounded-3xl ${className}`}
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_60%)]" />
       <div className="relative">{children}</div>
@@ -1157,15 +1157,15 @@ function ChartCard({
 
       <div className="mt-5 h-[220px] min-w-0 sm:h-[320px] lg:h-[340px]">
         {!hasData ? (
-          <div className="flex h-full items-center justify-center rounded-2xl border border-white/14 bg-black/20 text-sm text-neutral-500">
+          <div className="flex h-full items-center justify-center rounded-2xl border border-white/18 bg-[#020617]/92 text-sm text-neutral-400">
             {emptyMessage}
           </div>
         ) : !chartsReady ? (
-          <div className="flex h-full items-center justify-center rounded-2xl border border-white/14 bg-black/20 text-sm text-neutral-500">
+          <div className="flex h-full items-center justify-center rounded-2xl border border-white/18 bg-[#020617]/92 text-sm text-neutral-400">
             {loadingMessage}
           </div>
         ) : (
-          <div className="h-full min-w-0 rounded-2xl border border-white/5 bg-black/10 p-2">
+          <div className="h-full min-w-0 rounded-2xl border border-white/20 bg-[#020617]/94 p-2">
             {children}
           </div>
         )}
@@ -1245,14 +1245,14 @@ function KpiCard({
 }) {
   const toneClasses =
     tone === 'green'
-      ? 'border-emerald-500/25 bg-emerald-500/[0.08]'
+      ? 'border-emerald-300/45 bg-[#020617]/95 ring-1 ring-emerald-300/15 shadow-[0_24px_90px_rgba(0,0,0,0.70)]'
       : tone === 'blue'
-      ? 'border-blue-500/25 bg-blue-500/[0.08]'
+      ? 'border-blue-300/45 bg-[#020617]/95 ring-1 ring-blue-300/15 shadow-[0_24px_90px_rgba(0,0,0,0.70)]'
       : tone === 'amber'
-      ? 'border-amber-500/25 bg-amber-500/[0.08]'
+      ? 'border-amber-300/45 bg-[#020617]/95 ring-1 ring-amber-300/15 shadow-[0_24px_90px_rgba(0,0,0,0.70)]'
       : tone === 'red'
-      ? 'border-red-500/25 bg-red-500/[0.08]'
-      : 'border-white/14 bg-white/[0.035]'
+      ? 'border-red-300/45 bg-[#020617]/95 ring-1 ring-red-300/15 shadow-[0_24px_90px_rgba(0,0,0,0.70)]'
+      : 'border-white/24 bg-[#020617]/95 ring-1 ring-white/10 shadow-[0_24px_90px_rgba(0,0,0,0.70)]'
 
   return (
     <div className={`min-w-0 overflow-hidden rounded-2xl border px-4 py-4 transition duration-300 hover:-translate-y-1 hover:scale-[1.01] sm:rounded-3xl sm:px-5 sm:py-5 ${toneClasses}`}>
@@ -1288,12 +1288,12 @@ function CompactFocusCard({
 }) {
   const toneClasses =
     tone === 'red'
-      ? 'border-red-500/25 bg-red-500/[0.08] hover:bg-red-500/[0.12]'
+      ? 'border-red-300/45 bg-[#020617]/95 ring-1 ring-red-300/15 shadow-[0_24px_90px_rgba(0,0,0,0.70)] hover:bg-[#020617]/98'
       : tone === 'green'
-      ? 'border-emerald-500/25 bg-emerald-500/[0.08] hover:bg-emerald-500/[0.12]'
+      ? 'border-emerald-300/45 bg-[#020617]/95 ring-1 ring-emerald-300/15 shadow-[0_24px_90px_rgba(0,0,0,0.70)] hover:bg-[#020617]/98'
       : tone === 'amber'
-      ? 'border-amber-500/25 bg-amber-500/[0.08] hover:bg-amber-500/[0.12]'
-      : 'border-blue-500/25 bg-blue-500/[0.08] hover:bg-blue-500/[0.12]'
+      ? 'border-amber-300/45 bg-[#020617]/95 ring-1 ring-amber-300/15 shadow-[0_24px_90px_rgba(0,0,0,0.70)] hover:bg-[#020617]/98'
+      : 'border-blue-300/45 bg-[#020617]/95 ring-1 ring-blue-300/15 shadow-[0_24px_90px_rgba(0,0,0,0.70)] hover:bg-[#020617]/98'
 
   return (
     <button
@@ -1319,12 +1319,12 @@ function CompactFocusCard({
 function InsightCard({ insight }: { insight: AnalyticsInsight }) {
   const toneClasses =
     insight.tone === 'green'
-      ? 'border-emerald-500/30 bg-emerald-500/[0.12]'
+      ? 'border-emerald-300/45 bg-[#020617]/95 ring-1 ring-emerald-300/15 shadow-[0_24px_90px_rgba(0,0,0,0.70)]'
       : insight.tone === 'blue'
-      ? 'border-blue-500/30 bg-blue-500/[0.12]'
+      ? 'border-blue-300/45 bg-[#020617]/95 ring-1 ring-blue-300/15 shadow-[0_24px_90px_rgba(0,0,0,0.70)]'
       : insight.tone === 'amber'
-      ? 'border-amber-500/30 bg-amber-500/[0.12]'
-      : 'border-red-500/30 bg-red-500/[0.12]'
+      ? 'border-amber-300/45 bg-[#020617]/95 ring-1 ring-amber-300/15 shadow-[0_24px_90px_rgba(0,0,0,0.70)]'
+      : 'border-red-300/45 bg-[#020617]/95 ring-1 ring-red-300/15 shadow-[0_24px_90px_rgba(0,0,0,0.70)]'
 
   return (
     <div className={`min-w-0 overflow-hidden rounded-2xl border p-4 transition hover:scale-[1.02] sm:rounded-3xl sm:p-6 ${toneClasses}`}>
@@ -1356,12 +1356,12 @@ function ExportHealthCard({
 }) {
   const toneClasses =
     tone === 'green'
-      ? 'border-emerald-500/25 bg-emerald-500/[0.08]'
+      ? 'border-emerald-300/45 bg-[#020617]/95 ring-1 ring-emerald-300/15 shadow-[0_24px_90px_rgba(0,0,0,0.70)]'
       : tone === 'blue'
-      ? 'border-blue-500/25 bg-blue-500/[0.08]'
+      ? 'border-blue-300/45 bg-[#020617]/95 ring-1 ring-blue-300/15 shadow-[0_24px_90px_rgba(0,0,0,0.70)]'
       : tone === 'amber'
-      ? 'border-amber-500/25 bg-amber-500/[0.08]'
-      : 'border-red-500/25 bg-red-500/[0.08]'
+      ? 'border-amber-300/45 bg-[#020617]/95 ring-1 ring-amber-300/15 shadow-[0_24px_90px_rgba(0,0,0,0.70)]'
+      : 'border-red-300/45 bg-[#020617]/95 ring-1 ring-red-300/15 shadow-[0_24px_90px_rgba(0,0,0,0.70)]'
 
   return (
     <div className={`rounded-2xl border p-4 sm:rounded-3xl sm:p-5 ${toneClasses}`}>
@@ -1389,7 +1389,7 @@ function ToolbarPill({
       className={`rounded-2xl border px-3 py-2 text-center text-xs font-medium transition sm:px-4 sm:text-sm ${
         active
           ? 'border-white bg-white text-black'
-          : 'border-white/14 bg-white/5 text-neutral-300 hover:bg-white/10'
+          : 'border-white/14 bg-[#020617]/92 text-neutral-300 hover:bg-[#020617]/98'
       }`}
     >
       {children}
@@ -1413,7 +1413,7 @@ function FocusChip({
       className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
         active
           ? 'border-white bg-white text-black'
-          : 'border-white/14 bg-white/5 text-neutral-300 hover:bg-white/10'
+          : 'border-white/14 bg-[#020617]/92 text-neutral-300 hover:bg-[#020617]/98'
       }`}
     >
       {children}
@@ -1719,7 +1719,7 @@ export default function ReportsClient({
     <main className="fade-in-up min-h-screen px-3 py-4 text-white sm:px-6 sm:py-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-6 sm:space-y-10">
 
-        <div className="relative overflow-hidden rounded-3xl border border-emerald-500/20 bg-black/40 px-5 py-4 backdrop-blur-xl">
+        <div className="relative overflow-hidden rounded-3xl border border-emerald-400/25 bg-black/52 px-5 py-4 shadow-[0_18px_70px_rgba(0,0,0,0.32)]">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_left,rgba(16,185,129,0.18),transparent_35%)]" />
 
           <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -1739,7 +1739,7 @@ export default function ReportsClient({
             </div>
 
             <div className="grid grid-cols-3 gap-3">
-              <div className="rounded-2xl border border-white/18 bg-black/60 px-4 py-3 shadow-[0_14px_40px_rgba(0,0,0,0.28)]">
+              <div className="rounded-2xl border border-white/24 bg-black/78 px-4 py-3 shadow-[0_18px_60px_rgba(0,0,0,0.45)] ring-1 ring-white/10">
                 <div className="text-xs uppercase tracking-[0.18em] text-neutral-500">{text.events}</div>
 
                 <div className="mt-2 text-2xl font-semibold text-white">
@@ -1747,7 +1747,7 @@ export default function ReportsClient({
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/18 bg-black/60 px-4 py-3 shadow-[0_14px_40px_rgba(0,0,0,0.28)]">
+              <div className="rounded-2xl border border-white/24 bg-black/78 px-4 py-3 shadow-[0_18px_60px_rgba(0,0,0,0.45)] ring-1 ring-white/10">
                 <div className="text-xs uppercase tracking-[0.18em] text-neutral-500">{text.exhibitors}</div>
 
                 <div className="mt-2 text-2xl font-semibold text-white">
@@ -1755,7 +1755,7 @@ export default function ReportsClient({
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/18 bg-black/60 px-4 py-3 shadow-[0_14px_40px_rgba(0,0,0,0.28)]">
+              <div className="rounded-2xl border border-white/24 bg-black/78 px-4 py-3 shadow-[0_18px_60px_rgba(0,0,0,0.45)] ring-1 ring-white/10">
                 <div className="text-xs uppercase tracking-[0.18em] text-neutral-500">{text.exports}</div>
 
                 <div className="mt-2 text-2xl font-semibold text-white">
@@ -1768,7 +1768,7 @@ export default function ReportsClient({
 
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-  <div className="premium-card rounded-2xl border-blue-300/30 bg-black/58 p-4 shadow-[0_18px_60px_rgba(0,0,0,0.38)] sm:rounded-3xl sm:p-5">
+  <div className="relative overflow-hidden rounded-2xl border border-blue-200/55 bg-[#020617]/95 p-4 shadow-[0_28px_100px_rgba(0,0,0,0.72)] ring-1 ring-blue-200/20 sm:rounded-3xl sm:p-5">
     <div className="text-xs uppercase tracking-[0.18em] text-blue-300">{text.totalEngagement}</div>
 
     <div className="mt-3 bg-gradient-to-r from-white to-neutral-400 bg-clip-text text-4xl font-semibold text-transparent">
@@ -1778,7 +1778,7 @@ export default function ReportsClient({
     <div className="mt-2 text-sm text-neutral-400">{text.combinedTrackedActions}</div>
   </div>
 
-  <div className="premium-card rounded-2xl border-emerald-300/30 bg-black/58 p-4 shadow-[0_18px_60px_rgba(0,0,0,0.38)] sm:rounded-3xl sm:p-5">
+  <div className="relative overflow-hidden rounded-2xl border border-emerald-200/55 bg-[#020617]/95 p-4 shadow-[0_28px_100px_rgba(0,0,0,0.72)] ring-1 ring-emerald-200/20 sm:rounded-3xl sm:p-5">
     <div className="text-xs uppercase tracking-[0.18em] text-emerald-300">{text.exportSuccess}</div>
 
     <div className="mt-3 bg-gradient-to-r from-white to-neutral-400 bg-clip-text text-4xl font-semibold text-transparent">
@@ -1788,7 +1788,7 @@ export default function ReportsClient({
     <div className="mt-2 text-sm text-neutral-400">{text.successfulExportCompletionRate}</div>
   </div>
 
-  <div className="premium-card rounded-2xl border-amber-300/30 bg-black/58 p-4 shadow-[0_18px_60px_rgba(0,0,0,0.38)] sm:rounded-3xl sm:p-5">
+  <div className="relative overflow-hidden rounded-2xl border border-amber-200/55 bg-[#020617]/95 p-4 shadow-[0_28px_100px_rgba(0,0,0,0.72)] ring-1 ring-amber-200/20 sm:rounded-3xl sm:p-5">
     <div className="text-xs uppercase tracking-[0.18em] text-amber-300">{text.activeExhibitors}</div>
 
     <div className="mt-3 bg-gradient-to-r from-white to-neutral-400 bg-clip-text text-4xl font-semibold text-transparent">
@@ -1802,7 +1802,7 @@ export default function ReportsClient({
     <div className="mt-2 text-sm text-neutral-400">{text.exhibitorsWithEngagement}</div>
   </div>
 
-  <div className="premium-card rounded-2xl border-red-300/30 bg-black/58 p-4 shadow-[0_18px_60px_rgba(0,0,0,0.38)] sm:rounded-3xl sm:p-5">
+  <div className="relative overflow-hidden rounded-2xl border border-red-200/55 bg-[#020617]/95 p-4 shadow-[0_28px_100px_rgba(0,0,0,0.72)] ring-1 ring-red-200/20 sm:rounded-3xl sm:p-5">
     <div className="text-xs uppercase tracking-[0.18em] text-red-300">
       {text.needsAttention}
     </div>
@@ -1827,7 +1827,7 @@ export default function ReportsClient({
               <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-4xl">{text.iseReportsTitle}</h1>
 
               <div className="mt-3 flex flex-wrap gap-2 text-xs text-neutral-400 sm:text-sm">
-                <span className="rounded-full border border-white/14 bg-black/46 px-3 py-1">
+                <span className="rounded-full border border-white/20 bg-black/46 px-3 py-1">
                   {text.range}:{' '}
                   <span className="font-medium text-white">
                     {summary.appliedStartDate || summary.appliedEndDate
@@ -1835,13 +1835,13 @@ export default function ReportsClient({
                       : getRangeLabel(currentRange, text)}
                   </span>
                 </span>
-                <span className="rounded-full border border-white/14 bg-black/46 px-3 py-1">
+                <span className="rounded-full border border-white/20 bg-black/46 px-3 py-1">
                   {text.search}:{' '}
                   <span className="font-medium text-white">
                     {summary.appliedSearchQuery || '—'}
                   </span>
                 </span>
-                <span className="rounded-full border border-white/14 bg-black/46 px-3 py-1">
+                <span className="rounded-full border border-white/20 bg-black/46 px-3 py-1">
                   {text.exhibitor}:{' '}
                   <span className="font-medium text-white">
                     {summary.appliedExhibitorName
@@ -1849,7 +1849,7 @@ export default function ReportsClient({
                       : '—'}
                   </span>
                 </span>
-                <span className="rounded-full border border-white/14 bg-black/46 px-3 py-1">
+                <span className="rounded-full border border-white/20 bg-black/46 px-3 py-1">
                   {text.dates}:{' '}
                   <span className="font-medium text-white">
                     {summary.appliedStartDate || summary.appliedEndDate
@@ -1928,7 +1928,7 @@ export default function ReportsClient({
               summary.appliedEndDate) ? (
               <Link
                 href="/reports"
-                className="inline-flex w-fit rounded-2xl border border-white/14 bg-white/5 px-4 py-2 text-sm font-medium text-neutral-300 transition hover:bg-white/10"
+                className="inline-flex w-fit rounded-2xl border border-white/20 bg-black/50 px-4 py-2 text-sm font-medium text-neutral-300 transition hover:bg-[#020617]/98"
               >
                 {text.clearAllFilters}
               </Link>
@@ -1950,7 +1950,7 @@ export default function ReportsClient({
                 type="text"
                 placeholder={text.searchAcrossReports}
                 defaultValue={currentSearchQuery}
-                className="w-full rounded-2xl border border-white/14 bg-black/48 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/25"
+                className="w-full rounded-2xl border border-white/20 bg-[#020617]/96 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/25"
               />
             </div>
 
@@ -1963,7 +1963,7 @@ export default function ReportsClient({
                 name="startDate"
                 type="date"
                 defaultValue={summary.appliedStartDate ?? ''}
-                className="min-w-0 w-full max-w-full rounded-2xl border border-white/14 bg-black/48 px-4 py-3 text-sm text-white outline-none transition focus:border-white/25"
+                className="min-w-0 w-full max-w-full rounded-2xl border border-white/20 bg-[#020617]/96 px-4 py-3 text-sm text-white outline-none transition focus:border-white/25"
               />
             </div>
 
@@ -1976,7 +1976,7 @@ export default function ReportsClient({
                 name="endDate"
                 type="date"
                 defaultValue={summary.appliedEndDate ?? ''}
-                className="min-w-0 w-full max-w-full rounded-2xl border border-white/14 bg-black/48 px-4 py-3 text-sm text-white outline-none transition focus:border-white/25"
+                className="min-w-0 w-full max-w-full rounded-2xl border border-white/20 bg-[#020617]/96 px-4 py-3 text-sm text-white outline-none transition focus:border-white/25"
               />
             </div>
 
@@ -1996,7 +1996,7 @@ export default function ReportsClient({
 
           <form
             onSubmit={handleApplyExhibitorFilter}
-            className="mt-4 grid gap-3 rounded-3xl border border-white/14 bg-black/42 p-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end"
+            className="mt-4 grid gap-3 rounded-3xl border border-white/20 bg-black/42 p-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end"
           >
             <div>
               <label htmlFor="exhibitor-picker" className="mb-2 block text-sm font-medium text-neutral-300">
@@ -2009,7 +2009,7 @@ export default function ReportsClient({
                 value={exhibitorPickerValue}
                 onChange={(event) => setExhibitorPickerValue(event.target.value)}
                 placeholder={text.selectOneExhibitorPlaceholder}
-                className="w-full rounded-2xl border border-white/14 bg-black/48 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/25"
+                className="w-full rounded-2xl border border-white/20 bg-[#020617]/96 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/25"
               />
               <datalist id="exhibitor-picker-options">
                 {exhibitorOptions.map((item) => (
@@ -2020,7 +2020,7 @@ export default function ReportsClient({
 
             <button
               type="submit"
-              className="rounded-2xl border border-white/14 bg-white/5 px-5 py-3 text-sm font-medium text-neutral-200 transition hover:bg-white/10"
+              className="rounded-2xl border border-white/20 bg-black/50 px-5 py-3 text-sm font-medium text-neutral-200 transition hover:bg-[#020617]/98"
             >
               {text.applyExhibitor}
             </button>
@@ -2108,10 +2108,10 @@ export default function ReportsClient({
             />
           </div>
 
-          <div className="mt-4 overflow-x-auto rounded-2xl border border-white/14 sm:mt-6 sm:rounded-3xl">
+          <div className="mt-4 overflow-x-auto rounded-2xl border border-white/20 sm:mt-6 sm:rounded-3xl">
             <div className="overflow-x-auto overscroll-x-contain">
               <table className="min-w-full border-collapse text-sm">
-                 <thead className="sticky top-0 z-10 bg-black/82 backdrop-blur-xl">                  <tr className="border-b border-white/14 text-left">
+                 <thead className="sticky top-0 z-10 bg-black/95">                  <tr className="border-b border-white/14 text-left">
                     <th className="px-5 py-3 font-medium text-neutral-300">{text.format}</th>
                     <th className="px-5 py-3 font-medium text-neutral-300">{text.successfulExports}</th>
                     <th className="px-5 py-3 font-medium text-neutral-300">{text.share}</th>
@@ -2126,7 +2126,7 @@ export default function ReportsClient({
                     </tr>
                   ) : (
                     exportFormatRows.map((row) => (
-                      <tr key={row.format} className="border-b border-white/5 transition hover:bg-black/42 last:border-b-0">
+                      <tr key={row.format} className="border-b border-white/8 transition hover:bg-[#020617]/98 last:border-b-0">
                         <td className="px-5 py-4 font-medium text-white">{row.label}</td>
                         <td className="px-5 py-4 text-neutral-300">{row.count}</td>
                         <td className="px-5 py-4 text-neutral-300">
@@ -2250,7 +2250,7 @@ export default function ReportsClient({
             <button
               type="button"
               onClick={() => activateFocusFilter('topPerformers')}
-              className="inline-flex w-fit rounded-2xl border border-white/14 bg-white/5 px-4 py-2 text-sm font-medium text-neutral-300 transition hover:bg-white/10"
+              className="inline-flex w-fit rounded-2xl border border-white/20 bg-black/50 px-4 py-2 text-sm font-medium text-neutral-300 transition hover:bg-[#020617]/98"
             >{text.viewAllTopPerformers}</button>
           </div>
 
@@ -2263,7 +2263,7 @@ export default function ReportsClient({
                   startDate: summary.appliedStartDate,
                   endDate: summary.appliedEndDate,
                 })}
-                className="rounded-3xl border border-white/14 bg-black/20 p-5 transition hover:bg-white/[0.06]"
+                className="rounded-3xl border border-white/22 bg-[#020617]/97 p-5 shadow-[0_28px_110px_rgba(0,0,0,0.78)] ring-1 ring-white/8 transition hover:bg-[#020617]/95"
               >
                 <div className="flex items-center justify-between gap-3">
                   <span
@@ -2505,7 +2505,7 @@ export default function ReportsClient({
             <button
               type="button"
               onClick={() => setNeedsAttentionExpanded((prev) => !prev)}
-              className="glass-panel rounded-2xl px-4 py-3 text-sm font-medium text-neutral-300 transition hover:bg-white/10"
+              className="glass-panel rounded-2xl px-4 py-3 text-sm font-medium text-neutral-300 transition hover:bg-[#020617]/98"
             >
               {needsAttentionExpanded ? text.collapseTable : text.expandTable}
             </button>
@@ -2534,7 +2534,7 @@ export default function ReportsClient({
                           : text.generatedLinksButNoSuccessfulExports
 
                       return (
-                        <tr key={item.exhibitorId} className="border-b border-white/5 transition hover:bg-black/42 last:border-b-0">
+                        <tr key={item.exhibitorId} className="border-b border-white/8 transition hover:bg-[#020617]/98 last:border-b-0">
                           <td className="px-5 py-4 text-white">{item.companyName}</td>
                           <td className="px-5 py-4 text-neutral-300">{item.exhibitorId}</td>
                           <td className="px-5 py-4 text-neutral-300">{item.linkGeneratedCount}</td>
@@ -2548,7 +2548,7 @@ export default function ReportsClient({
                                 startDate: summary.appliedStartDate,
                                 endDate: summary.appliedEndDate,
                               })}
-                              className="inline-flex items-center rounded-xl border border-white/14 bg-white/5 px-3 py-2 text-xs font-medium text-neutral-200 transition hover:bg-white/10"
+                              className="inline-flex items-center rounded-xl border border-white/20 bg-black/50 px-3 py-2 text-xs font-medium text-neutral-200 transition hover:bg-[#020617]/98"
                             >
                               {text.viewDetails}
                             </Link>
@@ -2567,7 +2567,7 @@ export default function ReportsClient({
               ) : null}
             </div>
           ) : (
-            <div className="mt-6 rounded-2xl border border-white/14 bg-white/5 px-5 py-4 text-sm text-neutral-400">
+            <div className="mt-6 rounded-2xl border border-white/22 bg-[#020617]/96 px-5 py-4 shadow-[0_20px_70px_rgba(0,0,0,0.48)] ring-1 ring-white/8 text-sm text-neutral-400">
               {text.noIssuesDetected}
             </div>
           )}
@@ -2594,7 +2594,7 @@ export default function ReportsClient({
                     placeholder={text.filterByNameOrId}
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
-                    className="w-full min-w-0 sm:min-w-[280px] rounded-2xl border border-white/14 bg-black/48 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/25"
+                    className="w-full min-w-0 sm:min-w-[280px] rounded-2xl border border-white/20 bg-[#020617]/96 px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-white/25"
                   />
                 </div>
 
@@ -2609,7 +2609,7 @@ export default function ReportsClient({
                       setPageSize(Number(event.target.value))
                       setCurrentPage(1)
                     }}
-                    className="rounded-2xl border border-white/14 bg-black/48 px-4 py-3 text-sm text-white outline-none transition focus:border-white/25"
+                    className="rounded-2xl border border-white/20 bg-[#020617]/96 px-4 py-3 text-sm text-white outline-none transition focus:border-white/25"
                   >
                     {PAGE_SIZE_OPTIONS.map((option) => (
                       <option key={option} value={option} className="text-black">
@@ -2656,10 +2656,10 @@ export default function ReportsClient({
               Swipe sideways to view the full table.
             </div>
 
-            <div className="overflow-x-auto rounded-2xl border border-white/14 sm:rounded-3xl">
+            <div className="overflow-x-auto rounded-2xl border border-white/20 sm:rounded-3xl">
               <div className="overflow-x-auto overscroll-x-contain">
                 <table className="min-w-[1080px] w-full border-collapse text-xs sm:text-sm">
-                  <thead className="sticky top-0 z-10 bg-black/82 backdrop-blur-xl">
+                  <thead className="sticky top-0 z-10 bg-black/95">
                     <tr className="border-b border-white/14 text-left">
                       <th className="px-5 py-4 font-medium text-neutral-300">
                         <button type="button" onClick={() => handleSort('companyName')} className="font-medium hover:underline">
@@ -2721,7 +2721,7 @@ export default function ReportsClient({
                         const status = getLastActiveStatus(item.lastActivityAt, text)
 
                         return (
-                          <tr key={item.exhibitorId} className="border-b border-white/5 align-top transition hover:bg-black/42 last:border-b-0">
+                          <tr key={item.exhibitorId} className="border-b border-white/8 align-top transition hover:bg-[#020617]/98 last:border-b-0">
                             <td className="px-5 py-4">
                               <Link
                                 href={buildExhibitorDetailHref(item.exhibitorId, {
@@ -2762,7 +2762,7 @@ export default function ReportsClient({
                                   startDate: summary.appliedStartDate,
                                   endDate: summary.appliedEndDate,
                                 })}
-                                className="inline-flex min-w-[110px] items-center justify-center rounded-xl border border-white/14 bg-white/5 px-3 py-2 text-sm font-medium text-neutral-200 transition hover:bg-white/10"
+                                className="inline-flex min-w-[110px] items-center justify-center rounded-xl border border-white/20 bg-black/50 px-3 py-2 text-sm font-medium text-neutral-200 transition hover:bg-[#020617]/98"
                               >
                                 {text.viewDetails}
                               </Link>
@@ -2808,10 +2808,10 @@ export default function ReportsClient({
               {text.funnelAnalyticsDescription}
             </p>
 
-            <div className="mt-4 overflow-x-auto rounded-2xl border border-white/14 sm:mt-6 sm:rounded-3xl">
+            <div className="mt-4 overflow-x-auto rounded-2xl border border-white/20 sm:mt-6 sm:rounded-3xl">
               <div className="overflow-x-auto overscroll-x-contain">
                 <table className="min-w-full border-collapse text-sm">
-                  <thead className="sticky top-0 z-10 bg-black/82 backdrop-blur-xl">
+                  <thead className="sticky top-0 z-10 bg-black/95">
                     <tr className="border-b border-white/14 text-left">
                       <th className="px-5 py-3 font-medium text-neutral-300">{text.step}</th>
                       <th className="px-5 py-3 font-medium text-neutral-300">{text.count}</th>
@@ -2821,7 +2821,7 @@ export default function ReportsClient({
                   </thead>
                   <tbody>
                     {funnelRows.map((item) => (
-                      <tr key={item.key} className="border-b border-white/5 transition hover:bg-black/42 last:border-b-0">
+                      <tr key={item.key} className="border-b border-white/8 transition hover:bg-[#020617]/98 last:border-b-0">
                         <td className="px-5 py-4 font-medium text-white">{item.label}</td>
                         <td className="px-5 py-4 text-neutral-300">{item.count}</td>
                         <td className="px-5 py-4 text-neutral-300">{item.rateFromPrevious}</td>
@@ -2840,10 +2840,10 @@ export default function ReportsClient({
               {text.recentEventsDescription}
             </p>
 
-            <div className="mt-4 overflow-x-auto rounded-2xl border border-white/14 sm:mt-6 sm:rounded-3xl">
+            <div className="mt-4 overflow-x-auto rounded-2xl border border-white/20 sm:mt-6 sm:rounded-3xl">
               <div className="overflow-x-auto overscroll-x-contain">
                 <table className="min-w-full border-collapse text-sm">
-                  <thead className="sticky top-0 z-10 bg-black/82 backdrop-blur-xl">
+                  <thead className="sticky top-0 z-10 bg-black/95">
                     <tr className="border-b border-white/14 text-left">
                       <th className="px-5 py-3 font-medium text-neutral-300">{text.timestamp}</th>
                       <th className="px-5 py-3 font-medium text-neutral-300">{text.company}</th>
@@ -2860,7 +2860,7 @@ export default function ReportsClient({
                       </tr>
                     ) : (
                       summary.recentEvents.slice(0, 12).map((event) => (
-                        <tr key={event.id} className="border-b border-white/5 transition hover:bg-black/42 last:border-b-0">
+                        <tr key={event.id} className="border-b border-white/8 transition hover:bg-[#020617]/98 last:border-b-0">
                           <td className="px-5 py-4 text-neutral-300">{formatDate(event.timestamp)}</td>
                           <td className="px-5 py-4">
                             <Link
