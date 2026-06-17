@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { makeQrDataUrl } from '@/lib/qr'
 import { translations } from '@/lib/translations'
+import { themes } from '@/lib/themes'
 import type { LanguageKey, ThemeKey } from '@/lib/types'
 
 type InvitePreviewProps = {
@@ -17,7 +18,6 @@ type InvitePreviewProps = {
 
 const EVENT_YEAR = process.env.NEXT_PUBLIC_EVENT_YEAR?.trim() || '2027'
 
-const TOOLKIT_INVITE_BACKGROUND = '/branding/toolkit/ise-invitecard.png'
 const ISE_LOGO_WHITE = '/branding/ise-logo-white.png'
 
 function getFallbackInviteText(language: LanguageKey) {
@@ -41,19 +41,115 @@ function getFallbackInviteText(language: LanguageKey) {
   }
 }
 
+function getCardCopy(language: LanguageKey, eventYear: string) {
+  switch (language) {
+    case 'es':
+      return {
+        joinUs: `Únase a nosotros en ISE ${eventYear}`,
+        invitationTitle: 'Invitación',
+        isInviting: `le invita a ISE ${eventYear}`,
+        reconnectHeadline: 'Es hora de reconectar...',
+        bodyOne: 'Integrated Systems Europe es el evento tecnológico anual de referencia mundial para la integración de sistemas y la industria audiovisual.',
+        bodyTwo: 'Únase a nosotros en Barcelona y reconecte con la innovación, las personas, el conocimiento y la tecnología.',
+        bodyThree: `Regístrese gratis con su código de invitación de expositor y asegure su pase de visitante para ISE ${eventYear}.`,
+        freeCode: 'Únase gratis y ahorre con su código de invitación:',
+      }
+    case 'de':
+      return {
+        joinUs: `Besuchen Sie uns auf der ISE ${eventYear}`,
+        invitationTitle: 'Einladung',
+        isInviting: `lädt Sie zur ISE ${eventYear} ein`,
+        reconnectHeadline: 'Es ist Zeit, sich wieder zu vernetzen...',
+        bodyOne: 'Integrated Systems Europe ist die weltweit führende jährliche Technologiemesse für Systemintegration und die audiovisuelle Branche.',
+        bodyTwo: 'Kommen Sie nach Barcelona und vernetzen Sie sich wieder mit Innovation, Menschen, Wissen und Technologie.',
+        bodyThree: `Registrieren Sie sich kostenlos mit Ihrem Aussteller-Einladungscode und sichern Sie sich Ihren Besucherausweis für ISE ${eventYear}.`,
+        freeCode: 'Kostenlos teilnehmen und mit Ihrem Einladungscode sparen:',
+      }
+    case 'fr':
+      return {
+        joinUs: `Rejoignez-nous à ISE ${eventYear}`,
+        invitationTitle: 'Invitation',
+        isInviting: `vous invite à ISE ${eventYear}`,
+        reconnectHeadline: 'Il est temps de se reconnecter...',
+        bodyOne: 'Integrated Systems Europe est le salon technologique annuel de référence mondiale pour l’intégration de systèmes et l’industrie audiovisuelle.',
+        bodyTwo: 'Rejoignez-nous à Barcelone et reconnectez-vous à l’innovation, aux personnes, au savoir et à la technologie.',
+        bodyThree: `Inscrivez-vous gratuitement avec votre code d’invitation exposant et obtenez votre pass visiteur pour ISE ${eventYear}.`,
+        freeCode: 'Rejoignez-nous gratuitement avec votre code d’invitation :',
+      }
+    case 'it':
+      return {
+        joinUs: `Unisciti a noi a ISE ${eventYear}`,
+        invitationTitle: 'Invito',
+        isInviting: `ti invita a ISE ${eventYear}`,
+        reconnectHeadline: 'È tempo di riconnettersi...',
+        bodyOne: 'Integrated Systems Europe è il principale evento tecnologico annuale al mondo per l’integrazione dei sistemi e il settore audiovisivo.',
+        bodyTwo: 'Unisciti a noi a Barcellona e riconnettiti con innovazione, persone, conoscenza e tecnologia.',
+        bodyThree: `Registrati gratuitamente con il tuo codice invito espositore e assicurati il pass visitatore per ISE ${eventYear}.`,
+        freeCode: 'Partecipa gratis usando il tuo codice invito:',
+      }
+    case 'pt':
+      return {
+        joinUs: `Junte-se a nós na ISE ${eventYear}`,
+        invitationTitle: 'Convite',
+        isInviting: `convida-o para a ISE ${eventYear}`,
+        reconnectHeadline: 'Está na hora de reconectar...',
+        bodyOne: 'A Integrated Systems Europe é o evento tecnológico anual de referência mundial para integração de sistemas e indústria audiovisual.',
+        bodyTwo: 'Junte-se a nós em Barcelona e reconecte-se com inovação, pessoas, conhecimento e tecnologia.',
+        bodyThree: `Registe-se gratuitamente com o seu código de convite de expositor e garanta o seu passe de visitante para a ISE ${eventYear}.`,
+        freeCode: 'Junte-se gratuitamente usando o seu código de convite:',
+      }
+    case 'nl':
+      return {
+        joinUs: `Bezoek ons op ISE ${eventYear}`,
+        invitationTitle: 'Uitnodiging',
+        isInviting: `nodigt u uit voor ISE ${eventYear}`,
+        reconnectHeadline: 'Tijd om opnieuw te verbinden...',
+        bodyOne: 'Integrated Systems Europe is de wereldwijd toonaangevende jaarlijkse technologiebeurs voor systeemintegratie en de audiovisuele industrie.',
+        bodyTwo: 'Kom naar Barcelona en verbind opnieuw met innovatie, mensen, kennis en technologie.',
+        bodyThree: `Registreer gratis met uw exposanten-uitnodigingscode en verzeker uw bezoekerspas voor ISE ${eventYear}.`,
+        freeCode: 'Neem gratis deel met uw uitnodigingscode:',
+      }
+    case 'zh-CN':
+      return {
+        joinUs: `欢迎参加 ISE ${eventYear}`,
+        invitationTitle: '邀请函',
+        isInviting: `诚邀您参加 ISE ${eventYear}`,
+        reconnectHeadline: '是时候重新连接...',
+        bodyOne: 'Integrated Systems Europe 是全球知名的年度科技展会，面向系统集成和视听行业。',
+        bodyTwo: '欢迎来到巴塞罗那，与创新、人脉、知识和技术重新连接。',
+        bodyThree: `使用您的参展商邀请码免费注册，并获取 ISE ${eventYear} 观众通行证。`,
+        freeCode: '使用您的邀请码免费参加：',
+      }
+    default:
+      return {
+        joinUs: `Join us at ISE ${eventYear}`,
+        invitationTitle: 'Invitation',
+        isInviting: `is inviting you to ISE ${eventYear}`,
+        reconnectHeadline: 'It’s time to reconnect...',
+        bodyOne: 'Integrated Systems Europe is the world-renowned annual tech show for the systems integration and audiovisual industry.',
+        bodyTwo: 'Join us in Barcelona and reconnect with innovation, people, knowledge and technology.',
+        bodyThree: `Register for free using your exhibitor invitation code and secure your visitor pass for ISE ${eventYear}.`,
+        freeCode: 'Join us for FREE and save with your invitation code:',
+      }
+  }
+}
+
 export default function InvitePreview({
   companyName,
   standNumber,
   invitationCode,
   logoUrl,
   registrationUrl,
+  theme,
   language,
 }: InvitePreviewProps) {
+  const selectedTheme = themes[theme] ?? themes.audio
   const [failedLogoUrl, setFailedLogoUrl] = useState('')
   const [qrDataUrl, setQrDataUrl] = useState('')
 
   const text = translations[language].invite
   const fallbackText = getFallbackInviteText(language)
+  const cardCopy = getCardCopy(language, EVENT_YEAR)
 
   const boothList = useMemo(() => {
     return standNumber
@@ -83,7 +179,7 @@ export default function InvitePreview({
       <section
         className="relative h-[430px] overflow-hidden bg-[#06194c] px-12 py-10 text-white"
         style={{
-          backgroundImage: `url(${TOOLKIT_INVITE_BACKGROUND})`,
+          backgroundImage: `url(${selectedTheme.backgroundImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
@@ -96,7 +192,7 @@ export default function InvitePreview({
             <img
               src={ISE_LOGO_WHITE}
               alt="Integrated Systems Europe"
-              className="h-[72px] w-auto object-contain"
+              className="h-[88px] w-auto object-contain"
             />
 
             <div className="text-right text-[13px] font-semibold leading-tight text-white/85">
@@ -107,11 +203,11 @@ export default function InvitePreview({
 
           <div className="max-w-[620px]">
             <p className="text-[17px] font-medium text-white/86">
-              Join us at ISE {EVENT_YEAR}
+              {cardCopy.joinUs}
             </p>
 
             <h2 className="mt-4 text-[76px] font-semibold uppercase leading-[0.9] tracking-[-0.055em] text-white">
-              Invitation
+              {cardCopy.invitationTitle}
             </h2>
           </div>
         </div>
@@ -129,7 +225,7 @@ export default function InvitePreview({
             </h3>
 
             <p className="mt-2 text-[17px] font-semibold leading-tight text-[#141442]/78">
-              is inviting you to ISE {EVENT_YEAR}
+              {cardCopy.isInviting}
             </p>
 
             <div className="mt-5 grid max-w-[520px] grid-cols-2 gap-5">
@@ -176,26 +272,26 @@ export default function InvitePreview({
         <div className="mt-9 grid grid-cols-[1fr_230px] gap-10">
           <div>
             <h3 className="text-[30px] font-semibold uppercase leading-tight tracking-[-0.035em] text-[#080832]">
-              It&apos;s time to reconnect...
+              {cardCopy.reconnectHeadline}
             </h3>
 
             <div className="mt-6 space-y-4 text-[15px] font-medium leading-6 text-[#141442]/82">
               <p>
-                Integrated Systems Europe is the world-renowned annual tech show for the systems integration and audiovisual industry.
+                {cardCopy.bodyOne}
               </p>
 
               <p>
-                Join us in Barcelona and reconnect with innovation, people, knowledge and technology.
+                {cardCopy.bodyTwo}
               </p>
 
               <p>
-                Register for free using your exhibitor invitation code and secure your visitor pass for ISE {EVENT_YEAR}.
+                {cardCopy.bodyThree}
               </p>
             </div>
 
             <div className="mt-9">
               <p className="text-[18px] font-semibold leading-tight text-[#00a6d6]">
-                Join us for FREE and save with your invitation code:
+                {cardCopy.freeCode}
               </p>
 
               <p className="mt-2 break-all text-[26px] font-semibold leading-none tracking-[-0.035em] text-[#080832]">
@@ -205,24 +301,25 @@ export default function InvitePreview({
           </div>
 
           <div className="flex flex-col items-center justify-start">
-            <div className="relative flex h-[255px] w-[255px] items-center justify-center">
-              <div className="absolute inset-0 rounded-full border border-[#141442]/28" />
-              <div className="absolute h-[210px] w-[210px] rounded-full bg-gradient-to-br from-[#00d9ff] via-[#0a5cff] to-[#1b1464]" />
+            <p className="mb-4 max-w-[240px] text-center text-[13px] font-semibold uppercase leading-snug tracking-[0.2em] text-[#141442]/70">
+              {fallbackText.saveTicket}
+            </p>
 
-              <div className="relative flex h-[196px] w-[196px] flex-col items-center justify-center rounded-full bg-[#080832] p-5 text-center text-white shadow-[0_22px_55px_rgba(8,8,50,0.32)]">
-                <p className="text-[12px] font-semibold uppercase leading-tight tracking-[0.22em]">
-                  {fallbackText.saveTicket}
-                </p>
+            <div className="relative flex h-[260px] w-[260px] items-center justify-center">
+              <div className="absolute inset-0 rounded-full border border-[#141442]/20" />
+              <div className="absolute h-[238px] w-[238px] rounded-full border border-[#141442]/10" />
+              <div className="absolute h-[218px] w-[218px] rounded-full bg-gradient-to-br from-[#00d9ff] via-[#0a5cff] to-[#1b1464] shadow-[0_18px_42px_rgba(10,92,255,0.22)]" />
 
-                <div className="mt-3 rounded-xl bg-white p-2.5">
+              <div className="relative flex h-[194px] w-[194px] items-center justify-center rounded-full bg-[#080832] text-center text-white shadow-[0_22px_55px_rgba(8,8,50,0.34)]">
+                <div className="rounded-2xl bg-white p-2.5 shadow-[0_8px_22px_rgba(255,255,255,0.16)]">
                   {qrDataUrl ? (
                     <img
                       src={qrDataUrl}
                       alt="Registration QR code"
-                      className="h-[92px] w-[92px] object-contain"
+                      className="h-[104px] w-[104px] object-contain"
                     />
                   ) : (
-                    <div className="flex h-[92px] w-[92px] items-center justify-center text-[10px] font-semibold text-zinc-400">
+                    <div className="flex h-[104px] w-[104px] items-center justify-center text-[10px] font-semibold text-zinc-400">
                       {fallbackText.qrUnavailable}
                     </div>
                   )}
@@ -230,11 +327,11 @@ export default function InvitePreview({
               </div>
             </div>
 
-            <p className="mt-4 text-center text-xs font-semibold uppercase tracking-[0.18em] text-[#141442]/55">
+            <p className="mt-4 text-center text-xs font-semibold uppercase tracking-[0.18em] text-[#141442]/60">
               {fallbackText.scanToRegister}
             </p>
 
-            <p className="mt-2 max-w-[230px] break-all text-center text-[11px] font-medium leading-snug text-[#141442]/45">
+            <p className="mt-2 max-w-[245px] break-all text-center text-[12px] font-medium leading-snug text-[#141442]/55">
               {registrationUrl || fallbackText.registrationUrlUnavailable}
             </p>
           </div>
@@ -242,19 +339,12 @@ export default function InvitePreview({
 
         <div className="mt-11 h-px bg-[#141442]/14" />
 
-        <div className="mt-8 flex items-end justify-between gap-8">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#141442]/50">
-              A joint venture partnership of
-            </p>
-
-            <div className="mt-4 flex items-center gap-4 text-[22px] font-semibold text-[#141442]/55">
-              <span>AVIXA</span>
-              <span className="text-[#f05a28]">CEDIA</span>
-            </div>
-          </div>
-
-          <div className="text-right text-xs leading-5 text-[#141442]/45" />
+        <div className="mt-8">
+          <img
+            src="/branding/toolkit/ise-partners-footer.png"
+            alt="A joint venture partnership of AVIXA and CEDIA"
+            className="h-auto w-[320px] object-contain"
+          />
         </div>
       </section>
     </div>

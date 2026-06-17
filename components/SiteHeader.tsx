@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import LanguageSwitcher, {
   useSiteLanguage,
@@ -163,18 +163,6 @@ const headerText: Record<
   },
 }
 
-function getInitialDisplayMode(): DisplayMode {
-  if (typeof window === 'undefined') return 'dark'
-
-  const saved = window.localStorage.getItem(DISPLAY_MODE_STORAGE_KEY)
-
-  if (saved === 'light' || saved === 'dark') {
-    return saved
-  }
-
-  return 'dark'
-}
-
 function NavButton({
   href,
   active,
@@ -209,12 +197,9 @@ function NavButton({
 export default function SiteHeader() {
   const pathname = usePathname()
   const [language] = useSiteLanguage()
-  const [displayMode, setDisplayMode] = useState<DisplayMode>(() =>
-    getInitialDisplayMode()
-  )
-
+  const displayMode: DisplayMode = 'dark'
   const text = headerText[language] ?? headerText.en
-  const isLight = displayMode === 'light'
+  const isLight = false
 
   const isHome = pathname === '/'
   const isTools = pathname.startsWith('/tools')
@@ -223,14 +208,14 @@ export default function SiteHeader() {
   const isAdminArea = isHome || isTools || isReports
 
   useEffect(() => {
-    document.documentElement.dataset.iseMode = displayMode
-    window.localStorage.setItem(DISPLAY_MODE_STORAGE_KEY, displayMode)
+    document.documentElement.dataset.iseMode = 'dark'
+    window.localStorage.setItem(DISPLAY_MODE_STORAGE_KEY, 'dark')
     window.dispatchEvent(
       new CustomEvent<DisplayMode>(THEME_EVENT, {
-        detail: displayMode,
+        detail: 'dark',
       })
     )
-  }, [displayMode])
+  }, [])
 
   let title = text.homeTitle
   let subtitle = text.homeSubtitle
@@ -277,20 +262,20 @@ export default function SiteHeader() {
         }
       />
 
-      <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+      <div className="relative flex w-full items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
         <div className="group flex min-w-0 items-center gap-4">
           <div
             className={
               isLight
-                ? 'relative flex h-14 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-300 bg-white px-3 shadow-sm transition-transform duration-300 group-hover:scale-105 sm:w-32'
-                : 'relative flex h-14 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] px-3 shadow-[0_10px_35px_rgba(255,255,255,0.08)] transition-transform duration-300 group-hover:scale-105 sm:w-32'
+                ? 'relative flex h-16 w-32 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-300 bg-white px-2 shadow-sm transition-transform duration-300 group-hover:scale-105 sm:w-40'
+                : 'relative flex h-16 w-32 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] px-2 shadow-[0_10px_35px_rgba(255,255,255,0.08)] transition-transform duration-300 group-hover:scale-105 sm:w-40'
             }
           >
             <Image
               src={logoSrc}
               alt="Integrated Systems Europe"
               fill
-              className="object-contain p-2"
+              className="object-contain p-1.5"
               priority
             />
           </div>
@@ -353,30 +338,8 @@ export default function SiteHeader() {
             </nav>
           ) : null}
 
-          <button
-            type="button"
-            onClick={() =>
-              setDisplayMode((current) =>
-                current === 'dark' ? 'light' : 'dark'
-              )
-            }
-            className={
-              isLight
-                ? 'rounded-2xl border border-slate-300 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-white hover:text-[#2d3f8f]'
-                : 'rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm font-semibold text-neutral-300 transition hover:bg-white/[0.08] hover:text-white'
-            }
-          >
-            {isLight ? text.darkMode : text.lightMode}
-          </button>
-
-          <div
-            className={
-              isLight
-                ? 'rounded-2xl border border-slate-300 bg-white/80 px-2 py-2 backdrop-blur-xl'
-                : 'rounded-2xl border border-white/10 bg-white/[0.03] px-2 py-2 backdrop-blur-xl'
-            }
-          >
-            <LanguageSwitcher dark={!isLight} />
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-2 py-2 backdrop-blur-xl">
+            <LanguageSwitcher dark />
           </div>
         </div>
       </div>
