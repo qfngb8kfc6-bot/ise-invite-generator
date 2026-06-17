@@ -1,4 +1,10 @@
 import Link from 'next/link'
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
+import {
+  ADMIN_COOKIE_NAME,
+  verifyAdminSessionCookieValue,
+} from '@/lib/admin-auth'
 
 const cards = [
   {
@@ -21,7 +27,15 @@ const cards = [
   },
 ]
 
-export default function HomePage() {
+export default async function HomePage() {
+  const cookieStore = await cookies()
+  const isAdmin = await verifyAdminSessionCookieValue(
+    cookieStore.get(ADMIN_COOKIE_NAME)?.value
+  )
+
+  if (!isAdmin) {
+    redirect('/admin/login?redirect=/')
+  }
   return (
     <main className="min-h-[calc(100vh-92px)] overflow-hidden px-6 py-10 text-white">
       <div className="pointer-events-none fixed inset-0 -z-0 opacity-[0.07] [background-image:linear-gradient(rgba(255,255,255,.6)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.6)_1px,transparent_1px)] [background-size:48px_48px]" />

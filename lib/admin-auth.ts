@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server'
+import type { NextRequest } from 'next/server'
 
 export const ADMIN_COOKIE_NAME = 'ise_admin_session'
 
