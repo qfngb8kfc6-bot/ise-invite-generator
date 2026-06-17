@@ -27,7 +27,7 @@ export default function HomePage() {
           </Link>
 
           <Link
-            href="/admin/login"
+            href="/admin/login?redirect=/reports"
             className="rounded-2xl border border-white/10 bg-black/46 px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-white/[0.08]"
           >
             Admin login

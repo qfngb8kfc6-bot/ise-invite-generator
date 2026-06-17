@@ -7,7 +7,7 @@ import { FormEvent, useState } from 'react'
 export default function AdminLoginClient() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const redirectTo = searchParams.get('redirect') || '/'
+  const redirectTo = searchParams.get('redirect') || '/reports'
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
