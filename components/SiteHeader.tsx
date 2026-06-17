@@ -207,8 +207,8 @@ export default function SiteHeader() {
   const isReports = pathname.startsWith('/reports')
   const isAdminLogin = pathname.startsWith('/admin/login')
   const isGenerator = pathname.startsWith('/generator')
-  const isAdminArea = isHome || isTools || isReports || isAdminLogin
-  const showAdminNav = isHome || isTools || isReports
+  const isAdminArea = isTools || isReports || isAdminLogin
+  const showAdminNav = isTools || isReports
 
   useEffect(() => {
     document.documentElement.dataset.iseMode = 'dark'
