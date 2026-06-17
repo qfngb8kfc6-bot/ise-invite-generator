@@ -1,6 +1,14 @@
 import type { ThemeConfig, ThemeKey } from '@/lib/types'
 
 export const themes: Record<ThemeKey, ThemeConfig> = {
+  iseBrandingOne: {
+    label: 'ISE 2027 Branding 1',
+    backgroundImage: '/branding/ise-background.jpeg',
+  },
+  iseBrandingTwo: {
+    label: 'ISE 2027 Branding 2',
+    backgroundImage: '/branding/toolkit/ise-invitation-bg.png',
+  },
   audio: {
     label: 'Audio',
     backgroundImage: '/themes/audio.jpg',
@@ -30,7 +38,7 @@ export const themes: Record<ThemeKey, ThemeConfig> = {
     backgroundImage: '/themes/smart-building.jpg',
   },
   contentProduction: {
-    label: 'Content Production',
+    label: 'Broadcast Production',
     backgroundImage: '/themes/content-production.jpg',
   },
 }

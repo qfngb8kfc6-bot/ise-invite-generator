@@ -37,7 +37,7 @@ function getFallbackInviteText(language: LanguageKey) {
     case 'zh-CN':
       return { logoUnavailable: '暂无标志', companyName: '公司名称', booth: '展位号', booths: '展位号', invitationCode: '邀请码', qrUnavailable: '二维码不可用', scanToRegister: '扫码注册', registrationUrlUnavailable: '注册链接不可用', freePass: '免费观众通行证', saveTicket: '领取您的免费门票', headline: '您的 ISE 邀请函' }
     default:
-      return { logoUnavailable: 'Logo unavailable', companyName: 'Company name', booth: 'Stand number', booths: 'Stand numbers', invitationCode: 'Invitation code', qrUnavailable: 'QR unavailable', scanToRegister: 'Scan to register', registrationUrlUnavailable: 'Registration URL unavailable', freePass: 'Free visitor pass', saveTicket: 'Save your free ticket', headline: 'Your invitation to ISE' }
+      return { logoUnavailable: 'Logo unavailable', companyName: 'Company name', booth: 'Stand number/s', booths: 'Stand number/s', invitationCode: 'Invitation code', qrUnavailable: 'QR unavailable', scanToRegister: 'Scan to register', registrationUrlUnavailable: 'Registration URL unavailable', freePass: 'Free visitor pass', saveTicket: 'FREE TICKET', headline: 'Your invitation to ISE' }
   }
 }
 
@@ -214,13 +214,9 @@ export default function InvitePreview({
       </section>
 
       <section className="min-h-[610px] bg-white px-12 py-10 text-[#141442]">
-        <div className="grid grid-cols-[1fr_210px] gap-8">
+        <div className="grid grid-cols-[1fr_260px] gap-8">
           <div className="min-w-0">
-            <p className="text-[13px] font-semibold uppercase tracking-[0.28em] text-[#2956ff]">
-              {fallbackText.companyName}
-            </p>
-
-            <h3 className="mt-2 max-w-[520px] break-words text-[38px] font-semibold uppercase leading-[0.95] tracking-[-0.055em] text-[#080832]">
+            <h3 className="max-w-[520px] break-words text-[28px] font-black uppercase leading-[0.95] tracking-[-0.055em] text-[#080832]">
               {companyName || fallbackText.companyName}
             </h3>
 
@@ -228,17 +224,7 @@ export default function InvitePreview({
               {cardCopy.isInviting}
             </p>
 
-            <div className="mt-5 grid max-w-[520px] grid-cols-2 gap-5">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#141442]/42">
-                  {hasMultipleBooths ? fallbackText.booths : fallbackText.booth}
-                </p>
-
-                <p className="mt-2 break-words text-[22px] font-semibold leading-tight text-[#080832]">
-                  {boothDisplay || '—'}
-                </p>
-              </div>
-
+            <div className="mt-5 grid max-w-[520px] grid-cols-1 gap-5">
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#141442]/42">
                   {fallbackText.invitationCode}
@@ -251,25 +237,34 @@ export default function InvitePreview({
             </div>
           </div>
 
-          <div className="flex min-h-[96px] items-center justify-center rounded-[6px] border border-zinc-200 bg-zinc-50 px-4">
-            {logoUrl && failedLogoUrl !== logoUrl ? (
-              <img
-                src={logoUrl}
-                alt={`${companyName} logo`}
-                className="max-h-16 max-w-[185px] object-contain"
-                onError={() => setFailedLogoUrl(logoUrl)}
-              />
-            ) : (
-              <span className="text-center text-xs font-semibold text-zinc-400">
-                {fallbackText.logoUnavailable}
-              </span>
-            )}
+          <div className="flex w-[260px] flex-col items-center">
+            <div className="flex min-h-[96px] w-[210px] items-center justify-center rounded-[6px] border border-zinc-200 bg-zinc-50 px-4">
+              {logoUrl && failedLogoUrl !== logoUrl ? (
+                <img
+                  src={logoUrl}
+                  alt={`${companyName} logo`}
+                  className="max-h-16 max-w-[185px] object-contain"
+                  onError={() => setFailedLogoUrl(logoUrl)}
+                />
+              ) : (
+                <span className="text-center text-xs font-semibold text-zinc-400">
+                  {fallbackText.logoUnavailable}
+                </span>
+              )}
+            </div>
+
+            <div className="mt-4 w-[210px] text-center">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#141442]/38">
+                {hasMultipleBooths ? fallbackText.booths : fallbackText.booth}
+              </p>
+              <p className="mt-1 break-words text-[18px] font-bold leading-tight text-[#080832]">
+                {boothDisplay || '—'}
+              </p>
+            </div>
           </div>
         </div>
 
-        <div className="mt-10 h-px bg-[#141442]/14" />
-
-        <div className="mt-9 grid grid-cols-[1fr_230px] gap-10">
+        <div className="mt-9 grid grid-cols-[1fr_260px] gap-10">
           <div>
             <h3 className="text-[30px] font-semibold uppercase leading-tight tracking-[-0.035em] text-[#080832]">
               {cardCopy.reconnectHeadline}
@@ -300,8 +295,8 @@ export default function InvitePreview({
             </div>
           </div>
 
-          <div className="flex flex-col items-center justify-start">
-            <p className="mb-4 max-w-[240px] text-center text-[13px] font-semibold uppercase leading-snug tracking-[0.2em] text-[#141442]/70">
+          <div className="flex w-[260px] flex-col items-center justify-start">
+            <p className="mb-4 w-[260px] text-center text-[13px] font-semibold uppercase leading-snug tracking-[0.2em] text-[#141442]/70">
               {fallbackText.saveTicket}
             </p>
 
@@ -337,13 +332,11 @@ export default function InvitePreview({
           </div>
         </div>
 
-        <div className="mt-11 h-px bg-[#141442]/14" />
-
         <div className="mt-8">
           <img
             src="/branding/toolkit/ise-partners-footer.png"
             alt="A joint venture partnership of AVIXA and CEDIA"
-            className="h-auto w-[320px] object-contain"
+            className="h-auto w-[220px] object-contain"
           />
         </div>
       </section>

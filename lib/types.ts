@@ -1,6 +1,8 @@
 export type LanguageKey = 'en' | 'es' | 'de' | 'fr' | 'it' | 'pt' | 'nl' | 'zh-CN'
 
 export type ThemeKey =
+  | 'iseBrandingOne'
+  | 'iseBrandingTwo'
   | 'audio'
   | 'residential'
   | 'lighting'

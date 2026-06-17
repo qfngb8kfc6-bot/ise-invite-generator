@@ -282,19 +282,19 @@ export default function SiteHeader() {
       />
 
       <div className="relative flex w-full items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-        <div className="group flex min-w-0 items-center gap-4">
+        <div className="group flex min-w-0 items-center gap-7">
           <div
             className={
               isLight
-                ? 'relative flex h-16 w-32 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-300 bg-white px-2 shadow-sm transition-transform duration-300 group-hover:scale-105 sm:w-40'
-                : 'relative flex h-16 w-32 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] px-2 shadow-[0_10px_35px_rgba(255,255,255,0.08)] transition-transform duration-300 group-hover:scale-105 sm:w-40'
+                ? 'relative flex h-20 w-44 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-300 bg-white px-2 shadow-sm transition-transform duration-300 group-hover:scale-105 sm:w-52'
+                : 'relative flex h-20 w-44 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] px-2 shadow-[0_10px_35px_rgba(255,255,255,0.08)] transition-transform duration-300 group-hover:scale-105 sm:w-52'
             }
           >
             <Image
               src={logoSrc}
               alt="Integrated Systems Europe"
               fill
-              className="object-contain p-1.5"
+              className="object-contain p-1"
               priority
             />
           </div>

@@ -18,6 +18,19 @@ type Props = {
  initialToken?: string
 }
 
+const orderedThemeKeys: ThemeKey[] = [
+ 'iseBrandingOne',
+ 'iseBrandingTwo',
+ 'audio',
+ 'residential',
+ 'lighting',
+ 'unifiedCommunications',
+ 'educationTechnology',
+ 'digitalSignage',
+ 'smartBuilding',
+ 'contentProduction',
+]
+
 type DisplayMode = 'dark' | 'light'
 
 const CARD_LANGUAGE_STORAGE_KEY = 'ise-card-language'
@@ -258,18 +271,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
    <div className="grid h-full lg:grid-cols-[460px_1fr]">
     <aside className={sidebarClassName}>
      <div className={isLightMode ? 'border-b border-slate-200 px-7 py-5' : 'border-b border-white/10 px-7 py-5'}>
-      <div className="flex items-center justify-between gap-3">
-       <div className="inline-flex items-center gap-2 rounded-full border border-blue-400/25 bg-blue-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-blue-500">
-        <span className="h-2 w-2 rounded-full bg-blue-400" />
-        ISE 2027
-       </div>
-      </div>
-
-      <h1 className="mt-4 text-3xl font-semibold leading-tight">
-       {text.generatorTitle}
-      </h1>
-
-      <p className={`mt-3 leading-6 ${helperClassName}`}>
+      <p className={`leading-6 ${helperClassName}`}>
        {text.generatorInputsDescription}
       </p>
      </div>
@@ -306,7 +308,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
 
          <div className="grid grid-cols-2 gap-3">
           <label className="block">
-           <span className={labelClassName}>Stand number</span>
+           <span className={labelClassName}>Stand number/s</span>
            <input
             value={standNumber}
             onChange={(event) => setStandNumber(event.target.value)}
@@ -348,7 +350,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
           </select>
 
           <p className={`mt-2 text-xs ${isLightMode ? 'text-slate-500' : 'text-white/40'}`}>
-           This changes the invitation card and exported files only. The main website language switcher controls the generator interface.
+           This changes the invitation card and exports only.
           </p>
          </label>
 
@@ -404,20 +406,17 @@ export default function GeneratorPageClient({ initialToken }: Props) {
        </section>
 
        <section>
-        <h2 className="text-xl font-semibold">{text.generatorTheme}</h2>
-        <p className={`mt-1 ${helperClassName}`}>
-         Choose the sector image used on the invitation card.
-        </p>
-
+        <h2 className="text-xl font-semibold">Themes</h2>
         <div className="mt-5 grid gap-3">
-         {Object.entries(themes).map(([key, item]) => {
+         {orderedThemeKeys.map((key) => {
+          const item = themes[key]
           const active = theme === key
 
           return (
            <button
             key={key}
             type="button"
-            onClick={() => setTheme(key as ThemeKey)}
+            onClick={() => setTheme(key)}
             className={`relative overflow-hidden rounded-3xl border p-5 text-left transition ${
              active
               ? 'border-blue-400'
@@ -433,9 +432,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
             <div className={isLightMode ? 'absolute inset-0 bg-white/80' : 'absolute inset-0 bg-black/75'} />
             <div className="relative">
              <div className="text-xl font-semibold">{item.label}</div>
-             <div className={`mt-1 ${helperClassName}`}>
-              {text.generatorPreviewDescription}
-             </div>
+
             </div>
            </button>
           )
