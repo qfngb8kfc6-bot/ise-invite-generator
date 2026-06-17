@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import LanguageSwitcher, {
   useSiteLanguage,
 } from '@/components/LanguageSwitcher'
@@ -196,6 +196,7 @@ function NavButton({
 
 export default function SiteHeader() {
   const pathname = usePathname()
+  const router = useRouter()
   const [language] = useSiteLanguage()
   const displayMode: DisplayMode = 'dark'
   const text = headerText[language] ?? headerText.en
@@ -204,8 +205,10 @@ export default function SiteHeader() {
   const isHome = pathname === '/'
   const isTools = pathname.startsWith('/tools')
   const isReports = pathname.startsWith('/reports')
+  const isAdminLogin = pathname.startsWith('/admin/login')
   const isGenerator = pathname.startsWith('/generator')
-  const isAdminArea = isHome || isTools || isReports
+  const isAdminArea = isHome || isTools || isReports || isAdminLogin
+  const showAdminNav = isHome || isTools || isReports
 
   useEffect(() => {
     document.documentElement.dataset.iseMode = 'dark'
@@ -233,6 +236,22 @@ export default function SiteHeader() {
   if (isReports) {
     title = text.reportsTitle
     subtitle = text.reportsSubtitle
+  }
+
+  if (isAdminLogin) {
+    title = text.homeTitle
+    subtitle = text.homeSubtitle
+  }
+
+  async function handleAdminLogout() {
+    try {
+      await fetch('/api/admin/logout', {
+        method: 'POST',
+      })
+    } finally {
+      router.replace('/admin/login')
+      router.refresh()
+    }
   }
 
   const logoSrc = isLight
@@ -318,7 +337,7 @@ export default function SiteHeader() {
         </div>
 
         <div className="flex items-center gap-3">
-          {isAdminArea ? (
+          {showAdminNav ? (
             <nav className="hidden items-center gap-2 md:flex">
               <NavButton href="/" active={isHome} mode={displayMode}>
                 {text.homeNav}
@@ -341,10 +360,20 @@ export default function SiteHeader() {
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-2 py-2 backdrop-blur-xl">
             <LanguageSwitcher dark />
           </div>
+
+          {isAdminArea ? (
+            <button
+              type="button"
+              onClick={handleAdminLogout}
+              className="hidden rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm font-semibold text-neutral-300 transition hover:bg-white/[0.08] hover:text-white md:inline-flex"
+            >
+              Logout
+            </button>
+          ) : null}
         </div>
       </div>
 
-      {isAdminArea ? (
+      {showAdminNav ? (
         <div
           className={
             isLight
