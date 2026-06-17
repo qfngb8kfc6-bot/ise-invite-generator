@@ -1,4 +1,10 @@
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 import ReportsClient from './ReportsClient'
+import {
+  ADMIN_COOKIE_NAME,
+  verifyAdminSessionCookieValue,
+} from '@/lib/admin-auth'
 import { getAnalyticsSummary } from '@/lib/analytics'
 
 export const dynamic = 'force-dynamic'
@@ -31,6 +37,15 @@ function hasCustomDateRange(startDate?: string, endDate?: string): boolean {
 }
 
 export default async function ReportsPage({ searchParams }: Props) {
+  const cookieStore = await cookies()
+  const isAdmin = await verifyAdminSessionCookieValue(
+    cookieStore.get(ADMIN_COOKIE_NAME)?.value
+  )
+
+  if (!isAdmin) {
+    redirect('/admin/login?redirect=/reports')
+  }
+
   const resolvedSearchParams = searchParams ? await searchParams : {}
 
   const range = resolvedSearchParams?.range ?? 'all'
