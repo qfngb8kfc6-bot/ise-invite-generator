@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server'
 export const ADMIN_COOKIE_NAME = 'ise_admin_session'
 
 const textEncoder = new TextEncoder()
+const textDecoder = new TextDecoder()
 
 function getAdminUsername() {
   return (
@@ -28,30 +29,38 @@ function getAdminSecret() {
   )
 }
 
-function base64UrlEncode(input: string) {
-  if (typeof Buffer !== 'undefined') {
-    return Buffer.from(input, 'utf8')
-      .toString('base64')
-      .replaceAll('+', '-')
-      .replaceAll('/', '_')
-      .replaceAll('=', '')
+function bytesToBase64Url(bytes: Uint8Array) {
+  let binary = ''
+
+  for (const byte of bytes) {
+    binary += String.fromCharCode(byte)
   }
 
-  return btoa(input)
+  return btoa(binary)
     .replaceAll('+', '-')
     .replaceAll('/', '_')
     .replaceAll('=', '')
 }
 
-function base64UrlDecode(input: string) {
+function base64UrlToBytes(input: string) {
   const padded = input.padEnd(input.length + ((4 - (input.length % 4)) % 4), '=')
   const base64 = padded.replaceAll('-', '+').replaceAll('_', '/')
+  const binary = atob(base64)
+  const bytes = new Uint8Array(binary.length)
 
-  if (typeof Buffer !== 'undefined') {
-    return Buffer.from(base64, 'base64').toString('utf8')
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index)
   }
 
-  return atob(base64)
+  return bytes
+}
+
+function base64UrlEncodeText(input: string) {
+  return bytesToBase64Url(textEncoder.encode(input))
+}
+
+function base64UrlDecodeText(input: string) {
+  return textDecoder.decode(base64UrlToBytes(input))
 }
 
 async function hmacSha256(message: string, secret: string) {
@@ -69,13 +78,7 @@ async function hmacSha256(message: string, secret: string) {
     textEncoder.encode(message)
   )
 
-  const bytes = Array.from(new Uint8Array(signature))
-  const binary = bytes.map((byte) => String.fromCharCode(byte)).join('')
-
-  return btoa(binary)
-    .replaceAll('+', '-')
-    .replaceAll('/', '_')
-    .replaceAll('=', '')
+  return bytesToBase64Url(new Uint8Array(signature))
 }
 
 export function getAdminCredentials() {
@@ -93,7 +96,7 @@ export async function createAdminSessionCookieValue(username: string) {
     throw new Error('Missing ADMIN_SESSION_SECRET or JWT_SECRET')
   }
 
-  const payload = base64UrlEncode(
+  const payload = base64UrlEncodeText(
     JSON.stringify({
       username,
       iat: Date.now(),
@@ -126,7 +129,7 @@ export async function verifyAdminSessionCookieValue(value?: string) {
   }
 
   try {
-    const decoded = JSON.parse(base64UrlDecode(payload)) as {
+    const decoded = JSON.parse(base64UrlDecodeText(payload)) as {
       username?: string
       exp?: number
     }
