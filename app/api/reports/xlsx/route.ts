@@ -1,4 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import {
+  ADMIN_COOKIE_NAME,
+  verifyAdminSessionCookieValue,
+} from '@/lib/admin-auth'
 import { getAnalyticsSummary } from '@/lib/analytics'
 
 export const runtime = 'nodejs'
@@ -57,6 +61,22 @@ function hasCustomDateRange(startDate?: string | null, endDate?: string | null):
 
 export async function GET(request: NextRequest) {
   try {
+    const isAdmin = await verifyAdminSessionCookieValue(
+      request.cookies.get(ADMIN_COOKIE_NAME)?.value
+    )
+
+    if (!isAdmin) {
+      return NextResponse.json(
+        { ok: false, error: 'Admin authentication required.' },
+        {
+          status: 401,
+          headers: {
+            'Cache-Control': 'no-store',
+          },
+        }
+      )
+    }
+
     const range = request.nextUrl.searchParams.get('range')
     const exhibitorId = request.nextUrl.searchParams.get('exhibitorId')
     const q = request.nextUrl.searchParams.get('q')
