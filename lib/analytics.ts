@@ -673,17 +673,28 @@ export async function logAnalyticsEvent(
   input: AnalyticsEventInput
 ): Promise<AnalyticsEvent> {
   const event = normalizeEvent(input)
+  const environment = getEnvironment()
+  const isProduction = environment === 'production'
 
   if (isAnalyticsDbEnabled()) {
     try {
       await logAnalyticsEventToDb(event)
       return event
     } catch (error) {
+      if (isProduction) {
+        console.error('[ANALYTICS ERROR] Production database write failed.', error)
+        throw error
+      }
+
       logAnalyticsWarning(
         'Database write failed. Falling back to local analytics storage.',
         error
       )
     }
+  } else if (isProduction) {
+    throw new Error(
+      'ANALYTICS_DATABASE_URL is required in production. Refusing to use local analytics fallback.'
+    )
   } else {
     logAnalyticsWarning(
       'Analytics database is not enabled. Using local analytics storage fallback.'
@@ -695,9 +706,17 @@ export async function logAnalyticsEvent(
 }
 
 export async function readAnalyticsEvents(): Promise<AnalyticsEvent[]> {
+  const environment = getEnvironment()
+  const isProduction = environment === 'production'
+
   if (isAnalyticsDbEnabled()) {
     try {
       const dbEvents = await readAnalyticsEventsFromDb()
+
+      if (isProduction) {
+        return dedupeEvents(dbEvents)
+      }
+
       const fallbackEvents = [
         ...getMemoryStore(),
         ...(await readFromLocalFile()),
@@ -705,11 +724,20 @@ export async function readAnalyticsEvents(): Promise<AnalyticsEvent[]> {
 
       return dedupeEvents([...dbEvents, ...fallbackEvents])
     } catch (error) {
+      if (isProduction) {
+        console.error('[ANALYTICS ERROR] Production database read failed.', error)
+        throw error
+      }
+
       logAnalyticsWarning(
         'Failed to read analytics from database. Falling back to local analytics storage.',
         error
       )
     }
+  } else if (isProduction) {
+    throw new Error(
+      'ANALYTICS_DATABASE_URL is required in production. Refusing to read local analytics fallback.'
+    )
   }
 
   const memoryEvents = getMemoryStore()
