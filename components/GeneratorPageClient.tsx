@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import EmailBannerPreview from '@/components/EmailBannerPreview'
 import InvitePreview from '@/components/InvitePreview'
+import LinkedInInvitePreview from '@/components/LinkedInInvitePreview'
 import SquareInvitePreview from '@/components/SquareInvitePreview'
 import { useSiteLanguage } from '@/components/LanguageSwitcher'
 import {
@@ -42,6 +43,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
  const exportPreviewRef = useRef<HTMLDivElement | null>(null)
  const emailBannerExportRef = useRef<HTMLDivElement | null>(null)
  const squareExportRef = useRef<HTMLDivElement | null>(null)
+ const linkedinExportRef = useRef<HTMLDivElement | null>(null)
 
  const [generatorLanguage] = useSiteLanguage()
  const text = translations[generatorLanguage].ui
@@ -205,7 +207,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
  ])
 
  async function runExport(type: 'pdf' | 'zip' | ExportFormatKey) {
-  const exportNode = type === 'email' ? emailBannerExportRef.current : type === 'square' ? squareExportRef.current : exportPreviewRef.current
+  const exportNode = type === 'email' ? emailBannerExportRef.current : type === 'square' ? squareExportRef.current : type === 'linkedin' ? linkedinExportRef.current : exportPreviewRef.current
 
   if (!exportNode) {
    setExportError('Preview element not found.')
@@ -224,7 +226,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
    }
 
    if (type === 'zip') {
-    await exportZipPack(exportPreviewRef.current || exportNode, baseName, emailBannerExportRef.current || undefined, squareExportRef.current || undefined)
+    await exportZipPack(exportPreviewRef.current || exportNode, baseName, emailBannerExportRef.current || undefined, squareExportRef.current || undefined, linkedinExportRef.current || undefined)
     return
    }
 
@@ -527,6 +529,18 @@ export default function GeneratorPageClient({ initialToken }: Props) {
 
     <div ref={squareExportRef}>
      <SquareInvitePreview
+      companyName={companyName}
+      standNumber={standNumber}
+      invitationCode={invitationCode}
+      logoUrl={logoUrl}
+      registrationUrl={qrTrackingUrl}
+      theme={theme}
+      language={cardLanguage}
+     />
+    </div>
+
+    <div ref={linkedinExportRef}>
+     <LinkedInInvitePreview
       companyName={companyName}
       standNumber={standNumber}
       invitationCode={invitationCode}

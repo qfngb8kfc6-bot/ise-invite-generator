@@ -286,15 +286,15 @@ export default function SiteHeader() {
           <div
             className={
               isLight
-                ? 'relative flex h-20 w-44 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-300 bg-white px-2 shadow-sm transition-transform duration-300 group-hover:scale-105 sm:w-52'
-                : 'relative flex h-20 w-44 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] px-2 shadow-[0_10px_35px_rgba(255,255,255,0.08)] transition-transform duration-300 group-hover:scale-105 sm:w-52'
+                ? 'relative flex h-24 w-56 shrink-0 items-center justify-center overflow-hidden px-2 transition-transform duration-300 group-hover:scale-105 sm:w-64'
+                : 'relative flex h-24 w-56 shrink-0 items-center justify-center overflow-hidden px-2 transition-transform duration-300 group-hover:scale-105 sm:w-64'
             }
           >
             <Image
               src={logoSrc}
               alt="Integrated Systems Europe"
               fill
-              className="object-contain p-1"
+              className="object-contain p-0.5"
               priority
             />
           </div>
@@ -357,9 +357,7 @@ export default function SiteHeader() {
             </nav>
           ) : null}
 
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-2 py-2 backdrop-blur-xl">
-            <LanguageSwitcher dark />
-          </div>
+          <LanguageSwitcher dark />
 
           {isAdminArea ? (
             <button

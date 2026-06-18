@@ -167,7 +167,7 @@ export async function exportPdf(node: HTMLElement, baseName: string) {
   pdf.save(`${baseName}.pdf`)
 }
 
-export async function exportZipPack(node: HTMLElement, baseName: string, emailNode?: HTMLElement, squareNode?: HTMLElement) {
+export async function exportZipPack(node: HTMLElement, baseName: string, emailNode?: HTMLElement, squareNode?: HTMLElement, linkedinNode?: HTMLElement) {
   const zip = new JSZip()
 
   for (const format of Object.keys(EXPORT_FORMATS) as ExportFormatKey[]) {
@@ -176,7 +176,9 @@ export async function exportZipPack(node: HTMLElement, baseName: string, emailNo
         ? emailNode
         : format === 'square' && squareNode
           ? squareNode
-          : node
+          : format === 'linkedin' && linkedinNode
+            ? linkedinNode
+            : node
 
     const blob = await renderPngForFormat(sourceNode, format)
     zip.file(`${baseName}-${EXPORT_FORMATS[format].fileLabel}.png`, blob)

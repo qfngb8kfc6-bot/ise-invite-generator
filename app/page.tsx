@@ -18,17 +18,10 @@ export default function HomePage() {
           Generate branded invitation cards, QR codes, PDFs and social assets for ISE exhibitors.
         </p>
 
-        <div className="mt-10 flex flex-wrap justify-center gap-3">
-          <Link
-            href="/generator"
-            className="rounded-2xl bg-white px-7 py-3.5 text-sm font-semibold text-black transition hover:bg-blue-50"
-          >
-            Open generator
-          </Link>
-
+        <div className="mt-10 flex justify-center">
           <Link
             href="/admin/login?redirect=/reports"
-            className="rounded-2xl border border-white/10 bg-black/46 px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-white/[0.08]"
+            className="min-w-[220px] rounded-2xl border border-white/10 bg-white px-10 py-4 text-center text-base font-semibold text-black transition hover:bg-blue-50"
           >
             Admin login
           </Link>
