@@ -1,7 +1,9 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import EmailBannerPreview from '@/components/EmailBannerPreview'
 import InvitePreview from '@/components/InvitePreview'
+import SquareInvitePreview from '@/components/SquareInvitePreview'
 import { useSiteLanguage } from '@/components/LanguageSwitcher'
 import {
  exportPdf,
@@ -38,6 +40,8 @@ const DISPLAY_MODE_STORAGE_KEY = 'ise-generator-display-mode'
 
 export default function GeneratorPageClient({ initialToken }: Props) {
  const exportPreviewRef = useRef<HTMLDivElement | null>(null)
+ const emailBannerExportRef = useRef<HTMLDivElement | null>(null)
+ const squareExportRef = useRef<HTMLDivElement | null>(null)
 
  const [generatorLanguage] = useSiteLanguage()
  const text = translations[generatorLanguage].ui
@@ -201,7 +205,9 @@ export default function GeneratorPageClient({ initialToken }: Props) {
  ])
 
  async function runExport(type: 'pdf' | 'zip' | ExportFormatKey) {
-  if (!exportPreviewRef.current) {
+  const exportNode = type === 'email' ? emailBannerExportRef.current : type === 'square' ? squareExportRef.current : exportPreviewRef.current
+
+  if (!exportNode) {
    setExportError('Preview element not found.')
    return
   }
@@ -213,16 +219,16 @@ export default function GeneratorPageClient({ initialToken }: Props) {
    const baseName = makeExportBaseName(companyName, standNumber)
 
    if (type === 'pdf') {
-    await exportPdf(exportPreviewRef.current, baseName)
+    await exportPdf(exportNode, baseName)
     return
    }
 
    if (type === 'zip') {
-    await exportZipPack(exportPreviewRef.current, baseName)
+    await exportZipPack(exportPreviewRef.current || exportNode, baseName, emailBannerExportRef.current || undefined, squareExportRef.current || undefined)
     return
    }
 
-   await exportPng(exportPreviewRef.current, type, baseName)
+   await exportPng(exportNode, type, baseName)
   } catch (error) {
    setExportError(error instanceof Error ? error.message : 'Export failed.')
   } finally {
@@ -460,7 +466,11 @@ export default function GeneratorPageClient({ initialToken }: Props) {
         LinkedIn
        </button>
 
-       <button disabled={isExporting} onClick={() => runExport('zip')} className={secondaryButtonClassName}>
+       <button disabled={isExporting} onClick={() => runExport('email')} className={secondaryButtonClassName}>
+        Email Banner
+       </button>
+
+       <button disabled={isExporting} onClick={() => runExport('zip')} className={`${secondaryButtonClassName} col-span-2`}>
         {text.generatorZipPack}
        </button>
       </div>
@@ -493,6 +503,30 @@ export default function GeneratorPageClient({ initialToken }: Props) {
    <div className="pointer-events-none absolute -left-[99999px] top-0">
     <div ref={exportPreviewRef}>
      <InvitePreview
+      companyName={companyName}
+      standNumber={standNumber}
+      invitationCode={invitationCode}
+      logoUrl={logoUrl}
+      registrationUrl={qrTrackingUrl}
+      theme={theme}
+      language={cardLanguage}
+     />
+    </div>
+
+    <div ref={emailBannerExportRef}>
+     <EmailBannerPreview
+      companyName={companyName}
+      standNumber={standNumber}
+      invitationCode={invitationCode}
+      logoUrl={logoUrl}
+      registrationUrl={qrTrackingUrl}
+      theme={theme}
+      language={cardLanguage}
+     />
+    </div>
+
+    <div ref={squareExportRef}>
+     <SquareInvitePreview
       companyName={companyName}
       standNumber={standNumber}
       invitationCode={invitationCode}

@@ -30,8 +30,8 @@ const EXPORT_FORMATS: Record<ExportFormatKey, ExportFormatConfig> = {
   email: {
     key: 'email',
     width: 1200,
-    height: 900,
-    fileLabel: 'email',
+    height: 300,
+    fileLabel: 'email-banner',
     pixelRatio: 2,
   },
   print: {
@@ -111,52 +111,17 @@ async function renderPngForFormat(
 ): Promise<Blob> {
   const config = EXPORT_FORMATS[format]
 
-  if (format !== 'square') {
-    const dataUrl = await toPng(node, {
-      cacheBust: true,
-      backgroundColor: '#ffffff',
-      width: config.width,
-      height: config.height,
-      canvasWidth: config.width,
-      canvasHeight: config.height,
-      pixelRatio: config.pixelRatio,
-    })
-
-    return dataUrlToBlob(dataUrl)
-  }
-
-  const baseDataUrl = await renderNodeToBasePng(node)
-  const image = await loadImage(baseDataUrl)
-
-  const canvas = document.createElement('canvas')
-  canvas.width = config.width
-  canvas.height = config.height
-
-  const ctx = canvas.getContext('2d')
-  if (!ctx) {
-    throw new Error('Failed to create canvas context')
-  }
-
-  ctx.fillStyle = '#ffffff'
-  ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-  const padding = 70
-  const targetWidth = canvas.width - padding * 2
-  const targetHeight = Math.round((image.height / image.width) * targetWidth)
-  const x = padding
-  const y = Math.round((canvas.height - targetHeight) / 2)
-
-  ctx.drawImage(image, x, y, targetWidth, targetHeight)
-
-  const blob = await new Promise<Blob | null>((resolve) => {
-    canvas.toBlob((value) => resolve(value), 'image/png')
+  const dataUrl = await toPng(node, {
+    cacheBust: true,
+    backgroundColor: '#ffffff',
+    width: config.width,
+    height: config.height,
+    canvasWidth: config.width,
+    canvasHeight: config.height,
+    pixelRatio: config.pixelRatio,
   })
 
-  if (!blob) {
-    throw new Error('Failed to generate square PNG')
-  }
-
-  return blob
+  return dataUrlToBlob(dataUrl)
 }
 
 export async function exportPng(
@@ -202,11 +167,18 @@ export async function exportPdf(node: HTMLElement, baseName: string) {
   pdf.save(`${baseName}.pdf`)
 }
 
-export async function exportZipPack(node: HTMLElement, baseName: string) {
+export async function exportZipPack(node: HTMLElement, baseName: string, emailNode?: HTMLElement, squareNode?: HTMLElement) {
   const zip = new JSZip()
 
   for (const format of Object.keys(EXPORT_FORMATS) as ExportFormatKey[]) {
-    const blob = await renderPngForFormat(node, format)
+    const sourceNode =
+      format === 'email' && emailNode
+        ? emailNode
+        : format === 'square' && squareNode
+          ? squareNode
+          : node
+
+    const blob = await renderPngForFormat(sourceNode, format)
     zip.file(`${baseName}-${EXPORT_FORMATS[format].fileLabel}.png`, blob)
   }
 
