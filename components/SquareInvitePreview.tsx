@@ -226,7 +226,7 @@ export default function SquareInvitePreview({
           </p>
 
           <img
-            src="/branding/toolkit/ise-partners-footer.png"
+            src="/branding/toolkit/ise-partners-footer.png?v=20270619"
             alt="A joint venture partnership of AVIXA and CEDIA"
             className="h-auto w-[220px] rounded-sm bg-white/95 p-2"
           />
