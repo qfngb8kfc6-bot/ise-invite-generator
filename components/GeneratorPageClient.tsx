@@ -254,10 +254,6 @@ export default function GeneratorPageClient({ initialToken }: Props) {
   ? 'w-full rounded-2xl border border-slate-200 bg-white/86 px-4 py-4 text-slate-950 outline-none focus:border-blue-500'
   : 'w-full rounded-2xl border border-white/10 bg-black/50 px-4 py-4 text-white outline-none focus:border-blue-400'
 
- const compactInputClassName = isLightMode
-  ? 'rounded-2xl border border-slate-200 bg-white/86 px-4 py-4 text-slate-950 outline-none focus:border-blue-500'
-  : 'rounded-2xl border border-white/10 bg-black/50 px-4 py-4 text-white outline-none focus:border-blue-400'
-
  const labelClassName = isLightMode
   ? 'mb-2 block text-sm font-medium text-slate-700'
   : 'mb-2 block text-sm font-medium text-white/70'
@@ -271,8 +267,8 @@ export default function GeneratorPageClient({ initialToken }: Props) {
   : 'rounded-2xl border border-white/10 bg-black/30 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.20)] '
 
  const secondaryButtonClassName = isLightMode
-  ? 'rounded-2xl border border-slate-200 bg-slate-50 py-3 font-semibold text-slate-800 disabled:opacity-50'
-  : 'rounded-2xl border border-white/10 bg-white/5 py-3 font-semibold text-white disabled:opacity-50'
+  ? 'rounded-2xl border border-green-900/20 bg-[#2f6f3e] py-3 font-semibold text-white transition hover:bg-[#285f35] disabled:opacity-50'
+  : 'rounded-2xl border border-green-300/10 bg-[#2f6f3e] py-3 font-semibold text-white transition hover:bg-[#285f35] disabled:opacity-50'
 
  return (
   <main className={pageClassName}>
@@ -289,7 +285,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
        <section>
         <h2 className="text-xl font-semibold">{text.generatorInputsTitle}</h2>
         <p className={`mt-1 ${helperClassName}`}>
-         Edit the details that appear on the invitation card.
+         Manage the editable details that appear on the invitation card.
         </p>
 
         {sessionMessage ? (
@@ -314,34 +310,36 @@ export default function GeneratorPageClient({ initialToken }: Props) {
           />
          </label>
 
-         <div className="grid grid-cols-2 gap-3">
-          <label className="block">
-           <span className={labelClassName}>Stand number/s</span>
-           <input
-            value={standNumber}
-            onChange={(event) => setStandNumber(event.target.value)}
-            className={compactInputClassName}
-           />
-          </label>
+         <div className={panelClassName}>
+          <div className="flex items-start justify-between gap-4">
+           <div>
+            <p className="text-sm font-semibold">Verified invitation details</p>
+            <p className={`mt-1 text-xs ${helperClassName}`}>
+             These values are pulled from the exhibitor profile and cannot be edited here.
+            </p>
+           </div>
+          </div>
 
-          <label className="block">
-           <span className={labelClassName}>Invitation code</span>
-           <input
-            value={invitationCode}
-            onChange={(event) => setInvitationCode(event.target.value)}
-            className={compactInputClassName}
-           />
-          </label>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+           <div className={isLightMode ? 'rounded-2xl border border-slate-200 bg-white/70 p-4' : 'rounded-2xl border border-white/10 bg-white/[0.04] p-4'}>
+            <p className={isLightMode ? 'text-xs font-semibold uppercase tracking-[0.18em] text-slate-500' : 'text-xs font-semibold uppercase tracking-[0.18em] text-white/40'}>
+             Stand number/s
+            </p>
+            <p className={isLightMode ? 'mt-2 break-words text-base font-semibold text-slate-950' : 'mt-2 break-words text-base font-semibold text-white'}>
+             {standNumber || '—'}
+            </p>
+           </div>
+
+           <div className={isLightMode ? 'rounded-2xl border border-slate-200 bg-white/70 p-4' : 'rounded-2xl border border-white/10 bg-white/[0.04] p-4'}>
+            <p className={isLightMode ? 'text-xs font-semibold uppercase tracking-[0.18em] text-slate-500' : 'text-xs font-semibold uppercase tracking-[0.18em] text-white/40'}>
+             Invitation code
+            </p>
+            <p className={isLightMode ? 'mt-2 break-words text-base font-semibold text-slate-950' : 'mt-2 break-words text-base font-semibold text-white'}>
+             {invitationCode || '—'}
+            </p>
+           </div>
+          </div>
          </div>
-
-         <label className="block">
-          <span className={labelClassName}>Registration URL</span>
-          <input
-           value={registrationUrl}
-           onChange={(event) => setRegistrationUrl(event.target.value)}
-           className={inputClassName}
-          />
-         </label>
 
          <label className="block">
           <span className={labelClassName}>Invitation card language</span>
@@ -414,7 +412,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
        </section>
 
        <section>
-        <h2 className="text-xl font-semibold">Themes</h2>
+        <h2 className="text-xl font-semibold">Choose your theme</h2>
         <div className="mt-5 grid gap-3">
          {orderedThemeKeys.map((key) => {
           const item = themes[key]
@@ -451,11 +449,15 @@ export default function GeneratorPageClient({ initialToken }: Props) {
      </div>
 
      <div className={isLightMode ? 'border-t border-slate-200 bg-white p-4' : 'border-t border-white/10 bg-black/30 p-4'}>
+      <p className={isLightMode ? 'mb-3 text-sm font-semibold text-slate-700' : 'mb-3 text-sm font-semibold text-white/75'}>
+       Download the format of your choice
+      </p>
+
       <div className="grid grid-cols-2 gap-3">
        <button
         disabled={isExporting}
         onClick={() => runExport('square')}
-        className="rounded-2xl bg-blue-600 py-3 font-semibold text-white disabled:opacity-50"
+        className="rounded-2xl border border-green-300/10 bg-[#2f6f3e] py-3 font-semibold text-white transition hover:bg-[#285f35] disabled:opacity-50"
        >
         {text.generatorPngSquare}
        </button>
@@ -472,8 +474,12 @@ export default function GeneratorPageClient({ initialToken }: Props) {
         Email Banner
        </button>
 
-       <button disabled={isExporting} onClick={() => runExport('zip')} className={`${secondaryButtonClassName} col-span-2`}>
-        {text.generatorZipPack}
+       <button
+        disabled={isExporting}
+        onClick={() => runExport('zip')}
+        className="col-span-2 rounded-2xl bg-blue-600 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:opacity-50"
+       >
+        ZIP Pack (all formats)
        </button>
       </div>
 

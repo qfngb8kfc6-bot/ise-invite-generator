@@ -282,7 +282,7 @@ export default function SiteHeader() {
       />
 
       <div className="relative flex w-full items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-        <div className="group flex min-w-0 items-center gap-7">
+        <div className="group flex min-w-0 items-center gap-10">
           <div
             className={
               isLight
@@ -304,24 +304,13 @@ export default function SiteHeader() {
               <div
                 className={
                   isLight
-                    ? 'truncate text-sm font-bold tracking-wide text-[#1f2f78] sm:text-base'
-                    : 'truncate bg-gradient-to-r from-white to-neutral-300 bg-clip-text text-sm font-semibold tracking-wide text-transparent sm:text-base'
+                    ? 'truncate text-lg font-bold tracking-wide text-[#1f2f78] sm:text-2xl'
+                    : 'truncate bg-gradient-to-r from-white to-neutral-300 bg-clip-text text-lg font-semibold tracking-wide text-transparent sm:text-2xl'
                 }
               >
                 {title}
               </div>
 
-              {isGenerator ? (
-                <span
-                  className={
-                    isLight
-                      ? 'hidden rounded-full border border-[#2d3f8f]/20 bg-[#2d3f8f]/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#2d3f8f] sm:inline-flex'
-                      : 'hidden rounded-full border border-blue-400/25 bg-blue-500/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-blue-200 sm:inline-flex'
-                  }
-                >
-                  Official exhibitor tool
-                </span>
-              ) : null}
             </div>
 
             <div

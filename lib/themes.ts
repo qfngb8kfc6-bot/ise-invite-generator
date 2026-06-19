@@ -38,7 +38,7 @@ export const themes: Record<ThemeKey, ThemeConfig> = {
     backgroundImage: '/themes/smart-building.jpg',
   },
   contentProduction: {
-    label: 'Broadcast Production',
+    label: 'Broadcast',
     backgroundImage: '/themes/content-production.jpg',
   },
 }
