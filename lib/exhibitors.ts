@@ -323,7 +323,7 @@ function normaliseMysExhibitor(input: unknown): Exhibitor | null {
 
   const inviteUrl = getFirstString(record, ['inviteurl', 'inviteUrl', 'inviteURL'])
 
-  const invitationCode =
+  const rawInvitationCode =
     getFirstString(record, [
       'promocode',
       'promoCode',
@@ -337,7 +337,9 @@ function normaliseMysExhibitor(input: unknown): Exhibitor | null {
     (inviteUrl ? new URL(inviteUrl).searchParams.get('actioncode') || '' : '') ||
     buildFallbackInvitationCode(id, standNumber)
 
-  const registrationUrl = inviteUrl || buildRegistrationUrl(record, invitationCode, id)
+  const registrationUrl = inviteUrl || buildRegistrationUrl(record, rawInvitationCode, id)
+
+  const invitationCode = registrationUrl || rawInvitationCode
 
 
   const logoUrl =
@@ -370,7 +372,7 @@ function normaliseMysExhibitor(input: unknown): Exhibitor | null {
     id,
     companyName,
     standNumber,
-    invitationCode,
+    invitationCode: registrationUrl || 'Code not ready / email support',
     registrationUrl,
     logoUrl,
     theme: inferThemeFromMys(record),
