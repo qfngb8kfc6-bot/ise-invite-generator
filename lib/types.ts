@@ -1,4 +1,4 @@
-export type LanguageKey = 'en' | 'es' | 'de' | 'fr' | 'it' | 'pt' | 'nl' | 'zh-CN'
+export type LanguageKey = 'en' | 'es' | 'de' | 'fr' | 'it' | 'ca' | 'zh-CN'
 
 export type ThemeKey =
   | 'iseBrandingOne'

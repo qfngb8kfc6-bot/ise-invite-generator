@@ -52,21 +52,13 @@ function getEmailBannerText(language: LanguageKey) {
         code: 'Codice',
         scan: 'Scansiona per registrarti',
       }
-    case 'pt':
+    case 'ca':
       return {
-        headline: `Junte-se a nós na ISE ${EVENT_YEAR}`,
-        freeTicket: 'Bilhete gratuito',
-        stand: 'Stand',
-        code: 'Código',
-        scan: 'Digitalize para se registar',
-      }
-    case 'nl':
-      return {
-        headline: `Bezoek ons op ISE ${EVENT_YEAR}`,
-        freeTicket: 'Gratis ticket',
-        stand: 'Stand',
-        code: 'Code',
-        scan: 'Scan om te registreren',
+        headline: `Uneix-te a nosaltres a ISE ${EVENT_YEAR}`,
+        freeTicket: 'ENTRADA GRATUÏTA',
+        stand: 'Estand',
+        code: 'Codi',
+        scan: 'Escaneja per registrar-te',
       }
     case 'zh-CN':
       return {

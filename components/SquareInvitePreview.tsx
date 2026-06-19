@@ -56,23 +56,14 @@ function getSquareText(language: LanguageKey) {
         code: 'Codice',
         scan: 'Scansiona per registrarti',
       }
-    case 'pt':
+    case 'ca':
       return {
-        joinUs: `Junte-se a nós na ISE ${EVENT_YEAR}`,
-        invitation: 'Convite',
-        freeTicket: 'Bilhete gratuito',
-        stand: 'Stand',
-        code: 'Código',
-        scan: 'Digitalize para se registar',
-      }
-    case 'nl':
-      return {
-        joinUs: `Bezoek ons op ISE ${EVENT_YEAR}`,
-        invitation: 'Uitnodiging',
-        freeTicket: 'Gratis ticket',
-        stand: 'Stand',
-        code: 'Code',
-        scan: 'Scan om te registreren',
+        joinUs: `Uneix-te a nosaltres a ISE ${EVENT_YEAR}`,
+        invitation: 'Invitació',
+        freeTicket: 'ENTRADA GRATUÏTA',
+        stand: 'Estand',
+        code: 'Codi',
+        scan: 'Escaneja per registrar-te',
       }
     case 'zh-CN':
       return {

@@ -47,27 +47,27 @@ export default function AdminLoginClient() {
   }
 
   return (
-    <main className="relative flex min-h-[calc(100vh-92px)] items-center justify-center overflow-hidden px-4 py-16 text-white">
+    <main className="relative flex h-[calc(100vh-128px)] items-center justify-center overflow-hidden px-4 py-8 text-white">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(45,63,143,0.34),transparent_36%),radial-gradient(circle_at_80%_70%,rgba(0,166,214,0.16),transparent_34%)]" />
 
       <div className="relative w-full max-w-[520px]">
-        <div className="mb-8 flex justify-center">
+        <div className="mb-5 flex justify-center">
           <Image
             src="/branding/ise-logo-white.png"
             alt="Integrated Systems Europe"
             width={230}
             height={110}
             priority
-            className="h-auto w-[230px] object-contain"
+            className="h-auto w-[185px] object-contain"
           />
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="rounded-[28px] border border-white/14 bg-[#111827]/82 p-8 shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-2xl"
+          className="rounded-[28px] border border-white/14 bg-[#111827]/82 p-7 shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-2xl"
         >
           <div>
-            <h1 className="text-3xl font-semibold tracking-[-0.04em]">
+            <h1 className="text-[30px] font-semibold tracking-[-0.04em]">
               Registration Dashboard
             </h1>
             <p className="mt-2 text-base font-medium text-white/55">
@@ -75,7 +75,7 @@ export default function AdminLoginClient() {
             </p>
           </div>
 
-          <div className="mt-8 space-y-5">
+          <div className="mt-6 space-y-4">
             <label className="block">
               <span className="text-sm font-semibold text-white/62">
                 Email / Username
@@ -113,13 +113,13 @@ export default function AdminLoginClient() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="mt-6 w-full rounded-xl bg-blue-500 px-5 py-3.5 text-base font-bold text-white shadow-[0_18px_45px_rgba(59,130,246,0.28)] transition hover:bg-blue-400 disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-5 w-full rounded-xl bg-blue-500 px-5 py-3.5 text-base font-bold text-white shadow-[0_18px_45px_rgba(59,130,246,0.28)] transition hover:bg-blue-400 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isSubmitting ? 'Signing in...' : 'Sign in'}
           </button>
         </form>
 
-        <p className="mt-7 text-center text-sm font-medium text-white/30">
+        <p className="mt-5 text-center text-sm font-medium text-white/30">
           ISE 2027 · Exhibitor Invitation Platform
         </p>
       </div>

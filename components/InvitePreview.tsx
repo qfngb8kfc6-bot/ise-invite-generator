@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { makeQrDataUrl } from '@/lib/qr'
-import { translations } from '@/lib/translations'
 import { themes } from '@/lib/themes'
 import type { LanguageKey, ThemeKey } from '@/lib/types'
 
@@ -30,10 +29,8 @@ function getFallbackInviteText(language: LanguageKey) {
       return { logoUnavailable: 'Logo indisponible', companyName: 'Nom de l’entreprise', booth: 'Numéro de stand', booths: 'Numéros de stand', invitationCode: 'Code d’invitation', qrUnavailable: 'QR indisponible', scanToRegister: 'Scanner pour s’inscrire', registrationUrlUnavailable: 'URL d’inscription indisponible', freePass: 'Pass visiteur gratuit', saveTicket: 'Réservez votre billet gratuit', headline: 'Votre invitation à ISE' }
     case 'it':
       return { logoUnavailable: 'Logo non disponibile', companyName: 'Nome azienda', booth: 'Numero stand', booths: 'Numeri stand', invitationCode: 'Codice di invito', qrUnavailable: 'QR non disponibile', scanToRegister: 'Scansiona per registrarti', registrationUrlUnavailable: 'URL di registrazione non disponibile', freePass: 'Pass visitatore gratuito', saveTicket: 'Ottieni il tuo biglietto gratuito', headline: 'Il tuo invito a ISE' }
-    case 'pt':
-      return { logoUnavailable: 'Logótipo indisponível', companyName: 'Nome da empresa', booth: 'Número do stand', booths: 'Números dos stands', invitationCode: 'Código de convite', qrUnavailable: 'QR indisponível', scanToRegister: 'Digitalize para se registar', registrationUrlUnavailable: 'URL de registo indisponível', freePass: 'Passe gratuito de visitante', saveTicket: 'Garanta o seu bilhete gratuito', headline: 'O seu convite para ISE' }
-    case 'nl':
-      return { logoUnavailable: 'Logo niet beschikbaar', companyName: 'Bedrijfsnaam', booth: 'Standnummer', booths: 'Standnummers', invitationCode: 'Uitnodigingscode', qrUnavailable: 'QR niet beschikbaar', scanToRegister: 'Scan om te registreren', registrationUrlUnavailable: 'Registratie-URL niet beschikbaar', freePass: 'Gratis bezoekerspas', saveTicket: 'Claim uw gratis ticket', headline: 'Uw uitnodiging voor ISE' }
+    case 'ca':
+      return { logoUnavailable: 'Logotip no disponible', companyName: "Nom de l'empresa", booth: "Número d'estand", booths: "Números d'estand", invitationCode: "Codi d'invitació", qrUnavailable: 'QR no disponible', scanToRegister: "Escaneja per registrar-te", registrationUrlUnavailable: "URL de registre no disponible", freePass: 'Passi gratuït de visitant', saveTicket: 'ENTRADA GRATUÏTA', headline: 'La teva invitació a ISE' }
     case 'zh-CN':
       return { logoUnavailable: '暂无标志', companyName: '公司名称', booth: '展位号', booths: '展位号', invitationCode: '邀请码', qrUnavailable: '二维码不可用', scanToRegister: '扫码注册', registrationUrlUnavailable: '注册链接不可用', freePass: '免费观众通行证', saveTicket: '领取您的免费门票', headline: '您的 ISE 邀请函' }
     default:
@@ -87,27 +84,16 @@ function getCardCopy(language: LanguageKey, eventYear: string) {
         bodyThree: `Registrati gratuitamente con il tuo codice invito espositore e assicurati il pass visitatore per ISE ${eventYear}.`,
         freeCode: 'Partecipa gratis usando il tuo codice invito:',
       }
-    case 'pt':
+    case 'ca':
       return {
-        joinUs: `Junte-se a nós na ISE ${eventYear}`,
-        invitationTitle: 'Convite',
-        isInviting: `convida-o para a ISE ${eventYear}`,
-        reconnectHeadline: 'Está na hora de reconectar...',
-        bodyOne: 'A Integrated Systems Europe é o evento tecnológico anual de referência mundial para integração de sistemas e indústria audiovisual.',
-        bodyTwo: 'Junte-se a nós em Barcelona e reconecte-se com inovação, pessoas, conhecimento e tecnologia.',
-        bodyThree: `Registe-se gratuitamente com o seu código de convite de expositor e garanta o seu passe de visitante para a ISE ${eventYear}.`,
-        freeCode: 'Junte-se gratuitamente usando o seu código de convite:',
-      }
-    case 'nl':
-      return {
-        joinUs: `Bezoek ons op ISE ${eventYear}`,
-        invitationTitle: 'Uitnodiging',
-        isInviting: `nodigt u uit voor ISE ${eventYear}`,
-        reconnectHeadline: 'Tijd om opnieuw te verbinden...',
-        bodyOne: 'Integrated Systems Europe is de wereldwijd toonaangevende jaarlijkse technologiebeurs voor systeemintegratie en de audiovisuele industrie.',
-        bodyTwo: 'Kom naar Barcelona en verbind opnieuw met innovatie, mensen, kennis en technologie.',
-        bodyThree: `Registreer gratis met uw exposanten-uitnodigingscode en verzeker uw bezoekerspas voor ISE ${eventYear}.`,
-        freeCode: 'Neem gratis deel met uw uitnodigingscode:',
+        joinUs: `Uneix-te a nosaltres a ISE ${eventYear}`,
+        invitationTitle: 'Invitació',
+        isInviting: `et convida a ISE ${eventYear}`,
+        reconnectHeadline: 'És hora de reconnectar...',
+        bodyOne: 'Integrated Systems Europe és el saló tecnològic anual de referència mundial per a la integració de sistemes i la indústria audiovisual.',
+        bodyTwo: 'Uneix-te a nosaltres a Barcelona i reconnecta amb la innovació, les persones, el coneixement i la tecnologia.',
+        bodyThree: `Registra't gratis amb el teu codi d'invitació d'expositor i assegura el teu passi de visitant per a ISE ${eventYear}.`,
+        freeCode: "Uneix-te gratis i estalvia amb el teu codi d'invitació:",
       }
     case 'zh-CN':
       return {
@@ -147,7 +133,6 @@ export default function InvitePreview({
   const [failedLogoUrl, setFailedLogoUrl] = useState('')
   const [qrDataUrl, setQrDataUrl] = useState('')
 
-  const text = translations[language].invite
   const fallbackText = getFallbackInviteText(language)
   const cardCopy = getCardCopy(language, EVENT_YEAR)
 
@@ -175,16 +160,16 @@ export default function InvitePreview({
   }, [registrationUrl])
 
   return (
-    <div className="w-[820px] overflow-hidden rounded-[18px] bg-white shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
+    <div className="h-[780px] w-[980px] overflow-hidden rounded-[18px] bg-white shadow-[0_40px_120px_rgba(0,0,0,0.55)]">
       <section
-        className="relative h-[430px] overflow-hidden bg-[#06194c] px-12 py-10 text-white"
+        className="relative h-[315px] overflow-hidden bg-[#06194c] px-12 py-9 text-white"
         style={{
           backgroundImage: `url(${selectedTheme.backgroundImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-[#06194c]/96 via-[#06194c]/72 to-[#06194c]/28" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#06194c]/96 via-[#06194c]/74 to-[#06194c]/30" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_28%,rgba(34,211,238,0.22),transparent_34%)]" />
 
         <div className="relative flex h-full flex-col justify-between">
@@ -192,7 +177,7 @@ export default function InvitePreview({
             <img
               src={ISE_LOGO_WHITE}
               alt="Integrated Systems Europe"
-              className="h-[88px] w-auto object-contain"
+              className="h-[78px] w-auto object-contain"
             />
 
             <div className="text-right text-[13px] font-semibold leading-tight text-white/85">
@@ -201,120 +186,114 @@ export default function InvitePreview({
             </div>
           </div>
 
-          <div className="max-w-[620px]">
+          <div className="max-w-[720px]">
             <p className="text-[17px] font-medium text-white/86">
               {cardCopy.joinUs}
             </p>
 
-            <h2 className="mt-4 text-[76px] font-semibold uppercase leading-[0.9] tracking-[-0.055em] text-white">
+            <h2 className="mt-3 text-[62px] font-semibold uppercase leading-[0.88] tracking-[-0.055em] text-white">
               {cardCopy.invitationTitle}
             </h2>
           </div>
         </div>
       </section>
 
-      <section className="min-h-[610px] bg-white px-12 py-10 text-[#141442]">
-        <div className="grid grid-cols-[1fr_260px] gap-8">
-          <div className="min-w-0">
-            <h3 className="max-w-[520px] break-words text-[28px] font-black uppercase leading-[0.95] tracking-[-0.055em] text-[#080832]">
-              {companyName || fallbackText.companyName}
-            </h3>
+      <section className="h-[465px] bg-white px-12 py-9 text-[#141442]">
+        <div className="grid h-full grid-cols-[1fr_270px] gap-10">
+          <div className="flex min-w-0 flex-col">
+            <div className="min-w-0">
+              <h3 className="max-w-[590px] break-words text-[30px] font-black uppercase leading-[0.95] tracking-[-0.055em] text-[#080832]">
+                {companyName || fallbackText.companyName}
+              </h3>
 
-            <p className="mt-2 text-[17px] font-semibold leading-tight text-[#141442]/78">
-              {cardCopy.isInviting}
-            </p>
+              <p className="mt-2 text-[16px] font-semibold leading-tight text-[#141442]/78">
+                {cardCopy.isInviting}
+              </p>
+            </div>
 
-            <div className="mt-5 grid max-w-[520px] grid-cols-1 gap-5">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#141442]/42">
-                  {fallbackText.invitationCode}
+            <div className="mt-7">
+              <h3 className="text-[25px] font-semibold uppercase leading-tight tracking-[-0.035em] text-[#080832]">
+                {cardCopy.reconnectHeadline}
+              </h3>
+
+              <div className="mt-5 space-y-3 text-[14px] font-medium leading-[1.55] text-[#141442]/82">
+                <p>
+                  {cardCopy.bodyOne}
                 </p>
 
-                <p className="mt-2 break-words text-[22px] font-semibold leading-tight text-[#080832]">
-                  {invitationCode || '—'}
+                <p>
+                  {cardCopy.bodyTwo}
+                </p>
+
+                <p>
+                  {cardCopy.bodyThree}
                 </p>
               </div>
             </div>
-          </div>
 
-          <div className="flex w-[260px] flex-col items-center">
-            <div className="flex min-h-[96px] w-[210px] items-center justify-center rounded-[6px] border border-zinc-200 bg-zinc-50 px-4">
-              {logoUrl && failedLogoUrl !== logoUrl ? (
-                <img
-                  src={logoUrl}
-                  alt={`${companyName} logo`}
-                  className="max-h-16 max-w-[185px] object-contain"
-                  onError={() => setFailedLogoUrl(logoUrl)}
-                />
-              ) : (
-                <span className="text-center text-xs font-semibold text-zinc-400">
-                  {fallbackText.logoUnavailable}
-                </span>
-              )}
-            </div>
-
-            <div className="mt-4 w-[210px] text-center">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#141442]/38">
-                {hasMultipleBooths ? fallbackText.booths : fallbackText.booth}
-              </p>
-              <p className="mt-1 break-words text-[18px] font-bold leading-tight text-[#080832]">
-                {boothDisplay || '—'}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-9 grid grid-cols-[1fr_260px] gap-10">
-          <div>
-            <h3 className="text-[30px] font-semibold uppercase leading-tight tracking-[-0.035em] text-[#080832]">
-              {cardCopy.reconnectHeadline}
-            </h3>
-
-            <div className="mt-6 space-y-4 text-[15px] font-medium leading-6 text-[#141442]/82">
-              <p>
-                {cardCopy.bodyOne}
-              </p>
-
-              <p>
-                {cardCopy.bodyTwo}
-              </p>
-
-              <p>
-                {cardCopy.bodyThree}
-              </p>
-            </div>
-
-            <div className="mt-9">
-              <p className="text-[18px] font-semibold leading-tight text-[#00a6d6]">
+            <div className="mt-auto">
+              <p className="whitespace-nowrap text-[15px] font-semibold leading-tight text-[#00a6d6]">
                 {cardCopy.freeCode}
               </p>
 
-              <p className="mt-2 break-all text-[26px] font-semibold leading-none tracking-[-0.035em] text-[#080832]">
+              <p className="mt-2 break-all text-[25px] font-semibold leading-none tracking-[-0.035em] text-[#080832]">
                 {invitationCode || '—'}
               </p>
+
+              <img
+                src="/branding/toolkit/ise-partners-footer.png"
+                alt="A joint venture partnership of AVIXA and CEDIA"
+                className="mt-5 h-auto w-[210px] object-contain"
+              />
             </div>
           </div>
 
-          <div className="flex w-[260px] flex-col items-center justify-start">
-            <p className="mb-4 w-[260px] text-center text-[13px] font-semibold uppercase leading-snug tracking-[0.2em] text-[#141442]/70">
+          <div className="flex w-[270px] flex-col items-center justify-center">
+            <div className="mb-5 flex flex-col items-center">
+              <div className="flex min-h-[78px] w-[205px] items-center justify-center rounded-[6px] border border-zinc-200 bg-zinc-50 px-4">
+                {logoUrl && failedLogoUrl !== logoUrl ? (
+                  <img
+                    src={logoUrl}
+                    alt={`${companyName} logo`}
+                    className="max-h-12 max-w-[172px] object-contain"
+                    onError={() => setFailedLogoUrl(logoUrl)}
+                  />
+                ) : (
+                  <span className="text-center text-[11px] font-semibold text-zinc-400">
+                    {fallbackText.logoUnavailable}
+                  </span>
+                )}
+              </div>
+
+              <div className="mt-3 w-[205px] text-center">
+                <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#141442]/38">
+                  {hasMultipleBooths ? fallbackText.booths : fallbackText.booth}
+                </p>
+                <p className="mt-1 break-words text-[16px] font-bold leading-tight text-[#080832]">
+                  {boothDisplay || '—'}
+                </p>
+              </div>
+            </div>
+
+            <p className="mb-3 w-[270px] text-center text-[13px] font-semibold uppercase leading-snug tracking-[0.2em] text-[#141442]/70">
               {fallbackText.saveTicket}
             </p>
 
-            <div className="relative flex h-[260px] w-[260px] items-center justify-center">
+            <div className="relative flex h-[210px] w-[210px] items-center justify-center">
               <div className="absolute inset-0 rounded-full border border-[#141442]/20" />
-              <div className="absolute h-[238px] w-[238px] rounded-full border border-[#141442]/10" />
-              <div className="absolute h-[218px] w-[218px] rounded-full bg-gradient-to-br from-[#00d9ff] via-[#0a5cff] to-[#1b1464] shadow-[0_18px_42px_rgba(10,92,255,0.22)]" />
+              <div className="absolute h-[192px] w-[192px] rounded-full border border-[#141442]/10" />
+              <div className="absolute h-[176px] w-[176px] rounded-full bg-gradient-to-br from-[#00d9ff] via-[#0a5cff] to-[#1b1464] shadow-[0_18px_42px_rgba(10,92,255,0.22)]" />
 
-              <div className="relative flex h-[194px] w-[194px] items-center justify-center rounded-full bg-[#080832] text-center text-white shadow-[0_22px_55px_rgba(8,8,50,0.34)]">
+              <div className="relative flex h-[154px] w-[154px] items-center justify-center rounded-full bg-[#080832] text-center text-white shadow-[0_22px_55px_rgba(8,8,50,0.34)]">
                 <div className="rounded-2xl bg-white p-2.5 shadow-[0_8px_22px_rgba(255,255,255,0.16)]">
                   {qrDataUrl ? (
                     <img
                       src={qrDataUrl}
                       alt="Registration QR code"
-                      className="h-[104px] w-[104px] object-contain"
+                      className="h-[86px] w-[86px] object-contain"
                     />
                   ) : (
-                    <div className="flex h-[104px] w-[104px] items-center justify-center text-[10px] font-semibold text-zinc-400">
+                    <div className="flex h-[86px] w-[86px] items-center justify-center text-[10px] font-semibold text-zinc-400">
                       {fallbackText.qrUnavailable}
                     </div>
                   )}
@@ -325,21 +304,10 @@ export default function InvitePreview({
             <p className="mt-4 text-center text-xs font-semibold uppercase tracking-[0.18em] text-[#141442]/60">
               {fallbackText.scanToRegister}
             </p>
-
-            <p className="mt-2 max-w-[245px] break-all text-center text-[12px] font-medium leading-snug text-[#141442]/55">
-              {registrationUrl || fallbackText.registrationUrlUnavailable}
-            </p>
           </div>
-        </div>
-
-        <div className="mt-8">
-          <img
-            src="/branding/toolkit/ise-partners-footer.png"
-            alt="A joint venture partnership of AVIXA and CEDIA"
-            className="h-auto w-[220px] object-contain"
-          />
         </div>
       </section>
     </div>
   )
+
 }
