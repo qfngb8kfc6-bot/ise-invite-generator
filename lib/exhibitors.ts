@@ -271,6 +271,25 @@ function inferThemeFromMys(record: Record<string, unknown>): ThemeName {
   return 'audio'
 }
 
+function extractActionCodeFromRegistrationUrl(value: string) {
+  if (!value) {
+    return ''
+  }
+
+  try {
+    const url = new URL(value)
+
+    const actionCode =
+      url.searchParams.get('actioncode') ||
+      url.searchParams.get('actionCode') ||
+      url.searchParams.get('action_code')
+
+    return actionCode?.trim() || ''
+  } catch {
+    return ''
+  }
+}
+
 function buildRegistrationUrl(
   record: Record<string, unknown>,
   invitationCode: string,
@@ -339,6 +358,8 @@ function normaliseMysExhibitor(input: unknown): Exhibitor | null {
 
   const registrationUrl = inviteUrl || buildRegistrationUrl(record, rawInvitationCode, id)
 
+  const actionCode = extractActionCodeFromRegistrationUrl(registrationUrl)
+
   const invitationCode = registrationUrl || rawInvitationCode
 
 
@@ -372,7 +393,7 @@ function normaliseMysExhibitor(input: unknown): Exhibitor | null {
     id,
     companyName,
     standNumber,
-    invitationCode: registrationUrl || 'Code not ready / email support',
+    invitationCode: actionCode || 'Code not ready / email support',
     registrationUrl,
     logoUrl,
     theme: inferThemeFromMys(record),
