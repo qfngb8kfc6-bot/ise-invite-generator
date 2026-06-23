@@ -116,7 +116,7 @@ function getCardCopy(language: LanguageKey, eventYear: string) {
         bodyOne: 'The world-renowned annual tech show is back.',
         bodyTwo: "The world’s latest innovations. The world’s greatest innovators.",
         bodyThree: `ISE ${eventYear} is set to bring it all together for its best edition yet. You’ll find:`,
-        freeCode: 'Join us for FREE and save with your invitation code:',
+        freeCode: 'Join us for FREE and save €250 with your invitation code:',
       }
   }
 }
@@ -173,7 +173,7 @@ export default function InvitePreview({
         <img
           src="/branding/toolkit/ise-partners-footer-transparent.png?v=20270623"
           alt="A joint venture partnership of AVIXA and CEDIA"
-          className="absolute bottom-7 right-[16px] z-30 h-auto w-[300px] max-w-none object-contain opacity-100"
+          className="absolute bottom-[18px] right-[34px] z-30 h-auto w-[305px] max-w-none object-contain opacity-100"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#06194c]/96 via-[#06194c]/74 to-[#06194c]/30" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_28%,rgba(34,211,238,0.22),transparent_34%)]" />
@@ -188,7 +188,7 @@ export default function InvitePreview({
 
             <div className="text-right text-[13px] font-semibold leading-tight text-white/85">
               <div>Fira de Barcelona | Gran Via</div>
-              <div>3 - 6 February {EVENT_YEAR}</div>
+              <div>2 - 5 February {EVENT_YEAR}</div>
             </div>
           </div>
 
@@ -322,12 +322,12 @@ export default function InvitePreview({
                 FREE TICKET — SCAN TO REGISTER
               </p>
 
-              <div className="relative mt-1 flex h-[198px] w-[198px] translate-x-72 items-center justify-center">
+              <div className="relative mt-1 flex h-[212px] w-[212px] translate-x-72 items-center justify-center">
                 <img
                   src={ISE_QR_RINGS}
                   alt=""
                   aria-hidden="true"
-                  className="absolute inset-0 z-0 h-full w-full scale-[0.80] object-contain"
+                  className="absolute inset-0 z-0 h-full w-full scale-[0.84] object-contain"
                 />
 
                 <div className="relative z-10 rounded-[12px] bg-white p-0 shadow-none">
@@ -335,10 +335,10 @@ export default function InvitePreview({
                     <img
                       src={qrDataUrl}
                       alt="Registration QR code"
-                      className="h-[76px] w-[76px] object-contain"
+                      className="h-[84px] w-[84px] object-contain"
                     />
                   ) : (
-                    <div className="flex h-[76px] w-[76px] items-center justify-center text-[9px] font-semibold text-zinc-400">
+                    <div className="flex h-[84px] w-[84px] items-center justify-center text-[9px] font-semibold text-zinc-400">
                       {fallbackText.qrUnavailable}
                     </div>
                   )}
