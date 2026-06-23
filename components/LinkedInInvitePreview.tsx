@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { makeQrDataUrl } from '@/lib/qr'
 import { themes } from '@/lib/themes'
+import QrRingFrame from '@/components/QrRingFrame'
 import type { LanguageKey, ThemeKey } from '@/lib/types'
 
 type LinkedInInvitePreviewProps = {
@@ -184,7 +185,7 @@ export default function LinkedInInvitePreview({
             </div>
           </section>
 
-          <aside className="flex flex-col items-center justify-start pt-[88px]">
+          <aside className="flex flex-col items-center justify-start pt-[80px]">
             <div className="flex h-[108px] w-[220px] items-center justify-center rounded-[12px] border border-white/14 bg-white px-5 shadow-[0_18px_42px_rgba(0,0,0,0.2)]">
               {logoUrl && failedLogoUrl !== logoUrl ? (
                 <img
@@ -204,18 +205,12 @@ export default function LinkedInInvitePreview({
               {text.scan}
             </p>
 
-            <div className="mt-4 rounded-[24px] bg-white p-3 shadow-[0_24px_58px_rgba(0,0,0,0.28)]">
-              {qrDataUrl ? (
-                <img
-                  src={qrDataUrl}
-                  alt="Registration QR code"
-                  className="h-[150px] w-[150px] object-contain"
-                />
-              ) : (
-                <div className="flex h-[150px] w-[150px] items-center justify-center text-center text-[12px] font-semibold text-zinc-400">
-                  QR unavailable
-                </div>
-              )}
+            <div className="mt-2">
+              <QrRingFrame
+                variant="linkedin"
+                qrDataUrl={qrDataUrl}
+                unavailableText="QR unavailable"
+              />
             </div>
           </aside>
         </main>

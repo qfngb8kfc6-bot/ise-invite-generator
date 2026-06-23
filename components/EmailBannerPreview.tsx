@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { makeQrDataUrl } from '@/lib/qr'
 import { themes } from '@/lib/themes'
+import QrRingFrame from '@/components/QrRingFrame'
 import type { LanguageKey, ThemeKey } from '@/lib/types'
 
 type EmailBannerPreviewProps = {
@@ -173,20 +174,12 @@ export default function EmailBannerPreview({
             )}
           </div>
 
-          <div className="flex w-[140px] flex-col items-center">
-            <div className="rounded-[18px] bg-white p-2 shadow-[0_16px_38px_rgba(0,0,0,0.24)]">
-              {qrDataUrl ? (
-                <img
-                  src={qrDataUrl}
-                  alt="Registration QR code"
-                  className="h-[104px] w-[104px] object-contain"
-                />
-              ) : (
-                <div className="flex h-[104px] w-[104px] items-center justify-center text-center text-[10px] font-semibold text-zinc-400">
-                  QR unavailable
-                </div>
-              )}
-            </div>
+          <div className="flex w-[170px] flex-col items-center">
+            <QrRingFrame
+              variant="email"
+              qrDataUrl={qrDataUrl}
+              unavailableText="QR unavailable"
+            />
 
             <p className="mt-3 text-center text-[10px] font-bold uppercase leading-tight tracking-[0.16em] text-white/78">
               {text.scan}

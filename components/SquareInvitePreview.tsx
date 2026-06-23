@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { makeQrDataUrl } from '@/lib/qr'
 import { themes } from '@/lib/themes'
+import QrRingFrame from '@/components/QrRingFrame'
 import type { LanguageKey, ThemeKey } from '@/lib/types'
 
 type SquareInvitePreviewProps = {
@@ -149,9 +150,17 @@ export default function SquareInvitePreview({
               {text.joinUs}
             </p>
 
-            <h1 className="mt-5 text-[92px] font-black uppercase leading-[0.88] tracking-[-0.065em] text-white">
-              {text.invitation}
+            <h1 className="mt-5 max-w-[620px] text-[58px] font-black uppercase leading-[0.92] tracking-[-0.055em] text-white">
+              BRING YOUR WORLD. UNITE WITH US.
             </h1>
+
+            <p className="mt-6 max-w-[640px] text-[24px] font-bold leading-tight text-white">
+              The world-renowned annual tech show is back.
+            </p>
+
+            <p className="mt-3 max-w-[650px] text-[21px] font-medium leading-tight text-white/82">
+              The world’s latest innovations. The world’s greatest innovators.
+            </p>
 
             <div className="mt-[58px] rounded-[34px] border border-white/14 bg-white/[0.08] p-8 backdrop-blur-sm">
               <p className="text-[18px] font-semibold uppercase tracking-[0.26em] text-cyan-200">
@@ -184,7 +193,7 @@ export default function SquareInvitePreview({
             </div>
           </section>
 
-          <aside className="flex flex-col items-center justify-start pt-[165px]">
+          <aside className="flex flex-col items-center justify-start pt-[80px]">
             <div className="flex h-[135px] w-[260px] items-center justify-center rounded-[14px] border border-white/14 bg-white px-5 shadow-[0_18px_42px_rgba(0,0,0,0.2)]">
               {logoUrl && failedLogoUrl !== logoUrl ? (
                 <img
@@ -204,25 +213,19 @@ export default function SquareInvitePreview({
               {text.scan}
             </p>
 
-            <div className="mt-5 rounded-[30px] bg-white p-4 shadow-[0_24px_58px_rgba(0,0,0,0.28)]">
-              {qrDataUrl ? (
-                <img
-                  src={qrDataUrl}
-                  alt="Registration QR code"
-                  className="h-[205px] w-[205px] object-contain"
-                />
-              ) : (
-                <div className="flex h-[205px] w-[205px] items-center justify-center text-center text-[14px] font-semibold text-zinc-400">
-                  QR unavailable
-                </div>
-              )}
+            <div className="mt-2">
+              <QrRingFrame
+                variant="square"
+                qrDataUrl={qrDataUrl}
+                unavailableText="QR unavailable"
+              />
             </div>
           </aside>
         </main>
 
         <footer className="mt-8 flex items-center justify-between">
-          <p className="max-w-[560px] text-[22px] font-semibold leading-tight text-white/82">
-            Register free using your exhibitor invitation code and secure your visitor pass for ISE {EVENT_YEAR}.
+          <p className="max-w-[650px] text-[20px] font-semibold leading-tight text-white/84">
+            ISE {EVENT_YEAR} is set to bring it all together for its best edition yet. A world of opportunity awaits...
           </p>
 
           <img
