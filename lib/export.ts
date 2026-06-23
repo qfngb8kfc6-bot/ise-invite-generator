@@ -22,7 +22,7 @@ const EXPORT_FORMATS: Record<ExportFormatKey, ExportFormatConfig> = {
   },
   square: {
     key: 'square',
-    fileLabel: 'square',
+    fileLabel: 'full-size',
     width: 1080,
     height: 1080,
     pixelRatio: 2,

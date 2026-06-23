@@ -108,7 +108,7 @@ export async function GET(request: NextRequest) {
       'conversionRate',
       'generatedLinkButNeverExported',
       'pngLinkedInCount',
-      'pngSquareCount',
+      'pngFullSizeCount',
       'pngEmailCount',
       'pngPrintCount',
       'pdfCount',

@@ -208,7 +208,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
  ])
 
  async function runExport(type: 'pdf' | 'zip' | ExportFormatKey) {
-  const exportNode = type === 'email' ? emailBannerExportRef.current : type === 'square' ? squareExportRef.current : type === 'linkedin' ? linkedinExportRef.current : exportPreviewRef.current
+  const exportNode = type === 'email' ? emailBannerExportRef.current : type === 'square' ? exportPreviewRef.current : type === 'linkedin' ? linkedinExportRef.current : exportPreviewRef.current
 
   if (!exportNode) {
    setExportError('Preview element not found.')
@@ -227,7 +227,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
    }
 
    if (type === 'zip') {
-    await exportZipPack(exportPreviewRef.current || exportNode, baseName, emailBannerExportRef.current || undefined, squareExportRef.current || undefined, linkedinExportRef.current || undefined)
+    await exportZipPack(exportPreviewRef.current || exportNode, baseName, emailBannerExportRef.current || undefined, exportPreviewRef.current || undefined, linkedinExportRef.current || undefined)
     return
    }
 

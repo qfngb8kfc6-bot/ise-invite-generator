@@ -295,7 +295,7 @@ function formatFormatLabel(format: string): string {
     case 'png-linkedin':
       return 'PNG LinkedIn'
     case 'png-square':
-      return 'PNG Square'
+      return 'PNG'
     case 'png-email':
       return 'PNG Email'
     case 'png-print':
