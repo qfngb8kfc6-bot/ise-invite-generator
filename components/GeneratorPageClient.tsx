@@ -81,7 +81,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
  const [companyName, setCompanyName] = useState('Samsung')
  const [standNumber, setStandNumber] = useState('5C300')
  const [invitationCode, setInvitationCode] = useState('ISE2027')
- const [registrationUrl, setRegistrationUrl] = useState('https://registration.example.com')
+ const [registrationUrl, setRegistrationUrl] = useState('https://www.iseurope.org/welcome/registration')
  const [logoUrl, setLogoUrl] = useState('')
  const [logoMessage, setLogoMessage] = useState<string | null>(null)
  const [theme, setTheme] = useState<ThemeKey>('audio')
