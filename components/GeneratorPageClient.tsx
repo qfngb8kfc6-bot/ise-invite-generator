@@ -88,13 +88,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
 
  const isLightMode = displayMode === 'light'
 
- const appBaseUrl =
-  process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ||
-  (typeof window !== 'undefined' ? window.location.origin : '')
 
- const qrTrackingUrl = exhibitorId
-  ? `${appBaseUrl}/r/${encodeURIComponent(exhibitorId)}`
-  : registrationUrl
 
  useEffect(() => {
   window.localStorage.setItem(CARD_LANGUAGE_STORAGE_KEY, cardLanguage)
@@ -479,7 +473,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
        standNumber={standNumber}
        invitationCode={invitationCode}
        logoUrl={logoUrl}
-       registrationUrl={qrTrackingUrl}
+       registrationUrl={registrationUrl}
        theme={theme}
        language={cardLanguage}
       />
@@ -494,7 +488,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
       standNumber={standNumber}
       invitationCode={invitationCode}
       logoUrl={logoUrl}
-      registrationUrl={qrTrackingUrl}
+      registrationUrl={registrationUrl}
       theme={theme}
       language={cardLanguage}
      />
@@ -506,7 +500,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
       standNumber={standNumber}
       invitationCode={invitationCode}
       logoUrl={logoUrl}
-      registrationUrl={qrTrackingUrl}
+      registrationUrl={registrationUrl}
       theme={theme}
       language={cardLanguage}
      />
@@ -518,7 +512,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
       standNumber={standNumber}
       invitationCode={invitationCode}
       logoUrl={logoUrl}
-      registrationUrl={qrTrackingUrl}
+      registrationUrl={registrationUrl}
       theme={theme}
       language={cardLanguage}
      />
@@ -530,7 +524,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
       standNumber={standNumber}
       invitationCode={invitationCode}
       logoUrl={logoUrl}
-      registrationUrl={qrTrackingUrl}
+      registrationUrl={registrationUrl}
       theme={theme}
       language={cardLanguage}
      />
