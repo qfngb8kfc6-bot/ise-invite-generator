@@ -140,7 +140,7 @@ export default function SquareInvitePreview({
 
           <div className="text-right text-[24px] font-semibold leading-tight text-white/86">
             <div>Fira de Barcelona | Gran Via</div>
-            <div>3 - 6 February {EVENT_YEAR}</div>
+            <div>2 - 5 February {EVENT_YEAR}</div>
           </div>
         </header>
 
