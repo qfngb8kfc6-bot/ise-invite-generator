@@ -14,6 +14,7 @@ type SquareInvitePreviewProps = {
   registrationUrl: string
   theme: ThemeKey
   language: LanguageKey
+  mode?: 'primary' | 'secondary'
 }
 
 const EVENT_YEAR = process.env.NEXT_PUBLIC_EVENT_YEAR?.trim() || '2027'
@@ -95,12 +96,14 @@ export default function SquareInvitePreview({
   registrationUrl,
   theme,
   language,
+  mode = 'primary',
 }: SquareInvitePreviewProps) {
   const [qrDataUrl, setQrDataUrl] = useState('')
   const [failedLogoUrl, setFailedLogoUrl] = useState<string | null>(null)
 
   const selectedTheme = themes[theme] ?? themes.audio
   const text = getSquareText(language)
+  const detailLabel = mode === 'secondary' ? 'Invitation ID' : text.stand
 
   useEffect(() => {
     let active = true
@@ -174,7 +177,7 @@ export default function SquareInvitePreview({
               <div className="mt-8 grid grid-cols-2 gap-4">
                 <div className="rounded-[22px] border border-white/15 bg-white/10 px-5 py-4">
                   <p className="text-[15px] font-semibold uppercase tracking-[0.18em] text-white/56">
-                    {text.stand}
+                    {detailLabel}
                   </p>
                   <p className="mt-2 break-words text-[30px] font-bold leading-tight text-white">
                     {standNumber || '—'}

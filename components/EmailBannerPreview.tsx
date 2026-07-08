@@ -14,6 +14,7 @@ type EmailBannerPreviewProps = {
   registrationUrl: string
   theme: ThemeKey
   language: LanguageKey
+  mode?: 'primary' | 'secondary'
 }
 
 const EVENT_YEAR = process.env.NEXT_PUBLIC_EVENT_YEAR?.trim() || '2027'
@@ -88,12 +89,14 @@ export default function EmailBannerPreview({
   registrationUrl,
   theme,
   language,
+  mode = 'primary',
 }: EmailBannerPreviewProps) {
   const [qrDataUrl, setQrDataUrl] = useState('')
   const [failedLogoUrl, setFailedLogoUrl] = useState<string | null>(null)
 
   const selectedTheme = themes[theme] ?? themes.audio
   const text = getEmailBannerText(language)
+  const detailLabel = mode === 'secondary' ? 'Invitation ID' : text.stand
 
   useEffect(() => {
     let active = true
@@ -148,7 +151,7 @@ export default function EmailBannerPreview({
 
             <div className="mt-5 flex flex-wrap items-center gap-4 text-[18px] font-bold text-white">
               <div className="rounded-full border border-white/18 bg-white/10 px-5 py-2">
-                {text.stand}: {standNumber || '—'}
+                {detailLabel}: {standNumber || '—'}
               </div>
 
               <div className="rounded-full border border-white/18 bg-white/10 px-5 py-2">

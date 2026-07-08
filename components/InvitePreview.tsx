@@ -13,6 +13,7 @@ type InvitePreviewProps = {
   registrationUrl: string
   theme: ThemeKey
   language: LanguageKey
+  mode?: 'primary' | 'secondary'
 }
 
 const EVENT_YEAR = process.env.NEXT_PUBLIC_EVENT_YEAR?.trim() || '2027'
@@ -129,8 +130,10 @@ export default function InvitePreview({
   registrationUrl,
   theme,
   language,
+  mode = 'primary',
 }: InvitePreviewProps) {
   const selectedTheme = themes[theme] ?? themes.audio
+  const isSecondaryMode = mode === 'secondary'
   const [failedLogoUrl, setFailedLogoUrl] = useState('')
   const [qrDataUrl, setQrDataUrl] = useState('')
 
@@ -146,6 +149,11 @@ export default function InvitePreview({
 
   const hasMultipleBooths = boothList.length > 1
   const boothDisplay = boothList.join(' · ')
+  const detailLabel = isSecondaryMode
+    ? 'Invitation ID'
+    : hasMultipleBooths
+      ? fallbackText.booths
+      : fallbackText.booth
 
   useEffect(() => {
     async function generateQr() {
@@ -230,7 +238,9 @@ export default function InvitePreview({
                 </h3>
 
                 <p className="mt-1 text-[15px] font-semibold leading-tight text-[#141442]/78">
-                  has invited you to ISE 2027
+                  {isSecondaryMode
+                    ? `has created your ISE ${EVENT_YEAR} invitation`
+                    : `has invited you to ISE ${EVENT_YEAR}`}
                 </p>
 
                 <h3 className="mt-8 max-w-[590px] text-[39px] font-black uppercase leading-[0.88] tracking-[-0.055em] text-[#080832]">
@@ -310,7 +320,7 @@ export default function InvitePreview({
 
                 <div className="mt-7 w-[205px] text-center">
                   <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#141442]/38">
-                    {hasMultipleBooths ? fallbackText.booths : fallbackText.booth}
+                    {detailLabel}
                   </p>
                   <p className="mt-1 break-words text-[16px] font-bold leading-tight text-[#080832]">
                     {boothDisplay || '—'}

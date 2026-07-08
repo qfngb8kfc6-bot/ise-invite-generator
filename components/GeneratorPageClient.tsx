@@ -15,10 +15,14 @@ import {
 } from '@/lib/export'
 import { themes } from '@/lib/themes'
 import { translations } from '@/lib/translations'
-import type { LanguageKey, ThemeKey } from '@/lib/types'
+import type { EditableInviteData, LanguageKey, ThemeKey } from '@/lib/types'
 
 type Props = {
  initialToken?: string
+ initialData?: Partial<EditableInviteData> & {
+  exhibitorId?: string
+  sessionMessage?: string
+ }
 }
 
 const orderedThemeKeys: ThemeKey[] = [
@@ -39,7 +43,7 @@ type DisplayMode = 'dark' | 'light'
 const CARD_LANGUAGE_STORAGE_KEY = 'ise-card-language'
 const DISPLAY_MODE_STORAGE_KEY = 'ise-generator-display-mode'
 
-export default function GeneratorPageClient({ initialToken }: Props) {
+export default function GeneratorPageClient({ initialToken, initialData }: Props) {
  const exportPreviewRef = useRef<HTMLDivElement | null>(null)
  const emailBannerExportRef = useRef<HTMLDivElement | null>(null)
  const squareExportRef = useRef<HTMLDivElement | null>(null)
@@ -49,6 +53,7 @@ export default function GeneratorPageClient({ initialToken }: Props) {
  const text = translations[generatorLanguage].ui
 
  const [cardLanguage, setCardLanguage] = useState<LanguageKey>(() => {
+  if (initialData?.language && initialData.language in translations) return initialData.language
   if (typeof window === 'undefined') return 'en'
 
   const saved = window.localStorage.getItem(CARD_LANGUAGE_STORAGE_KEY)
@@ -75,16 +80,16 @@ export default function GeneratorPageClient({ initialToken }: Props) {
  const [isExporting, setIsExporting] = useState(false)
  const [exportError, setExportError] = useState<string | null>(null)
  const [showDownloadPanel, setShowDownloadPanel] = useState(false)
- const [sessionMessage, setSessionMessage] = useState<string | null>(null)
+ const [sessionMessage, setSessionMessage] = useState<string | null>(initialData?.sessionMessage || null)
 
- const [exhibitorId, setExhibitorId] = useState('')
- const [companyName, setCompanyName] = useState('Samsung')
- const [standNumber, setStandNumber] = useState('5C300')
- const [invitationCode, setInvitationCode] = useState('ISE2027')
- const [registrationUrl, setRegistrationUrl] = useState('https://www.iseurope.org/welcome/registration')
- const [logoUrl, setLogoUrl] = useState('')
+ const [exhibitorId, setExhibitorId] = useState(initialData?.exhibitorId || '')
+ const [companyName, setCompanyName] = useState(initialData?.companyName || 'Samsung')
+ const [standNumber, setStandNumber] = useState(initialData?.standNumber || '')
+ const [invitationCode, setInvitationCode] = useState(initialData?.invitationCode || 'ISE2027')
+ const [registrationUrl, setRegistrationUrl] = useState(initialData?.registrationUrl || 'https://www.iseurope.org/welcome/registration')
+ const [logoUrl, setLogoUrl] = useState(initialData?.logoUrl || '')
  const [logoMessage, setLogoMessage] = useState<string | null>(null)
- const [theme, setTheme] = useState<ThemeKey>('audio')
+ const [theme, setTheme] = useState<ThemeKey>(initialData?.theme || 'audio')
 
  const isLightMode = displayMode === 'light'
 

@@ -14,6 +14,7 @@ type LinkedInInvitePreviewProps = {
   registrationUrl: string
   theme: ThemeKey
   language: LanguageKey
+  mode?: 'primary' | 'secondary'
 }
 
 const EVENT_YEAR = process.env.NEXT_PUBLIC_EVENT_YEAR?.trim() || '2027'
@@ -137,12 +138,14 @@ export default function LinkedInInvitePreview({
   registrationUrl,
   theme,
   language,
+  mode = 'primary',
 }: LinkedInInvitePreviewProps) {
   const [qrDataUrl, setQrDataUrl] = useState('')
   const [failedLogoUrl, setFailedLogoUrl] = useState<string | null>(null)
 
   const selectedTheme = themes[theme] ?? themes.audio
   const text = getLinkedInText(language)
+  const detailLabel = mode === 'secondary' ? 'Invitation ID' : text.stand
 
   useEffect(() => {
     let active = true
@@ -224,7 +227,7 @@ export default function LinkedInInvitePreview({
               <div className="mt-4 flex flex-wrap gap-3">
                 <div className="rounded-[16px] border border-white/14 bg-white/10 px-4 py-2.5">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/50">
-                    {text.stand}
+                    {detailLabel}
                   </p>
                   <p className="mt-1 break-words text-[19px] font-bold leading-tight text-white">
                     {standNumber || '—'}
