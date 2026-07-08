@@ -23,13 +23,29 @@ export type SecondaryInvitationRequest = {
 }
 
 function getPrivateKey() {
-  const key = process.env.GOOGLE_SHEETS_PRIVATE_KEY
+  const base64Key = process.env.GOOGLE_SHEETS_PRIVATE_KEY_BASE64?.trim()
 
-  if (!key) {
-    throw new Error('Missing GOOGLE_SHEETS_PRIVATE_KEY')
+  if (!base64Key) {
+    throw new Error(
+      'Missing GOOGLE_SHEETS_PRIVATE_KEY_BASE64. The app is not seeing the Base64 private key environment variable.'
+    )
   }
 
-  return key.replace(/^"|"$/g, '').replace(/\\n/g, '\n')
+  const decodedKey = Buffer.from(base64Key, 'base64').toString('utf8').trim()
+
+  if (!decodedKey.startsWith('-----BEGIN PRIVATE KEY-----')) {
+    throw new Error(
+      'Invalid GOOGLE_SHEETS_PRIVATE_KEY_BASE64. Decoded key does not start with BEGIN PRIVATE KEY.'
+    )
+  }
+
+  if (!decodedKey.endsWith('-----END PRIVATE KEY-----')) {
+    throw new Error(
+      'Invalid GOOGLE_SHEETS_PRIVATE_KEY_BASE64. Decoded key does not end with END PRIVATE KEY.'
+    )
+  }
+
+  return `${decodedKey}\n`
 }
 
 function getSheetsConfig() {
