@@ -22,6 +22,64 @@ export type SecondaryInvitationRequest = {
   notes: string
 }
 
+export type NewSecondaryInvitationRequestInput = {
+  requestId: string
+  submittedAt: string
+  companyName: string
+  contactName: string
+  contactEmail: string
+  logoUrl: string
+  themeLabel: string
+  languageLabel: string
+  generatorUrl: string
+}
+
+/**
+ * ISE SHEET ADAPTER
+ * -----------------
+ * This is the only section that should need changing when ISE provides
+ * their final Google Sheet.
+ *
+ * Current prototype Requests sheet columns:
+ * A Request ID
+ * B Submitted At
+ * C Company Name
+ * D Contact Name
+ * E Contact Email
+ * F Logo URL
+ * G Sector / Theme
+ * H Language
+ * I Status
+ * J Assigned Invitation ID
+ * K Assigned Invitation Code
+ * L Generator URL
+ * M Reviewed By
+ * N Assigned Date
+ * O Notes
+ * P Notes / extra notes
+ */
+const REQUEST_COLUMNS = {
+  requestId: 0,
+  submittedAt: 1,
+  companyName: 2,
+  contactName: 3,
+  contactEmail: 4,
+  logoUrl: 5,
+  theme: 6,
+  language: 7,
+  status: 8,
+  assignedCodeId: 9,
+  assignedInvitationCode: 10,
+  generatorUrl: 11,
+  reviewedBy: 12,
+  assignedDate: 13,
+  notes: 14,
+  extraNotes: 15,
+} as const
+
+const REQUESTS_APPEND_RANGE = 'A:P'
+const DEFAULT_REQUEST_STATUS = 'Pending Review'
+
 function getPrivateKey() {
   const base64Key = process.env.GOOGLE_SHEETS_PRIVATE_KEY_BASE64?.trim()
 
@@ -91,6 +149,10 @@ function normaliseStatus(value: string): string {
   return value.trim().toLowerCase()
 }
 
+function getCell(row: unknown[], column: keyof typeof REQUEST_COLUMNS): string {
+  return normaliseCell(row[REQUEST_COLUMNS[column]])
+}
+
 function mapTheme(value: string): ThemeKey {
   const raw = value.trim()
 
@@ -135,22 +197,60 @@ function mapLanguage(value: string): LanguageKey {
 
 function rowToSecondaryInvitationRequest(row: unknown[]): SecondaryInvitationRequest {
   return {
-    requestId: normaliseCell(row[0]),
-    submittedAt: normaliseCell(row[1]),
-    companyName: normaliseCell(row[2]),
-    contactName: normaliseCell(row[3]),
-    contactEmail: normaliseCell(row[4]),
-    logoUrl: normaliseCell(row[5]),
-    theme: mapTheme(normaliseCell(row[6])),
-    language: mapLanguage(normaliseCell(row[7])),
-    status: normaliseCell(row[8]),
-    assignedCodeId: normaliseCell(row[9]),
-    assignedInvitationCode: normaliseCell(row[10]),
-    generatorUrl: normaliseCell(row[11]),
-    reviewedBy: normaliseCell(row[12]),
-    assignedDate: normaliseCell(row[13]),
-    notes: normaliseCell(row[14]) || normaliseCell(row[15]),
+    requestId: getCell(row, 'requestId'),
+    submittedAt: getCell(row, 'submittedAt'),
+    companyName: getCell(row, 'companyName'),
+    contactName: getCell(row, 'contactName'),
+    contactEmail: getCell(row, 'contactEmail'),
+    logoUrl: getCell(row, 'logoUrl'),
+    theme: mapTheme(getCell(row, 'theme')),
+    language: mapLanguage(getCell(row, 'language')),
+    status: getCell(row, 'status'),
+    assignedCodeId: getCell(row, 'assignedCodeId'),
+    assignedInvitationCode: getCell(row, 'assignedInvitationCode'),
+    generatorUrl: getCell(row, 'generatorUrl'),
+    reviewedBy: getCell(row, 'reviewedBy'),
+    assignedDate: getCell(row, 'assignedDate'),
+    notes: getCell(row, 'notes') || getCell(row, 'extraNotes'),
   }
+}
+
+function newRequestToSheetRow(input: NewSecondaryInvitationRequestInput): string[] {
+  const row = Array(Object.keys(REQUEST_COLUMNS).length).fill('')
+
+  row[REQUEST_COLUMNS.requestId] = input.requestId
+  row[REQUEST_COLUMNS.submittedAt] = input.submittedAt
+  row[REQUEST_COLUMNS.companyName] = input.companyName
+  row[REQUEST_COLUMNS.contactName] = input.contactName
+  row[REQUEST_COLUMNS.contactEmail] = input.contactEmail
+  row[REQUEST_COLUMNS.logoUrl] = input.logoUrl
+  row[REQUEST_COLUMNS.theme] = input.themeLabel
+  row[REQUEST_COLUMNS.language] = input.languageLabel
+  row[REQUEST_COLUMNS.status] = DEFAULT_REQUEST_STATUS
+  row[REQUEST_COLUMNS.assignedCodeId] = ''
+  row[REQUEST_COLUMNS.assignedInvitationCode] = ''
+  row[REQUEST_COLUMNS.generatorUrl] = input.generatorUrl
+  row[REQUEST_COLUMNS.reviewedBy] = ''
+  row[REQUEST_COLUMNS.assignedDate] = ''
+  row[REQUEST_COLUMNS.notes] = ''
+  row[REQUEST_COLUMNS.extraNotes] = ''
+
+  return row
+}
+
+export function buildSecondaryGeneratorUrl(requestId: string): string {
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.SITE_URL ||
+    'https://invitations.iseurope.org'
+
+  return `${baseUrl.replace(/\/$/, '')}/secondary/${encodeURIComponent(requestId)}`
+}
+
+export function buildSecondaryRegistrationUrl(invitationCode: string): string {
+  return `https://www.iseurope.org/welcome/registration?code=${encodeURIComponent(
+    invitationCode
+  )}`
 }
 
 export function isSecondaryInvitationApproved(status: string): boolean {
@@ -165,17 +265,19 @@ export function isSecondaryInvitationApproved(status: string): boolean {
   )
 }
 
-export async function appendSecondaryInvitationRequest(values: string[]) {
+export async function appendSecondaryInvitationRequest(
+  input: NewSecondaryInvitationRequestInput
+) {
   const { spreadsheetId, requestsSheet } = getSheetsConfig()
   const sheets = await getSheetsClient()
 
   await sheets.spreadsheets.values.append({
     spreadsheetId,
-    range: `${requestsSheet}!A:P`,
+    range: `${requestsSheet}!${REQUESTS_APPEND_RANGE}`,
     valueInputOption: 'USER_ENTERED',
     insertDataOption: 'INSERT_ROWS',
     requestBody: {
-      values: [values],
+      values: [newRequestToSheetRow(input)],
     },
   })
 }
@@ -194,7 +296,7 @@ export async function getSecondaryInvitationRequestById(
 
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: `${requestsSheet}!A:P`,
+    range: `${requestsSheet}!${REQUESTS_APPEND_RANGE}`,
   })
 
   const rows = response.data.values || []
