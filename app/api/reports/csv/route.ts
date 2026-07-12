@@ -59,6 +59,30 @@ function hasCustomDateRange(startDate?: string | null, endDate?: string | null):
   return Boolean(startDate?.trim() || endDate?.trim())
 }
 
+function getFlowFilter(flow?: string | null): 'all' | 'primary' | 'secondary' {
+  switch (flow) {
+    case 'primary':
+      return 'primary'
+    case 'secondary':
+      return 'secondary'
+    case 'all':
+    default:
+      return 'all'
+  }
+}
+
+function formatFlowLabel(flow: 'all' | 'primary' | 'secondary'): string {
+  switch (flow) {
+    case 'primary':
+      return 'primary'
+    case 'secondary':
+      return 'secondary'
+    case 'all':
+    default:
+      return 'all'
+  }
+}
+
 export async function GET(request: NextRequest) {
   try {
     const isAdmin = await verifyAdminSessionCookieValue(
@@ -82,6 +106,7 @@ export async function GET(request: NextRequest) {
     const q = request.nextUrl.searchParams.get('q')
     const startDate = request.nextUrl.searchParams.get('startDate')
     const endDate = request.nextUrl.searchParams.get('endDate')
+    const flow = getFlowFilter(request.nextUrl.searchParams.get('flow'))
 
     const rangeDays = hasCustomDateRange(startDate, endDate)
       ? undefined
@@ -93,6 +118,7 @@ export async function GET(request: NextRequest) {
       searchQuery: q?.trim() || undefined,
       startDate: startDate?.trim() || undefined,
       endDate: endDate?.trim() || undefined,
+      flow,
     })
 
     const headers = [
@@ -154,7 +180,8 @@ export async function GET(request: NextRequest) {
         ? `-${startDate || 'open'}-to-${endDate || 'open'}`
         : ''
 
-    const fileName = `exhibitor-report-${formatRangeLabel(range)}${customSuffix}.csv`
+    const flowSuffix = flow === 'all' ? '' : `-${formatFlowLabel(flow)}`
+    const fileName = `exhibitor-report-${formatRangeLabel(range)}${customSuffix}${flowSuffix}.csv`
 
     return new NextResponse(csv, {
       status: 200,
