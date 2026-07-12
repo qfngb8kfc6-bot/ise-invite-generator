@@ -756,11 +756,24 @@ function formatDate(value: string | null): string {
       return value
     }
 
-    return `${date.getUTCFullYear()}-${pad(date.getUTCMonth() + 1)}-${pad(
-      date.getUTCDate()
-    )} ${pad(date.getUTCHours())}:${pad(date.getUTCMinutes())}:${pad(
-      date.getUTCSeconds()
-    )} UTC`
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/London',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+      timeZoneName: 'short',
+    }).formatToParts(date)
+
+    const getPart = (type: Intl.DateTimeFormatPartTypes) =>
+      parts.find((part) => part.type === type)?.value ?? ''
+
+    return `${getPart('year')}-${getPart('month')}-${getPart('day')} ${getPart(
+      'hour'
+    )}:${getPart('minute')}:${getPart('second')} ${getPart('timeZoneName')}`
   } catch {
     return value
   }
