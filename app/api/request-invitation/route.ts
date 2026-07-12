@@ -1,7 +1,10 @@
 import { redirect } from 'next/navigation'
 import { themes } from '@/lib/themes'
 import { translations } from '@/lib/translations'
-import { appendSecondaryInvitationRequest } from '@/lib/google-sheets'
+import {
+  appendSecondaryInvitationRequest,
+  buildSecondaryGeneratorUrl,
+} from '@/lib/google-sheets'
 import type { LanguageKey, ThemeKey } from '@/lib/types'
 
 export const runtime = 'nodejs'
@@ -33,10 +36,14 @@ function badRequest(message: string) {
   })
 }
 
+function createRequestId() {
+  return `REQ-${crypto.randomUUID().slice(0, 8).toUpperCase()}`
+}
+
 export async function POST(request: Request) {
   const formData = await request.formData()
 
-  const requestId = crypto.randomUUID()
+  const requestId = createRequestId()
   const submittedAt = new Date().toISOString()
 
   const companyName = String(formData.get('companyName') || '').trim()
@@ -66,40 +73,29 @@ export async function POST(request: Request) {
     return badRequest('Please choose a valid invitation language.')
   }
 
-  if (!(logo instanceof File)) {
-    return badRequest('Logo file is required.')
-  }
+  const hasLogo = logo instanceof File && logo.size > 0
 
-  if (!ALLOWED_MIME_TYPES.has(logo.type)) {
+  if (hasLogo && !ALLOWED_MIME_TYPES.has(logo.type)) {
     return badRequest('Logo must be PNG, JPG, WEBP or SVG.')
   }
 
-  if (logo.size <= 0) {
-    return badRequest('Logo file is empty.')
-  }
-
-  if (logo.size > MAX_LOGO_BYTES) {
+  if (hasLogo && logo.size > MAX_LOGO_BYTES) {
     return badRequest('Logo is too large. Maximum size is 3MB.')
   }
 
-  await appendSecondaryInvitationRequest([
+  await appendSecondaryInvitationRequest({
     requestId,
     submittedAt,
     companyName,
     contactName,
     contactEmail,
-    `Logo uploaded: ${logo.name || 'logo'}`,
-    themes[themeRaw].label,
-    translations[languageRaw].ui.languageName,
-    'Pending Review',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-  ])
+    logoUrl: hasLogo
+      ? `Preferred logo submitted: ${logo.name || 'logo'} — final logo can be uploaded in generator`
+      : 'No preferred logo submitted — upload final logo in generator',
+    themeLabel: themes[themeRaw].label,
+    languageLabel: translations[languageRaw].ui.languageName,
+    generatorUrl: buildSecondaryGeneratorUrl(requestId),
+  })
 
   redirect('/request-invitation/success')
 }

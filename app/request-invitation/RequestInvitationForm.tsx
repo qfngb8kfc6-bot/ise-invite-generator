@@ -107,18 +107,18 @@ export default function RequestInvitationForm({
       </div>
 
       <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
-        <label className={labelClass}>Company logo</label>
+        <label className={labelClass}>Preferred company logo</label>
         <input
           name="logo"
           type="file"
           accept="image/png,image/jpeg,image/webp,image/svg+xml"
-          required
           onChange={handleLogoChange}
           className="w-full cursor-pointer rounded-2xl border border-white/10 bg-black/35 px-4 py-4 text-sm text-white/70 file:mr-4 file:cursor-pointer file:rounded-xl file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-500"
         />
         <p className={helperClass}>
-          Accepted formats: PNG, JPG, WEBP or SVG. Maximum file size: 3MB.
-          Recommended minimum size: 300 × 120px.
+          Optional at this stage. Accepted formats: PNG, JPG, WEBP or SVG.
+          Maximum file size: 3MB. Recommended minimum size: 300 × 120px.
+          Exhibitors can upload or replace their logo later inside the generator.
         </p>
 
         {logoMessage ? (
@@ -150,7 +150,7 @@ export default function RequestInvitationForm({
             ))}
           </select>
           <p className={helperClass}>
-            This controls the background style used on the invitation assets.
+            This sets the starting background style. Exhibitors can change it later inside the generator.
           </p>
         </div>
 
@@ -169,7 +169,7 @@ export default function RequestInvitationForm({
             ))}
           </select>
           <p className={helperClass}>
-            This controls the language used on the generated invitation card.
+            This sets the starting language. Exhibitors can change it later and download assets in multiple languages.
           </p>
         </div>
       </div>
@@ -177,9 +177,9 @@ export default function RequestInvitationForm({
       <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5">
         <p className="text-sm font-semibold text-white">Before submitting</p>
         <p className="mt-2 text-sm leading-6 text-white/48">
-          Please check that the company name, logo and contact email are correct.
-          After submission, the ISE team will review the request and assign the
-          invitation details.
+          Please check that the company name, contact email and preferences are correct.
+          Logo, language and sector image can still be changed later inside the approved generator.
+          After submission, the ISE team will review the request and assign the invitation details.
         </p>
       </div>
 

@@ -35,9 +35,9 @@ export default function RequestInvitationPage() {
             </h1>
 
             <p className="mt-5 max-w-xl text-base leading-8 text-white/62">
-              Submit your company details, logo, sector preference and language choice.
-              Once reviewed by the ISE team, your approved request will be connected to
-              an invitation code and a personalised download link.
+              Submit your company details, preferred sector image and preferred language.
+              You can also include a preferred logo, but exhibitors can upload or replace
+              the final logo later inside the approved generator.
             </p>
 
             <div className="mt-8 grid gap-4">
@@ -63,8 +63,8 @@ export default function RequestInvitationPage() {
                   Logo recommendation
                 </p>
                 <p className="mt-2 text-sm leading-6 text-blue-100/65">
-                  Upload a clear PNG, JPG, WEBP or SVG logo. A transparent PNG or SVG
-                  usually gives the cleanest result on the final invitation card.
+                  A logo upload is optional at request stage. Exhibitors can upload or
+                  replace their final logo inside the approved generator before downloading assets.
                 </p>
               </div>
             </div>
@@ -79,8 +79,8 @@ export default function RequestInvitationPage() {
                 Submit company details
               </h2>
               <p className="mt-2 text-sm leading-6 text-white/50">
-                Please use the company details exactly as you would like them to appear
-                on the invitation assets.
+                Please use the company details exactly as you would like them to appear.
+                Logo, theme and language can still be changed later inside the generator.
               </p>
             </div>
 

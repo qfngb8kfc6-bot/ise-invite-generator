@@ -178,7 +178,7 @@ export default function SecondaryGeneratorPageClient({
               Secondary invitation generator
             </p>
             <p className={`mt-2 leading-6 ${helperClassName}`}>
-              These values have been loaded from an approved invitation request.
+              These values have been loaded from an approved invitation request. You can change the logo, language and theme before downloading.
             </p>
           </div>
 
