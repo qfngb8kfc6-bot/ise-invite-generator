@@ -5,6 +5,7 @@ import {
   appendSecondaryInvitationRequest,
   buildSecondaryGeneratorUrl,
 } from '@/lib/google-sheets'
+import { logAnalyticsEvent } from '@/lib/analytics'
 import type { LanguageKey, ThemeKey } from '@/lib/types'
 
 export const runtime = 'nodejs'
@@ -83,19 +84,37 @@ export async function POST(request: Request) {
     return badRequest('Logo is too large. Maximum size is 3MB.')
   }
 
+  const generatorUrl = buildSecondaryGeneratorUrl(requestId)
+
   await appendSecondaryInvitationRequest({
     requestId,
     submittedAt,
     companyName,
     contactName,
     contactEmail,
-    logoUrl: hasLogo
-      ? `Preferred logo submitted: ${logo.name || 'logo'} — final logo can be uploaded in generator`
-      : 'No preferred logo submitted — upload final logo in generator',
+    logoUrl: '',
     themeLabel: themes[themeRaw].label,
     languageLabel: translations[languageRaw].ui.languageName,
-    generatorUrl: buildSecondaryGeneratorUrl(requestId),
+    generatorUrl,
   })
+
+  try {
+    await logAnalyticsEvent({
+      exhibitorId: `secondary:${requestId}`,
+      companyName,
+      eventType: 'link_generated',
+      metadata: {
+        flow: 'secondary',
+        requestId,
+        generatorUrl,
+        preferredTheme: themeRaw,
+        preferredLanguage: languageRaw,
+        preferredLogoSubmitted: hasLogo,
+      },
+    })
+  } catch (error) {
+    console.warn('[SECONDARY ANALYTICS WARNING] Failed to log link generation', error)
+  }
 
   redirect('/request-invitation/success')
 }

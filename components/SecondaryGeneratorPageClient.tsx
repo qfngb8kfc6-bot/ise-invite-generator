@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import EmailBannerPreview from '@/components/EmailBannerPreview'
 import InvitePreview from '@/components/InvitePreview'
 import LinkedInInvitePreview from '@/components/LinkedInInvitePreview'
@@ -12,6 +12,11 @@ import {
   makeExportBaseName,
   type ExportFormatKey,
 } from '@/lib/export'
+import {
+  trackAnalyticsEvent,
+  withTrackedExport,
+} from '@/lib/analytics-client'
+import type { ExportFormat } from '@/lib/analytics-types'
 import { themes } from '@/lib/themes'
 import { translations } from '@/lib/translations'
 import type { EditableInviteData, LanguageKey, ThemeKey } from '@/lib/types'
@@ -37,6 +42,23 @@ const orderedThemeKeys: ThemeKey[] = [
   'contentProduction',
 ]
 
+function normalizeInitialLogoUrl(value: string): string {
+  const trimmed = value.trim()
+
+  if (!trimmed) return ''
+
+  if (
+    trimmed.startsWith('http://') ||
+    trimmed.startsWith('https://') ||
+    trimmed.startsWith('/') ||
+    trimmed.startsWith('data:image/')
+  ) {
+    return trimmed
+  }
+
+  return ''
+}
+
 export default function SecondaryGeneratorPageClient({
   data,
 }: SecondaryGeneratorPageClientProps) {
@@ -46,7 +68,9 @@ export default function SecondaryGeneratorPageClient({
   const linkedinExportRef = useRef<HTMLDivElement | null>(null)
 
   const [companyName, setCompanyName] = useState(data.companyName)
-  const [logoUrl, setLogoUrl] = useState(data.logoUrl)
+  const [logoUrl, setLogoUrl] = useState(() =>
+    normalizeInitialLogoUrl(data.logoUrl)
+  )
   const [logoMessage, setLogoMessage] = useState<string | null>(null)
   const [theme, setTheme] = useState<ThemeKey>(data.theme)
   const [cardLanguage, setCardLanguage] = useState<LanguageKey>(data.language)
@@ -58,6 +82,38 @@ export default function SecondaryGeneratorPageClient({
   const invitationId = data.assignedCodeId
   const invitationCode = data.invitationCode
   const registrationUrl = data.registrationUrl
+  const analyticsExhibitorId = `secondary:${data.requestId}`
+
+  useEffect(() => {
+    void trackAnalyticsEvent({
+      exhibitorId: analyticsExhibitorId,
+      companyName: data.companyName || 'Secondary invitation request',
+      eventType: 'generator_opened',
+      metadata: {
+        flow: 'secondary',
+        requestId: data.requestId,
+        invitationId: data.assignedCodeId || null,
+        invitationCode: data.invitationCode || null,
+      },
+    })
+  }, [
+    analyticsExhibitorId,
+    data.assignedCodeId,
+    data.companyName,
+    data.invitationCode,
+    data.requestId,
+  ])
+
+  function getAnalyticsFormat(type: 'pdf' | 'zip' | ExportFormatKey): ExportFormat {
+    if (type === 'pdf') return 'pdf'
+    if (type === 'zip') return 'zip'
+    if (type === 'linkedin') return 'png-linkedin'
+    if (type === 'email') return 'png-email'
+    if (type === 'square') return 'png-square'
+    if (type === 'print') return 'png-print'
+
+    return null
+  }
 
   function handleLogoUpload(file: File | null) {
     setLogoMessage(null)
@@ -128,24 +184,32 @@ export default function SecondaryGeneratorPageClient({
       setExportError(null)
 
       const baseName = makeExportBaseName(companyName, invitationCode)
+      const analyticsFormat = getAnalyticsFormat(type)
 
-      if (type === 'pdf') {
-        await exportPdf(exportNode, baseName)
-        return
-      }
+      await withTrackedExport({
+        exhibitorId: analyticsExhibitorId,
+        companyName: companyName || data.companyName || 'Secondary invitation request',
+        format: analyticsFormat,
+        run: async () => {
+          if (type === 'pdf') {
+            await exportPdf(exportNode, baseName)
+            return
+          }
 
-      if (type === 'zip') {
-        await exportZipPack(
-          exportPreviewRef.current || exportNode,
-          baseName,
-          emailBannerExportRef.current || undefined,
-          exportPreviewRef.current || undefined,
-          linkedinExportRef.current || undefined
-        )
-        return
-      }
+          if (type === 'zip') {
+            await exportZipPack(
+              exportPreviewRef.current || exportNode,
+              baseName,
+              emailBannerExportRef.current || undefined,
+              exportPreviewRef.current || undefined,
+              linkedinExportRef.current || undefined
+            )
+            return
+          }
 
-      await exportPng(exportNode, type, baseName)
+          await exportPng(exportNode, type, baseName)
+        },
+      })
     } catch (error) {
       setExportError(error instanceof Error ? error.message : 'Export failed.')
     } finally {
@@ -263,7 +327,7 @@ export default function SecondaryGeneratorPageClient({
                           Company logo
                         </div>
                         <div className="mt-1 text-xs text-white/35">
-                          The approved logo URL comes from the spreadsheet. You can upload a temporary replacement for this session.
+                          Upload or replace the logo for this download session. Spreadsheet logo notes are ignored unless they are real image URLs.
                         </div>
                       </div>
 
@@ -279,7 +343,7 @@ export default function SecondaryGeneratorPageClient({
                     </div>
 
                     <label className="flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-4 text-sm text-white/55 transition hover:border-blue-400/40 hover:bg-blue-500/10">
-                      Upload temporary logo
+                      Upload logo
                       <input
                         type="file"
                         accept="image/png,image/jpeg,image/webp,image/svg+xml"
