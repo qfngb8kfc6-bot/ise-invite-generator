@@ -247,6 +247,26 @@ function filterEventsBySearchQuery(
   })
 }
 
+function getEventFlow(event: AnalyticsEvent): 'primary' | 'secondary' {
+  if (
+    event.exhibitorId.startsWith('secondary:') ||
+    event.metadata?.flow === 'secondary'
+  ) {
+    return 'secondary'
+  }
+
+  return 'primary'
+}
+
+function filterEventsByFlow(
+  events: AnalyticsEvent[],
+  flow?: 'all' | 'primary' | 'secondary'
+): AnalyticsEvent[] {
+  if (!flow || flow === 'all') return events
+
+  return events.filter((event) => getEventFlow(event) === flow)
+}
+
 function buildDailySeries(
   events: AnalyticsEvent[],
   options?: {
@@ -752,6 +772,7 @@ export async function getAnalyticsSummary(options?: {
   endDate?: string
   exhibitorId?: string
   searchQuery?: string
+  flow?: 'all' | 'primary' | 'secondary'
 }): Promise<
   AnalyticsSummary & {
     dailySeries: {
@@ -783,6 +804,8 @@ export async function getAnalyticsSummary(options?: {
     endDate: options?.endDate,
   })
 
+  const eventsInFlow = filterEventsByFlow(eventsInRange, options?.flow)
+
   const appliedSearchQuery = normalizeSearchQuery(options?.searchQuery) ?? null
   const appliedStartDate = isValidDateOnly(options?.startDate)
     ? options?.startDate ?? null
@@ -797,7 +820,7 @@ export async function getAnalyticsSummary(options?: {
   >()
 
   for (const event of filterEventsBySearchQuery(
-    eventsInRange,
+    eventsInFlow,
     appliedSearchQuery ?? undefined
   )) {
     if (!availableExhibitorsMap.has(event.exhibitorId)) {
@@ -817,7 +840,7 @@ export async function getAnalyticsSummary(options?: {
   )
 
   const eventsMatchingSearch = filterEventsBySearchQuery(
-    eventsInRange,
+    eventsInFlow,
     appliedSearchQuery ?? undefined
   )
 

@@ -16,6 +16,7 @@ type Props = {
     q?: string
     startDate?: string
     endDate?: string
+    flow?: string
   }>
 }
 
@@ -36,6 +37,18 @@ function hasCustomDateRange(startDate?: string, endDate?: string): boolean {
   return Boolean(startDate?.trim() || endDate?.trim())
 }
 
+function getFlowFilter(flow?: string): 'all' | 'primary' | 'secondary' {
+  switch (flow) {
+    case 'primary':
+      return 'primary'
+    case 'secondary':
+      return 'secondary'
+    case 'all':
+    default:
+      return 'all'
+  }
+}
+
 export default async function ReportsPage({ searchParams }: Props) {
   const cookieStore = await cookies()
   const isAdmin = await verifyAdminSessionCookieValue(
@@ -53,6 +66,7 @@ export default async function ReportsPage({ searchParams }: Props) {
   const q = resolvedSearchParams?.q?.trim() || ''
   const startDate = resolvedSearchParams?.startDate?.trim() || undefined
   const endDate = resolvedSearchParams?.endDate?.trim() || undefined
+  const flow = getFlowFilter(resolvedSearchParams?.flow)
 
   const rangeDays = hasCustomDateRange(startDate, endDate)
     ? undefined
@@ -64,6 +78,7 @@ export default async function ReportsPage({ searchParams }: Props) {
     searchQuery: q || undefined,
     startDate,
     endDate,
+    flow,
   })
 
   const safeSummary = JSON.parse(JSON.stringify(summary))
@@ -74,6 +89,7 @@ export default async function ReportsPage({ searchParams }: Props) {
       currentRange={range}
       currentExhibitorId={exhibitorId ?? null}
       currentSearchQuery={q}
+      currentFlow={flow}
     />
   )
 }

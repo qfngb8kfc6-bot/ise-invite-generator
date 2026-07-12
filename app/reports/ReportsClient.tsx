@@ -108,6 +108,7 @@ type Props = {
   currentRange: string
   currentExhibitorId: string | null
   currentSearchQuery: string
+  currentFlow: 'all' | 'primary' | 'secondary'
 }
 
 type SortKey =
@@ -144,6 +145,10 @@ type ReportsText = {
   search: string
   exhibitor: string
   dates: string
+  flow: string
+  allFlows: string
+  primaryGenerator: string
+  secondaryGenerator: string
   customDateRange: string
   allTime: string
   open: string
@@ -295,6 +300,10 @@ const enReportsText: ReportsText = {
   search: 'Search',
   exhibitor: 'Exhibitor',
   dates: 'Dates',
+  flow: 'Flow',
+  allFlows: 'All activity',
+  primaryGenerator: 'Primary exhibitors',
+  secondaryGenerator: 'Secondary requests',
   customDateRange: 'Custom date range',
   allTime: 'All time',
   open: 'Open',
@@ -716,6 +725,12 @@ const RANGE_OPTIONS = [
   { labelKey: 'all', value: 'all' },
 ] as const
 
+const FLOW_OPTIONS = [
+  { labelKey: 'allFlows', value: 'all' },
+  { labelKey: 'primaryGenerator', value: 'primary' },
+  { labelKey: 'secondaryGenerator', value: 'secondary' },
+] as const
+
 const PAGE_SIZE_OPTIONS = [25, 50, 100, 250] as const
 
 const CHART_COLORS = {
@@ -828,6 +843,7 @@ function buildReportsHref(args: {
   q?: string | null
   startDate?: string | null
   endDate?: string | null
+  flow?: string | null
 }) {
   const params = new URLSearchParams()
 
@@ -842,6 +858,9 @@ function buildReportsHref(args: {
   }
 
   if (args.exhibitorId) params.set('exhibitorId', args.exhibitorId)
+
+  const flow = args.flow?.trim()
+  if (flow && flow !== 'all') params.set('flow', flow)
 
   const searchQuery = args.q?.trim()
   if (searchQuery) params.set('q', searchQuery)
@@ -881,7 +900,8 @@ function getCsvHref(
   exhibitorId?: string | null,
   q?: string | null,
   startDate?: string | null,
-  endDate?: string | null
+  endDate?: string | null,
+  flow?: string | null
 ): string {
   const params = new URLSearchParams()
 
@@ -896,6 +916,9 @@ function getCsvHref(
   }
 
   if (exhibitorId) params.set('exhibitorId', exhibitorId)
+
+  const flowFilter = flow?.trim()
+  if (flowFilter && flowFilter !== 'all') params.set('flow', flowFilter)
 
   const searchQuery = q?.trim()
   if (searchQuery) params.set('q', searchQuery)
@@ -909,7 +932,8 @@ function getXlsxHref(
   exhibitorId?: string | null,
   q?: string | null,
   startDate?: string | null,
-  endDate?: string | null
+  endDate?: string | null,
+  flow?: string | null
 ): string {
   const params = new URLSearchParams()
 
@@ -924,6 +948,9 @@ function getXlsxHref(
   }
 
   if (exhibitorId) params.set('exhibitorId', exhibitorId)
+
+  const flowFilter = flow?.trim()
+  if (flowFilter && flowFilter !== 'all') params.set('flow', flowFilter)
 
   const searchQuery = q?.trim()
   if (searchQuery) params.set('q', searchQuery)
@@ -1421,6 +1448,7 @@ export default function ReportsClient({
   currentRange,
   currentExhibitorId,
   currentSearchQuery,
+  currentFlow,
 }: Props) {
   const [language] = useSiteLanguage()
   const text = reportsText[language] ?? reportsText.en
@@ -1617,6 +1645,7 @@ export default function ReportsClient({
         q: currentSearchQuery,
         startDate: summary.appliedStartDate,
         endDate: summary.appliedEndDate,
+        flow: currentFlow,
       })
       return
     }
@@ -1637,6 +1666,7 @@ export default function ReportsClient({
       q: currentSearchQuery,
       startDate: summary.appliedStartDate,
       endDate: summary.appliedEndDate,
+      flow: currentFlow,
     })
   }
 
@@ -1828,10 +1858,37 @@ export default function ReportsClient({
                       : '—'}
                   </span>
                 </span>
+                <span className="rounded-full border border-white/20 bg-black/46 px-3 py-1">
+                  {text.flow}:{' '}
+                  <span className="font-medium text-white">
+                    {currentFlow === 'secondary'
+                      ? text.secondaryGenerator
+                      : currentFlow === 'primary'
+                        ? text.primaryGenerator
+                        : text.allFlows}
+                  </span>
+                </span>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap xl:justify-end">
+              {FLOW_OPTIONS.map((option) => (
+                <ToolbarPill
+                  key={option.value}
+                  active={currentFlow === option.value}
+                  href={buildReportsHref({
+                    range: currentRange,
+                    exhibitorId: currentExhibitorId,
+                    q: currentSearchQuery,
+                    startDate: summary.appliedStartDate,
+                    endDate: summary.appliedEndDate,
+                    flow: option.value,
+                  })}
+                >
+                  {text[option.labelKey]}
+                </ToolbarPill>
+              ))}
+
               {RANGE_OPTIONS.map((option) => {
                 const isActive =
                   !summary.appliedStartDate &&
@@ -1846,6 +1903,7 @@ export default function ReportsClient({
                       range: option.value,
                       exhibitorId: currentExhibitorId,
                       q: currentSearchQuery,
+                      flow: currentFlow,
                     })}
                   >
                     {getRangeLabel(option.value, text)}
@@ -1860,7 +1918,8 @@ export default function ReportsClient({
                   currentExhibitorId,
                   currentSearchQuery,
                   summary.appliedStartDate,
-                  summary.appliedEndDate
+                  summary.appliedEndDate,
+                  currentFlow
                 )}
               >
                 {text.downloadCsv}
@@ -1873,7 +1932,8 @@ export default function ReportsClient({
                   currentExhibitorId,
                   currentSearchQuery,
                   summary.appliedStartDate,
-                  summary.appliedEndDate
+                  summary.appliedEndDate,
+                  currentFlow
                 )}
               >
                 {text.downloadXlsx}
@@ -1896,7 +1956,8 @@ export default function ReportsClient({
             {(summary.appliedSearchQuery ||
               summary.appliedExhibitorId ||
               summary.appliedStartDate ||
-              summary.appliedEndDate) ? (
+              summary.appliedEndDate ||
+              currentFlow !== 'all') ? (
               <Link
                 href="/reports"
                 className="inline-flex w-fit rounded-2xl border border-white/20 bg-black/50 px-4 py-2 text-sm font-medium text-neutral-300 transition hover:bg-[#020617]/98"
@@ -1953,6 +2014,9 @@ export default function ReportsClient({
 
             <div>
               <input type="hidden" name="range" value={currentRange} />
+              {currentFlow !== 'all' ? (
+                <input type="hidden" name="flow" value={currentFlow} />
+              ) : null}
               {currentExhibitorId ? (
                 <input type="hidden" name="exhibitorId" value={currentExhibitorId} />
               ) : null}
