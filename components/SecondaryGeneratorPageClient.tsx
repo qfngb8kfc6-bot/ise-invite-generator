@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react'
 import EmailBannerPreview from '@/components/EmailBannerPreview'
 import InvitePreview from '@/components/InvitePreview'
 import LinkedInInvitePreview from '@/components/LinkedInInvitePreview'
-import SquareInvitePreview from '@/components/SquareInvitePreview'
 import {
   exportPdf,
   exportPng,
@@ -64,7 +63,6 @@ export default function SecondaryGeneratorPageClient({
 }: SecondaryGeneratorPageClientProps) {
   const exportPreviewRef = useRef<HTMLDivElement | null>(null)
   const emailBannerExportRef = useRef<HTMLDivElement | null>(null)
-  const squareExportRef = useRef<HTMLDivElement | null>(null)
   const linkedinExportRef = useRef<HTMLDivElement | null>(null)
 
   const [companyName, setCompanyName] = useState(data.companyName)
@@ -471,20 +469,6 @@ export default function SecondaryGeneratorPageClient({
             mode="secondary"
           />
         </div>
-
-        <div ref={squareExportRef}>
-          <SquareInvitePreview
-            companyName={companyName}
-            standNumber={invitationId}
-            invitationCode={invitationCode}
-            logoUrl={logoUrl}
-            registrationUrl={registrationUrl}
-            theme={theme}
-            language={cardLanguage}
-            mode="secondary"
-          />
-        </div>
-
         <div ref={linkedinExportRef}>
           <LinkedInInvitePreview
             companyName={companyName}

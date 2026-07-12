@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react'
 import EmailBannerPreview from '@/components/EmailBannerPreview'
 import InvitePreview from '@/components/InvitePreview'
 import LinkedInInvitePreview from '@/components/LinkedInInvitePreview'
-import SquareInvitePreview from '@/components/SquareInvitePreview'
 import { useSiteLanguage } from '@/components/LanguageSwitcher'
 import {
  exportPdf,
@@ -46,7 +45,6 @@ const DISPLAY_MODE_STORAGE_KEY = 'ise-generator-display-mode'
 export default function GeneratorPageClient({ initialToken, initialData }: Props) {
  const exportPreviewRef = useRef<HTMLDivElement | null>(null)
  const emailBannerExportRef = useRef<HTMLDivElement | null>(null)
- const squareExportRef = useRef<HTMLDivElement | null>(null)
  const linkedinExportRef = useRef<HTMLDivElement | null>(null)
 
  const [generatorLanguage] = useSiteLanguage()
@@ -510,19 +508,6 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
       language={cardLanguage}
      />
     </div>
-
-    <div ref={squareExportRef}>
-     <SquareInvitePreview
-      companyName={companyName}
-      standNumber={standNumber}
-      invitationCode={invitationCode}
-      logoUrl={logoUrl}
-      registrationUrl={registrationUrl}
-      theme={theme}
-      language={cardLanguage}
-     />
-    </div>
-
     <div ref={linkedinExportRef}>
      <LinkedInInvitePreview
       companyName={companyName}
