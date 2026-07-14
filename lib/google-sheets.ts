@@ -191,7 +191,12 @@ function getCodePoolCell(
 }
 
 function isCodePoolStatusAvailable(status: string): boolean {
-  return normaliseStatus(status) === normaliseStatus(CODE_POOL_AVAILABLE_STATUS)
+  const normalised = normaliseStatus(status)
+
+  return (
+    normalised === '' ||
+    normalised === normaliseStatus(CODE_POOL_AVAILABLE_STATUS)
+  )
 }
 
 function getCell(row: unknown[], column: keyof typeof REQUEST_COLUMNS): string {
