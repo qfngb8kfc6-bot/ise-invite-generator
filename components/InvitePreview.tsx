@@ -178,199 +178,169 @@ export default function InvitePreview({
           backgroundPosition: 'center center',
         }}
       >
+        <div className="absolute inset-0 bg-black/12" />
+
+        <div className="relative flex h-full flex-col items-center px-6 pb-[44px] text-center">
+          <img
+            src={ISE_LOGO_WHITE}
+            alt="Integrated Systems Europe"
+            className="mt-[18px] h-[56px] w-auto object-contain"
+          />
+
+          <p className="mt-[30px] text-[19px] font-black uppercase leading-none tracking-[-0.018em] text-white">
+            ISE {EVENT_YEAR}: WHEN WORLDS UNITE
+          </p>
+
+          <h2 className="mt-[20px] text-[65px] font-semibold uppercase leading-[0.98] tracking-[-0.052em] text-white">
+            YOUR INVITATION.<br />
+            OUR CELEBRATION.
+          </h2>
+
+          <p className="mt-[18px] text-[19px] font-semibold leading-none tracking-[-0.025em] text-white">
+            2 - 5 Feb {EVENT_YEAR} <span className="px-3">|</span> Fira de Barcelona, Gran Via
+          </p>
+
+        </div>
+
         <img
           src="/branding/toolkit/ise-partners-footer-transparent.png?v=20270623"
           alt="A joint venture partnership of AVIXA and CEDIA"
-          className="absolute bottom-[22px] right-[34px] z-30 h-auto w-[305px] max-w-none object-contain opacity-100"
+          className="absolute bottom-[14px] left-1/2 z-30 h-auto w-[250px] max-w-none -translate-x-1/2 object-contain opacity-100"
         />
-        <div className="absolute inset-0 bg-black/18" />
-
-        <div className="relative flex h-full flex-col justify-between">
-          <div className="flex items-start justify-between gap-8">
-            <img
-              src={ISE_LOGO_WHITE}
-              alt="Integrated Systems Europe"
-              className="h-[78px] w-auto object-contain"
-            />
-
-            <div className="text-right text-[13px] font-semibold leading-tight text-white/85">
-              <div>Fira de Barcelona | Gran Via</div>
-              <div>2 - 5 February {EVENT_YEAR}</div>
-            </div>
-          </div>
-
-          <div className="flex items-end justify-between gap-8">
-            <div className="max-w-[620px]">
-              <p className="text-[17px] font-medium text-white/86">
-                {cardCopy.joinUs}
-              </p>
-
-              <h2 className="mt-3 text-[62px] font-semibold uppercase leading-[0.88] tracking-[-0.055em] text-white">
-                {cardCopy.invitationTitle}
-              </h2>
-            </div>
-          </div>
-        </div>
       </section>
 
-      <section className="h-[500px] bg-white px-12 py-10 text-[#141442]">
-        <div className="relative h-full">
-          <div className="grid h-full grid-cols-[minmax(0,1fr)_285px] gap-12">
-            <div className="relative min-w-0 pr-4 pb-14">
-              <div className="mt-0 max-w-[650px]">
-                <h3
-                  className="overflow-hidden whitespace-nowrap font-black uppercase leading-[1.04] tracking-[-0.055em] text-[#080832]"
-                  style={{
-                    fontSize:
-                      (companyName || fallbackText.companyName).length > 42
-                        ? '22px'
-                        : (companyName || fallbackText.companyName).length > 34
-                          ? '25px'
-                          : (companyName || fallbackText.companyName).length > 28
-                            ? '28px'
-                            : (companyName || fallbackText.companyName).length > 22
-                              ? '32px'
-                              : '36px',
-                  }}
-                >
-                  {companyName || fallbackText.companyName}
-                </h3>
+      <section className="h-[520px] bg-white px-12 py-9 text-[#050b36]">
+        <div className="flex items-start justify-between gap-8 border-b border-[#050b36]/80 pb-7">
+          <div className="min-w-0 max-w-[390px]">
+            <h3
+              className="overflow-hidden whitespace-nowrap font-semibold uppercase leading-none tracking-[-0.04em] text-[#050b36]"
+              style={{
+                fontSize:
+                  (companyName || fallbackText.companyName).length > 42
+                    ? '23px'
+                    : (companyName || fallbackText.companyName).length > 34
+                      ? '26px'
+                      : (companyName || fallbackText.companyName).length > 28
+                        ? '30px'
+                        : '36px',
+              }}
+            >
+              {companyName || fallbackText.companyName}
+            </h3>
 
-                <p className="mt-1 text-[15px] font-semibold leading-tight text-[#141442]/78">
-                  {isSecondaryMode
-                    ? `has created your ISE ${EVENT_YEAR} invitation`
-                    : `has invited you to ISE ${EVENT_YEAR}`}
+            <p className="mt-2 text-[18px] font-medium leading-tight text-[#050b36]">
+              {isSecondaryMode
+                ? `Has created your ISE ${EVENT_YEAR} invitation`
+                : `Has invited you to ISE ${EVENT_YEAR}`}
+            </p>
+          </div>
+
+          <div className="flex min-h-[76px] w-[250px] items-center justify-center border border-[#050b36]/35 bg-white px-5">
+            {logoUrl && failedLogoUrl !== logoUrl ? (
+              <img
+                src={logoUrl}
+                alt={`${companyName} logo`}
+                className="max-h-14 max-w-[210px] object-contain"
+                onError={() => setFailedLogoUrl(logoUrl)}
+              />
+            ) : (
+              <span className="text-center text-[16px] font-medium text-[#050b36]/70">
+                Logo
+              </span>
+            )}
+          </div>
+
+          <div className="w-[175px] text-center">
+            <p className="text-[19px] font-semibold leading-tight text-[#050b36]">
+              {detailLabel}:
+            </p>
+            <p className="mt-1 break-words text-[18px] font-medium leading-tight text-[#050b36]">
+              {boothDisplay || '000000'}
+            </p>
+          </div>
+        </div>
+
+        <div className="grid h-[365px] grid-cols-[minmax(0,1fr)_300px] gap-10 pt-8">
+          <div className="min-w-0">
+            <h3 className="max-w-[560px] text-[52px] font-semibold uppercase leading-[0.98] tracking-[-0.045em] text-[#050b36]">
+              {language === 'en' ? (
+                <>
+                  BRING YOUR WORLD.<br />
+                  UNITE WITH US.
+                </>
+              ) : (
+                cardCopy.reconnectHeadline
+              )}
+            </h3>
+
+            {language === 'en' ? (
+              <div className="mt-7 max-w-[560px] space-y-4 text-[16px] font-medium leading-[1.34] text-[#050b36]">
+                <p className="font-semibold">
+                  The world-renowned annual tech show is back.
                 </p>
 
-                <h3 className="mt-8 max-w-[590px] text-[39px] font-black uppercase leading-[0.88] tracking-[-0.055em] text-[#080832]">
-                  {language === 'en' ? (
-                    <>
-                      BRING YOUR WORLD.<br />
-                      UNITE WITH US.
-                    </>
-                  ) : (
-                    cardCopy.reconnectHeadline
-                  )}
-                </h3>
+                <p>
+                  The world’s latest innovations. The world’s greatest innovators.
+                </p>
 
-                {language === 'en' ? (
-                  <div className="mt-2 max-w-[650px] space-y-1.5 text-[15px] font-medium leading-[1.34] text-[#141442]/84">
-                    <p className="font-bold text-[#141442]">
-                      The world-renowned annual tech show is back.
-                    </p>
+                <p>
+                  ISE {EVENT_YEAR} is set to bring it all together for its best edition yet.
+                  From bright start-ups to bold showstoppers, expect nothing but everything.
+                </p>
 
-                    <p>
-                      The world’s latest innovations. The world’s greatest innovators.
-                    </p>
+                <p className="font-semibold">
+                  Because a world of opportunity awaits...
+                </p>
+              </div>
+            ) : (
+              <div className="mt-6 max-w-[560px] space-y-3 text-[16px] font-medium leading-[1.5] text-[#050b36]">
+                <p>{cardCopy.bodyOne}</p>
+                <p>{cardCopy.bodyTwo}</p>
+                <p>{cardCopy.bodyThree}</p>
+              </div>
+            )}
+          </div>
 
-                    <p>
-                      ISE {EVENT_YEAR} is set to bring it all together for its best edition yet. You’ll find:
-                    </p>
+          <div className="flex flex-col items-center justify-start pt-1">
+            <div className="relative flex h-[210px] w-[210px] items-center justify-center">
+              <img
+                src={ISE_QR_RINGS}
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 z-0 h-full w-full object-contain"
+              />
 
-                    <ul className="space-y-0.5">
-                      <li>– Bright start-ups and bold showstoppers</li>
-                      <li>– Creative content makers and expert integrators</li>
-                      <li>– Next-gen classrooms and next-level concert halls</li>
-                      <li>– And a whole lot more in between</li>
-                    </ul>
-
-                    <p>
-                      So expect every vertical from every horizon. Nothing but <span className="italic">everything.</span>
-                    </p>
-
-                    <p className="font-bold text-[#141442]">
-                      Because a world of opportunity awaits...
-                    </p>
-                  </div>
+              <div className="relative z-10 rounded-[10px] bg-white p-1">
+                {qrDataUrl ? (
+                  <img
+                    src={qrDataUrl}
+                    alt="Registration QR code"
+                    className="h-[88px] w-[88px] object-contain"
+                  />
                 ) : (
-                  <div className="mt-5 space-y-3 text-[16px] font-medium leading-[1.6] text-[#141442]/82">
-                    <p>
-                      {cardCopy.bodyOne}
-                    </p>
-
-                    <p>
-                      {cardCopy.bodyTwo}
-                    </p>
-
-                    <p>
-                      {cardCopy.bodyThree}
-                    </p>
+                  <div className="flex h-[88px] w-[88px] items-center justify-center text-[9px] font-semibold text-zinc-400">
+                    {fallbackText.qrUnavailable}
                   </div>
                 )}
               </div>
-            </div>
 
-            <div className="flex w-[285px] -translate-x-72 flex-col items-center pb-[138px] pt-1">
-              <div className="translate-x-72">
-                <div className="flex min-h-[78px] w-[205px] items-center justify-center rounded-[6px] border border-zinc-200 bg-zinc-50 px-4">
-                  {logoUrl && failedLogoUrl !== logoUrl ? (
-                    <img
-                      src={logoUrl}
-                      alt={`${companyName} logo`}
-                      className="max-h-12 max-w-[172px] object-contain"
-                      onError={() => setFailedLogoUrl(logoUrl)}
-                    />
-                  ) : (
-                    <span className="text-center text-[11px] font-semibold text-zinc-400">
-                      {fallbackText.logoUnavailable}
-                    </span>
-                  )}
-                </div>
-
-                <div className="mt-7 w-[205px] text-center">
-                  <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#141442]/38">
-                    {detailLabel}
-                  </p>
-                  <p className="mt-1 break-words text-[16px] font-bold leading-tight text-[#080832]">
-                    {boothDisplay || '—'}
-                  </p>
-                </div>
-              </div>
-
-              <p className="mt-9 w-[270px] translate-x-72 text-center text-[13px] font-semibold uppercase leading-snug tracking-[0.2em] text-[#141442]/70">
-                FREE TICKET — SCAN TO REGISTER
-              </p>
-
-              <div className="relative mt-1 flex h-[212px] w-[212px] translate-x-72 items-center justify-center">
-                <img
-                  src={ISE_QR_RINGS}
-                  alt=""
-                  aria-hidden="true"
-                  className="absolute inset-0 z-0 h-full w-full scale-[0.84] object-contain"
-                />
-
-                <div className="relative z-10 rounded-[12px] bg-white p-0 shadow-none">
-                  {qrDataUrl ? (
-                    <img
-                      src={qrDataUrl}
-                      alt="Registration QR code"
-                      className="h-[84px] w-[84px] object-contain"
-                    />
-                  ) : (
-                    <div className="flex h-[84px] w-[84px] items-center justify-center text-[9px] font-semibold text-zinc-400">
-                      {fallbackText.qrUnavailable}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="-mt-2 w-[245px] translate-x-72 text-center">
-                <p className="text-[8px] font-semibold uppercase tracking-[0.18em] text-[#141442]/42">
-                  Registration URL
-                </p>
-                <p className="mt-1 break-all text-[8.5px] font-medium leading-[1.25] text-[#141442]/55">
-                  {registrationUrl || fallbackText.registrationUrlUnavailable}
+              <div className="absolute inset-0 flex items-center justify-center text-center">
+                <p className="max-w-[126px] translate-y-[-88px] text-[20px] font-semibold uppercase leading-[1.08] text-[#050b36] opacity-0">
+                  SAVE €250 AND SECURE YOUR FREE TICKET TODAY
                 </p>
               </div>
             </div>
-          </div>
 
-          <div className="absolute bottom-[4px] left-0 z-[999] max-w-[650px] text-left">
-            <p className="text-[13px] font-semibold leading-tight text-[#00a6d6]">
-              {cardCopy.freeCode}{' '}
-              <span className="font-black tracking-[-0.035em] text-[#080832]">
-                {invitationCode || '—'}
-              </span>
+            <p className="mt-4 max-w-[245px] text-center text-[22px] font-semibold uppercase leading-[1.08] text-[#050b36]">
+              SAVE €250<br />
+              AND SECURE<br />
+              YOUR FREE<br />
+              TICKET TODAY
+            </p>
+
+            <p className="mt-8 text-center text-[17px] font-semibold leading-tight text-[#050b36]">
+              Use the code: {invitationCode || 'XXX'}<br />
+              at iseurope.org/invite
             </p>
           </div>
         </div>
