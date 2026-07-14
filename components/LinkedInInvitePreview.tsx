@@ -170,7 +170,7 @@ export default function LinkedInInvitePreview({
     <div className="relative h-[627px] w-[1200px] overflow-hidden bg-[#06194c] text-white">
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${selectedTheme.backgroundImage})` }}
+        style={{ backgroundImage: `url("${selectedTheme.backgroundImage}")` }}
       />
       <div className="absolute inset-0 bg-gradient-to-r from-[#06194c]/98 via-[#06194c]/88 to-[#06194c]/72" />
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(6,25,76,0.12),rgba(6,25,76,0.68))]" />

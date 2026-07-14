@@ -433,10 +433,10 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
             }`}
            >
             <div
-             className="absolute inset-0 bg-cover bg-center opacity-25"
-             style={{ backgroundImage: `url(${item.backgroundImage})` }}
+             className="absolute inset-0 bg-cover bg-center opacity-100"
+             style={{ backgroundImage: `url("${item.backgroundImage}")` }}
             />
-            <div className={isLightMode ? 'absolute inset-0 bg-white/74' : 'absolute inset-0 bg-black/62'} />
+            <div className={isLightMode ? 'absolute inset-0 bg-white/30' : 'absolute inset-0 bg-black/30'} />
             <div className="relative">
              <div className="text-xl font-semibold">{item.label}</div>
 

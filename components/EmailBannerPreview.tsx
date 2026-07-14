@@ -121,7 +121,7 @@ export default function EmailBannerPreview({
     <div className="relative h-[300px] w-[1200px] overflow-hidden bg-[#06194c] text-white">
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${selectedTheme.backgroundImage})` }}
+        style={{ backgroundImage: `url("${selectedTheme.backgroundImage}")` }}
       />
       <div className="absolute inset-0 bg-gradient-to-r from-[#06194c]/96 via-[#06194c]/82 to-[#06194c]/54" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_45%,rgba(0,217,255,0.32),transparent_34%)]" />

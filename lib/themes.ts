@@ -1,44 +1,47 @@
 import type { ThemeConfig, ThemeKey } from '@/lib/types'
 
+const OFFICIAL_BACKGROUND_BASE =
+  '/branding/ise-2027-digital-invitation/backgrounds'
+
 export const themes: Record<ThemeKey, ThemeConfig> = {
   iseBrandingOne: {
-    label: 'ISE 2027 Branding 1',
-    backgroundImage: '/branding/ise-background.jpeg',
+    label: 'Generic',
+    backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Generic.jpg`,
   },
   iseBrandingTwo: {
-    label: 'ISE 2027 Branding 2',
-    backgroundImage: '/branding/toolkit/ise-invitation-bg.png',
+    label: 'Save the Date',
+    backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Save the date.jpg`,
   },
   audio: {
     label: 'Audio',
-    backgroundImage: '/themes/audio.jpg',
+    backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Audio.jpg`,
   },
   residential: {
     label: 'Residential',
-    backgroundImage: '/themes/residential.jpg',
+    backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Residential.jpg`,
   },
   lighting: {
     label: 'Lighting & Staging',
-    backgroundImage: '/themes/lighting.jpg',
+    backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Lighting & Staging.jpg`,
   },
   unifiedCommunications: {
-    label: 'Unified Communications',
-    backgroundImage: '/themes/unified-communications.jpg',
+    label: 'Multitechnology',
+    backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Multitechnology.jpg`,
   },
   educationTechnology: {
-    label: 'Education Technology',
-    backgroundImage: '/themes/education-technology.jpg',
+    label: 'Education',
+    backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Education.jpg`,
   },
   digitalSignage: {
     label: 'Digital Signage',
-    backgroundImage: '/themes/digital-signage.jpg',
+    backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Digital Signage.jpg`,
   },
   smartBuilding: {
     label: 'Smart Building',
-    backgroundImage: '/themes/smart-building.jpg',
+    backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Smart building.jpg`,
   },
   contentProduction: {
     label: 'Broadcast',
-    backgroundImage: '/themes/content-production.jpg',
+    backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Broadcast.jpg`,
   },
 }

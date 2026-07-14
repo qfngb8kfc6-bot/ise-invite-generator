@@ -381,12 +381,12 @@ export default function SecondaryGeneratorPageClient({
                         }`}
                       >
                         <div
-                          className="absolute inset-0 bg-cover bg-center opacity-25"
+                          className="absolute inset-0 bg-cover bg-center opacity-100"
                           style={{
-                            backgroundImage: `url(${item.backgroundImage})`,
+                            backgroundImage: `url("${item.backgroundImage}")`,
                           }}
                         />
-                        <div className="absolute inset-0 bg-black/62" />
+                        <div className="absolute inset-0 bg-black/30" />
                         <div className="relative">
                           <div className="text-xl font-semibold">
                             {item.label}
@@ -423,7 +423,7 @@ export default function SecondaryGeneratorPageClient({
 
           <div
             className="absolute inset-0 bg-cover bg-center opacity-55"
-            style={{ backgroundImage: `url(${themes[theme].backgroundImage})` }}
+            style={{ backgroundImage: `url("${themes[theme].backgroundImage}")` }}
           />
 
           <div className="absolute inset-0 bg-[#020617]/62" />

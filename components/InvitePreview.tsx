@@ -171,20 +171,19 @@ export default function InvitePreview({
   return (
     <div className="w-[980px] overflow-hidden rounded-[18px] bg-white shadow-[0_28px_90px_rgba(2,6,23,0.42)] ring-1 ring-white/15">
       <section
-        className="relative h-[325px] overflow-hidden bg-[#06194c] px-12 py-9 text-white"
+        className="relative h-[430px] overflow-hidden bg-[#06194c] px-12 py-9 text-white"
         style={{
-          backgroundImage: `url(${selectedTheme.backgroundImage})`,
+          backgroundImage: `url("${selectedTheme.backgroundImage}")`,
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundPosition: 'center center',
         }}
       >
         <img
           src="/branding/toolkit/ise-partners-footer-transparent.png?v=20270623"
           alt="A joint venture partnership of AVIXA and CEDIA"
-          className="absolute bottom-[18px] right-[34px] z-30 h-auto w-[305px] max-w-none object-contain opacity-100"
+          className="absolute bottom-[22px] right-[34px] z-30 h-auto w-[305px] max-w-none object-contain opacity-100"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#06194c]/96 via-[#06194c]/74 to-[#06194c]/30" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_28%,rgba(34,211,238,0.22),transparent_34%)]" />
+        <div className="absolute inset-0 bg-black/18" />
 
         <div className="relative flex h-full flex-col justify-between">
           <div className="flex items-start justify-between gap-8">
@@ -214,7 +213,7 @@ export default function InvitePreview({
         </div>
       </section>
 
-      <section className="h-[525px] bg-white px-12 py-10 text-[#141442]">
+      <section className="h-[500px] bg-white px-12 py-10 text-[#141442]">
         <div className="relative h-full">
           <div className="grid h-full grid-cols-[minmax(0,1fr)_285px] gap-12">
             <div className="relative min-w-0 pr-4 pb-14">

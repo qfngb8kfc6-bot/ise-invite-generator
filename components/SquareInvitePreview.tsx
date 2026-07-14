@@ -128,7 +128,7 @@ export default function SquareInvitePreview({
     <div className="relative h-[1080px] w-[1080px] overflow-hidden bg-[#06194c] text-white">
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${selectedTheme.backgroundImage})` }}
+        style={{ backgroundImage: `url("${selectedTheme.backgroundImage}")` }}
       />
       <div className="absolute inset-0 bg-gradient-to-br from-[#06194c]/98 via-[#06194c]/86 to-[#1b1464]/68" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_30%,rgba(0,217,255,0.26),transparent_34%)]" />
