@@ -78,7 +78,7 @@ const REQUEST_COLUMNS = {
 } as const
 
 const REQUESTS_APPEND_RANGE = 'A:P'
-const DEFAULT_REQUEST_STATUS = 'Pending Review'
+const DEFAULT_REQUEST_STATUS = 'Approved'
 
 function getPrivateKey() {
   const base64Key = process.env.GOOGLE_SHEETS_PRIVATE_KEY_BASE64?.trim()
@@ -227,12 +227,12 @@ function newRequestToSheetRow(input: NewSecondaryInvitationRequestInput): string
   row[REQUEST_COLUMNS.theme] = input.themeLabel
   row[REQUEST_COLUMNS.language] = input.languageLabel
   row[REQUEST_COLUMNS.status] = DEFAULT_REQUEST_STATUS
-  row[REQUEST_COLUMNS.assignedCodeId] = ''
-  row[REQUEST_COLUMNS.assignedInvitationCode] = ''
+  row[REQUEST_COLUMNS.assignedCodeId] = input.requestId
+  row[REQUEST_COLUMNS.assignedInvitationCode] = input.requestId
   row[REQUEST_COLUMNS.generatorUrl] = input.generatorUrl
-  row[REQUEST_COLUMNS.reviewedBy] = ''
-  row[REQUEST_COLUMNS.assignedDate] = ''
-  row[REQUEST_COLUMNS.notes] = ''
+  row[REQUEST_COLUMNS.reviewedBy] = 'Auto-approved'
+  row[REQUEST_COLUMNS.assignedDate] = input.submittedAt
+  row[REQUEST_COLUMNS.notes] = 'Auto-approved on submission'
   row[REQUEST_COLUMNS.extraNotes] = ''
 
   return row

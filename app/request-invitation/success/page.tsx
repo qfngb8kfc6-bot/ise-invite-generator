@@ -2,7 +2,26 @@ import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
-export default function RequestInvitationSuccessPage() {
+type SuccessPageProps = {
+  searchParams?: Promise<{
+    requestId?: string | string[]
+  }>
+}
+
+function getRequestId(value?: string | string[]): string {
+  if (Array.isArray(value)) return value[0] || ''
+  return value || ''
+}
+
+export default async function RequestInvitationSuccessPage({
+  searchParams,
+}: SuccessPageProps) {
+  const params = searchParams ? await searchParams : {}
+  const requestId = getRequestId(params.requestId).trim()
+  const generatorHref = requestId
+    ? `/secondary/${encodeURIComponent(requestId)}`
+    : ''
+
   return (
     <main className="min-h-screen overflow-hidden bg-[#020617] text-white">
       <div className="pointer-events-none fixed inset-0">
@@ -18,61 +37,69 @@ export default function RequestInvitationSuccessPage() {
           </div>
 
           <div className="mb-6 inline-flex rounded-full border border-blue-400/25 bg-blue-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-blue-200">
-            Request submitted
+            Generator ready
           </div>
 
           <h1 className="mx-auto max-w-2xl text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-            Your invitation request has been received
+            Your invitation generator is ready
           </h1>
 
           <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-white/60">
-            Thank you. Your company details have been added to the ISE invitation
-            request workflow. The ISE team will review the request and assign an
-            invitation ID, invitation code and generator link once approved.
+            Thank you. Your company details have been saved and your tailored
+            invitation generator has been created automatically.
           </p>
 
           <div className="mx-auto mt-9 grid max-w-3xl gap-4 text-left sm:grid-cols-3">
             <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
-              <p className="text-sm font-semibold text-white">1. Review</p>
+              <p className="text-sm font-semibold text-white">1. Details received</p>
               <p className="mt-2 text-sm leading-6 text-white/50">
-                The submitted company name, logo and preferences will be checked.
+                Your company information and invitation preferences have been saved.
               </p>
             </div>
 
             <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
-              <p className="text-sm font-semibold text-white">2. Assign</p>
+              <p className="text-sm font-semibold text-white">2. Generator prepared</p>
               <p className="mt-2 text-sm leading-6 text-white/50">
-                An invitation ID and invitation code will be assigned to the request.
+                A tailored generator has been created using the details you submitted.
               </p>
             </div>
 
             <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
-              <p className="text-sm font-semibold text-white">3. Generate</p>
+              <p className="text-sm font-semibold text-white">3. Create your assets</p>
               <p className="mt-2 text-sm leading-6 text-white/50">
-                The approved request can then generate the downloadable assets.
+                Open the generator to preview, customise and download your invitation assets.
               </p>
             </div>
           </div>
 
           <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            {generatorHref ? (
+              <Link
+                href={generatorHref}
+                className="rounded-2xl bg-blue-600 px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-blue-950/30 transition hover:bg-blue-500"
+              >
+                Open generator
+              </Link>
+            ) : (
+              <Link
+                href="/request-invitation"
+                className="rounded-2xl bg-blue-600 px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-blue-950/30 transition hover:bg-blue-500"
+              >
+                Submit request again
+              </Link>
+            )}
+
             <Link
               href="/request-invitation"
               className="rounded-2xl border border-white/10 bg-white/10 px-6 py-4 text-sm font-semibold text-white transition hover:bg-white/15"
             >
               Submit another request
             </Link>
-
-            <Link
-              href="/"
-              className="rounded-2xl bg-blue-600 px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-blue-950/30 transition hover:bg-blue-500"
-            >
-              Return to homepage
-            </Link>
           </div>
 
           <p className="mx-auto mt-7 max-w-xl text-xs leading-5 text-white/35">
-            If any details need to be changed after submission, please contact the
-            ISE team before the invitation assets are generated.
+            Your generator will open with your submitted company details already
+            pre-filled. You can then preview and download the formats you need.
           </p>
         </section>
       </div>

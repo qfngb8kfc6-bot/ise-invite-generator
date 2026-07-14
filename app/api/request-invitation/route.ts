@@ -116,5 +116,5 @@ export async function POST(request: Request) {
     console.warn('[SECONDARY ANALYTICS WARNING] Failed to log link generation', error)
   }
 
-  redirect('/request-invitation/success')
+  redirect(`/request-invitation/success?requestId=${encodeURIComponent(requestId)}`)
 }

@@ -51,7 +51,7 @@ export default function RequestInvitationPage() {
               </div>
 
               <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
-                <p className="text-sm font-semibold text-white">Your download link</p>
+                <p className="text-sm font-semibold text-white">Your generator</p>
                 <p className="mt-2 text-sm leading-6 text-white/52">
                   Approved requests can generate PNG, PDF, LinkedIn, Email Banner and
                   ZIP Pack assets with your company name, logo and invitation code.
