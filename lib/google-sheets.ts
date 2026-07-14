@@ -34,6 +34,12 @@ export type NewSecondaryInvitationRequestInput = {
   generatorUrl: string
 }
 
+type AssignedSecondaryInvitationRequestInput =
+  NewSecondaryInvitationRequestInput & {
+    assignedCodeId: string
+    assignedInvitationCode: string
+  }
+
 /**
  * ISE SHEET ADAPTER
  * -----------------
@@ -57,6 +63,17 @@ export type NewSecondaryInvitationRequestInput = {
  * N Assigned Date
  * O Notes
  * P Notes / extra notes
+ *
+ * Current prototype Code Pool sheet columns:
+ * A Code ID
+ * B Invitation Code
+ * C Status
+ * D Assigned Request ID
+ * E Assigned Company Name
+ * F Assigned Company Logo
+ * G Assigned Sector
+ * H Assigned Language
+ * I Assigned At
  */
 const REQUEST_COLUMNS = {
   requestId: 0,
@@ -77,8 +94,23 @@ const REQUEST_COLUMNS = {
   extraNotes: 15,
 } as const
 
+const CODE_POOL_COLUMNS = {
+  codeId: 0,
+  invitationCode: 1,
+  status: 2,
+  assignedRequestId: 3,
+  assignedCompanyName: 4,
+  assignedCompanyLogo: 5,
+  assignedSector: 6,
+  assignedLanguage: 7,
+  assignedAt: 8,
+} as const
+
 const REQUESTS_APPEND_RANGE = 'A:P'
+const CODE_POOL_RANGE = 'A:I'
 const DEFAULT_REQUEST_STATUS = 'Approved'
+const CODE_POOL_AVAILABLE_STATUS = 'Available'
+const CODE_POOL_ASSIGNED_STATUS = 'Assigned'
 
 function getPrivateKey() {
   const base64Key = process.env.GOOGLE_SHEETS_PRIVATE_KEY_BASE64?.trim()
@@ -110,6 +142,7 @@ function getSheetsConfig() {
   const clientEmail = process.env.GOOGLE_SHEETS_CLIENT_EMAIL
   const spreadsheetId = process.env.GOOGLE_SHEETS_SPREADSHEET_ID
   const requestsSheet = process.env.GOOGLE_SHEETS_REQUESTS_SHEET || 'Requests'
+  const codePoolSheet = process.env.GOOGLE_SHEETS_CODE_POOL_SHEET || 'Code Pool'
 
   if (!clientEmail) throw new Error('Missing GOOGLE_SHEETS_CLIENT_EMAIL')
   if (!spreadsheetId) throw new Error('Missing GOOGLE_SHEETS_SPREADSHEET_ID')
@@ -118,6 +151,7 @@ function getSheetsConfig() {
     clientEmail,
     spreadsheetId,
     requestsSheet,
+    codePoolSheet,
   }
 }
 
@@ -147,6 +181,17 @@ function normaliseLookup(value: string): string {
 
 function normaliseStatus(value: string): string {
   return value.trim().toLowerCase()
+}
+
+function getCodePoolCell(
+  row: unknown[],
+  column: keyof typeof CODE_POOL_COLUMNS
+): string {
+  return normaliseCell(row[CODE_POOL_COLUMNS[column]])
+}
+
+function isCodePoolStatusAvailable(status: string): boolean {
+  return normaliseStatus(status) === normaliseStatus(CODE_POOL_AVAILABLE_STATUS)
 }
 
 function getCell(row: unknown[], column: keyof typeof REQUEST_COLUMNS): string {
@@ -215,7 +260,7 @@ function rowToSecondaryInvitationRequest(row: unknown[]): SecondaryInvitationReq
   }
 }
 
-function newRequestToSheetRow(input: NewSecondaryInvitationRequestInput): string[] {
+function newRequestToSheetRow(input: AssignedSecondaryInvitationRequestInput): string[] {
   const row = Array(Object.keys(REQUEST_COLUMNS).length).fill('')
 
   row[REQUEST_COLUMNS.requestId] = input.requestId
@@ -227,8 +272,8 @@ function newRequestToSheetRow(input: NewSecondaryInvitationRequestInput): string
   row[REQUEST_COLUMNS.theme] = input.themeLabel
   row[REQUEST_COLUMNS.language] = input.languageLabel
   row[REQUEST_COLUMNS.status] = DEFAULT_REQUEST_STATUS
-  row[REQUEST_COLUMNS.assignedCodeId] = input.requestId
-  row[REQUEST_COLUMNS.assignedInvitationCode] = input.requestId
+  row[REQUEST_COLUMNS.assignedCodeId] = input.assignedCodeId
+  row[REQUEST_COLUMNS.assignedInvitationCode] = input.assignedInvitationCode
   row[REQUEST_COLUMNS.generatorUrl] = input.generatorUrl
   row[REQUEST_COLUMNS.reviewedBy] = 'Auto-approved'
   row[REQUEST_COLUMNS.assignedDate] = input.submittedAt
@@ -265,11 +310,65 @@ export function isSecondaryInvitationApproved(status: string): boolean {
   )
 }
 
+async function assignNextAvailableCode(input: NewSecondaryInvitationRequestInput) {
+  const { spreadsheetId, codePoolSheet } = getSheetsConfig()
+  const sheets = await getSheetsClient()
+
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range: `${codePoolSheet}!${CODE_POOL_RANGE}`,
+  })
+
+  const rows = response.data.values || []
+
+  for (let index = 0; index < rows.slice(1).length; index += 1) {
+    const row = rows[index + 1]
+    const codeId = getCodePoolCell(row, 'codeId')
+    const invitationCode = getCodePoolCell(row, 'invitationCode')
+    const status = getCodePoolCell(row, 'status')
+
+    if (!codeId || !invitationCode || !isCodePoolStatusAvailable(status)) {
+      continue
+    }
+
+    const sheetRowNumber = index + 2
+
+    await sheets.spreadsheets.values.update({
+      spreadsheetId,
+      range: `${codePoolSheet}!C${sheetRowNumber}:I${sheetRowNumber}`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [
+          [
+            CODE_POOL_ASSIGNED_STATUS,
+            input.requestId,
+            input.companyName,
+            input.logoUrl,
+            input.themeLabel,
+            input.languageLabel,
+            input.submittedAt,
+          ],
+        ],
+      },
+    })
+
+    return {
+      assignedCodeId: codeId,
+      assignedInvitationCode: invitationCode,
+    }
+  }
+
+  throw new Error(
+    'No available invitation codes were found in the Code Pool sheet.'
+  )
+}
+
 export async function appendSecondaryInvitationRequest(
   input: NewSecondaryInvitationRequestInput
 ) {
   const { spreadsheetId, requestsSheet } = getSheetsConfig()
   const sheets = await getSheetsClient()
+  const assignedCode = await assignNextAvailableCode(input)
 
   await sheets.spreadsheets.values.append({
     spreadsheetId,
@@ -277,7 +376,12 @@ export async function appendSecondaryInvitationRequest(
     valueInputOption: 'USER_ENTERED',
     insertDataOption: 'INSERT_ROWS',
     requestBody: {
-      values: [newRequestToSheetRow(input)],
+      values: [
+        newRequestToSheetRow({
+          ...input,
+          ...assignedCode,
+        }),
+      ],
     },
   })
 }
