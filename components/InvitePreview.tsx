@@ -209,8 +209,8 @@ export default function InvitePreview({
         />
       </section>
 
-      <section className="h-[520px] bg-white px-12 py-9 text-[#050b36]">
-        <div className="flex items-start justify-between gap-8 border-b border-[#050b36]/80 pb-7">
+      <section className="h-[590px] bg-white px-12 py-9 text-[#050b36]">
+        <div className="flex items-start justify-between gap-8 border-b border-[#050b36]/80 pb-5">
           <div className="min-w-0 max-w-[390px]">
             <h3
               className="overflow-hidden whitespace-nowrap font-semibold uppercase leading-none tracking-[-0.04em] text-[#050b36]"
@@ -260,9 +260,9 @@ export default function InvitePreview({
           </div>
         </div>
 
-        <div className="grid h-[365px] grid-cols-[minmax(0,1fr)_300px] gap-10 pt-8">
+        <div className="grid h-[445px] grid-cols-[minmax(0,1fr)_300px] gap-10 pt-7">
           <div className="min-w-0">
-            <h3 className="max-w-[560px] text-[52px] font-semibold uppercase leading-[0.98] tracking-[-0.045em] text-[#050b36]">
+            <h3 className="max-w-[600px] text-[44px] font-semibold uppercase leading-[1.02] tracking-[-0.045em] text-[#050b36]">
               {language === 'en' ? (
                 <>
                   BRING YOUR WORLD.<br />
@@ -274,7 +274,7 @@ export default function InvitePreview({
             </h3>
 
             {language === 'en' ? (
-              <div className="mt-7 max-w-[560px] space-y-4 text-[16px] font-medium leading-[1.34] text-[#050b36]">
+              <div className="mt-8 max-w-[600px] space-y-3 text-[14px] font-medium leading-[1.42] text-[#050b36]">
                 <p className="font-semibold">
                   The world-renowned annual tech show is back.
                 </p>
@@ -284,8 +284,18 @@ export default function InvitePreview({
                 </p>
 
                 <p>
-                  ISE {EVENT_YEAR} is set to bring it all together for its best edition yet.
-                  From bright start-ups to bold showstoppers, expect nothing but everything.
+                  ISE {EVENT_YEAR} is set to bring it all together for its best edition yet. You’ll find:
+                </p>
+
+                <ul className="space-y-1">
+                  <li>– Bright start-ups and bold showstoppers</li>
+                  <li>– Creative content makers and expert integrators</li>
+                  <li>– Next-gen classrooms and next-level concert halls</li>
+                  <li>– And a whole lot more in between</li>
+                </ul>
+
+                <p>
+                  So expect every vertical from every horizon. Nothing but <span className="italic">everything.</span>
                 </p>
 
                 <p className="font-semibold">
@@ -293,7 +303,7 @@ export default function InvitePreview({
                 </p>
               </div>
             ) : (
-              <div className="mt-6 max-w-[560px] space-y-3 text-[16px] font-medium leading-[1.5] text-[#050b36]">
+              <div className="mt-8 max-w-[600px] space-y-3 text-[14px] font-medium leading-[1.42] text-[#050b36]">
                 <p>{cardCopy.bodyOne}</p>
                 <p>{cardCopy.bodyTwo}</p>
                 <p>{cardCopy.bodyThree}</p>
