@@ -148,7 +148,7 @@ export default function EmailBannerPreview({
               </div>
 
               <div className="w-[104px] pt-[2px] text-center text-white">
-                <div className="text-[17px] font-semibold leading-[1.02] tracking-[-0.04em]">
+                <div className="text-[17px] font-semibold leading-[1.02] tracking-[0em]">
                   {boothLabel}
                 </div>
                 <div className="mt-[2px] text-[15px] font-medium leading-[1.02] tracking-[-0.035em]">
@@ -160,7 +160,7 @@ export default function EmailBannerPreview({
 
           <div className="mt-[44px] flex items-start justify-between">
             <div className="min-w-0">
-              <div className="text-[34px] font-medium uppercase leading-none tracking-[-0.04em] text-white">
+              <div className="text-[34px] font-medium uppercase leading-none tracking-[0em] text-white">
                 ISE {EVENT_YEAR}
               </div>
 
@@ -170,7 +170,7 @@ export default function EmailBannerPreview({
             </div>
 
             <div className="mr-[18px] mt-[2px] w-[220px] text-center text-white">
-              <div className="text-[24px] font-medium uppercase leading-[1.04] tracking-[-0.04em]">
+              <div className="text-[24px] font-medium uppercase leading-[1.04] tracking-[0em]">
                 {text.ticket}
               </div>
 
@@ -238,7 +238,7 @@ export default function EmailBannerPreview({
               </div>
 
               <div className="w-[104px] pt-[2px] text-center text-white">
-                <div className="text-[17px] font-semibold leading-[1.02] tracking-[-0.04em]">
+                <div className="text-[17px] font-semibold leading-[1.02] tracking-[0em]">
                   {boothLabel}
                 </div>
                 <div className="mt-[2px] text-[15px] font-medium leading-[1.02] tracking-[-0.035em]">
@@ -261,7 +261,7 @@ export default function EmailBannerPreview({
           </div>
 
           <div className="mr-[18px] mt-[8px] w-[220px] text-right text-white">
-            <div className="text-[24px] font-medium uppercase leading-[1.04] tracking-[-0.04em]">
+            <div className="text-[24px] font-medium uppercase leading-[1.04] tracking-[0em]">
               {text.ticket}
             </div>
 

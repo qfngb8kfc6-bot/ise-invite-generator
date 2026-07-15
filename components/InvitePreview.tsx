@@ -172,7 +172,7 @@ export default function InvitePreview({
   return (
     <div className="w-[980px] overflow-hidden rounded-[18px] bg-white shadow-[0_28px_90px_rgba(2,6,23,0.42)] ring-1 ring-white/15">
       <section
-        className="relative h-[430px] overflow-hidden bg-[#06194c] px-12 py-9 text-white"
+        className="relative h-[500px] overflow-hidden bg-[#06194c] px-12 py-9 text-white"
         style={{
           backgroundImage: `url("${selectedTheme.backgroundImage}")`,
           backgroundSize: 'cover',
@@ -186,22 +186,22 @@ export default function InvitePreview({
             <img
               src={ISE_LOGO_WHITE}
               alt="Integrated Systems Europe"
-              className="absolute left-1/2 top-[28px] h-[52px] w-auto -translate-x-1/2 object-contain"
+              className="absolute left-1/2 top-[34px] h-[58px] w-auto -translate-x-1/2 object-contain"
             />
 
-            <h2 className="absolute left-1/2 top-[112px] w-full -translate-x-1/2 text-center text-[60px] font-semibold uppercase leading-[0.96] tracking-[-0.052em] text-white">
+            <h2 className="absolute left-1/2 top-[140px] w-full -translate-x-1/2 text-center text-[66px] font-semibold uppercase leading-[1.02] tracking-[0em] text-white">
               SAVE<br />
               THE DATE
             </h2>
 
-            <p className="absolute left-1/2 top-[268px] w-full -translate-x-1/2 text-center text-[20px] font-semibold leading-none tracking-[-0.025em] text-white">
+            <p className="absolute left-1/2 top-[325px] w-full -translate-x-1/2 text-center text-[20px] font-semibold leading-none tracking-[0em] text-white">
               2 - 5 Feb {EVENT_YEAR} <span className="px-4">|</span> Fira de Barcelona, Gran Via
             </p>
 
             <img
               src="/branding/toolkit/ise-partners-footer-transparent.png?v=20270623"
               alt="A joint venture partnership of AVIXA and CEDIA"
-              className="absolute bottom-[34px] left-1/2 z-30 h-auto w-[215px] max-w-none -translate-x-1/2 object-contain opacity-100"
+              className="absolute bottom-[46px] left-1/2 z-30 h-auto w-[230px] max-w-none -translate-x-1/2 object-contain opacity-100"
             />
           </>
         ) : (
@@ -217,7 +217,7 @@ export default function InvitePreview({
                 ISE {EVENT_YEAR}: WHEN WORLDS UNITE
               </p>
 
-              <h2 className="mt-[20px] text-[65px] font-semibold uppercase leading-[0.98] tracking-[-0.052em] text-white">
+              <h2 className="mt-[20px] text-[65px] font-semibold uppercase leading-[0.98] tracking-[0em] text-white">
                 YOUR INVITATION.<br />
                 OUR CELEBRATION.
               </h2>
@@ -236,11 +236,11 @@ export default function InvitePreview({
         )}
       </section>
 
-      <section className="h-[590px] bg-white px-12 py-9 text-[#050b36]">
+      <section className="h-[710px] bg-white px-12 py-10 text-[#050b36]">
         <div className="flex items-start justify-between gap-8 border-b border-[#050b36]/80 pb-5">
           <div className="min-w-0 max-w-[390px]">
             <h3
-              className="overflow-hidden whitespace-nowrap font-semibold uppercase leading-none tracking-[-0.04em] text-[#050b36]"
+              className="overflow-hidden whitespace-nowrap font-semibold uppercase leading-none tracking-[0em] text-[#050b36]"
               style={{
                 fontSize:
                   (companyName || fallbackText.companyName).length > 42
@@ -287,9 +287,9 @@ export default function InvitePreview({
           </div>
         </div>
 
-        <div className="grid h-[445px] grid-cols-[minmax(0,1fr)_300px] gap-10 pt-7">
+        <div className="grid h-[540px] grid-cols-[minmax(0,1fr)_300px] gap-11 pt-9">
           <div className="min-w-0">
-            <h3 className="max-w-[600px] text-[44px] font-semibold uppercase leading-[1.02] tracking-[-0.045em] text-[#050b36]">
+            <h3 className="max-w-[600px] text-[52px] font-semibold uppercase leading-[1.02] tracking-[0em] text-[#050b36]">
               {language === 'en' ? (
                 <>
                   BRING YOUR WORLD.<br />
@@ -301,7 +301,7 @@ export default function InvitePreview({
             </h3>
 
             {language === 'en' ? (
-              <div className="mt-8 max-w-[600px] space-y-3 text-[14px] font-medium leading-[1.42] text-[#050b36]">
+              <div className="mt-10 max-w-[640px] space-y-4 text-[16px] font-medium leading-[1.5] text-[#050b36]">
                 <p className="font-semibold">
                   The world-renowned annual tech show is back.
                 </p>
@@ -330,7 +330,7 @@ export default function InvitePreview({
                 </p>
               </div>
             ) : (
-              <div className="mt-8 max-w-[600px] space-y-3 text-[14px] font-medium leading-[1.42] text-[#050b36]">
+              <div className="mt-10 max-w-[640px] space-y-4 text-[16px] font-medium leading-[1.5] text-[#050b36]">
                 <p>{isSaveTheDateTheme ? 'ISE 2027 will be our largest technology showcase to date.' : cardCopy.bodyOne}</p>
                 <p>{isSaveTheDateTheme ? 'From start-ups to showstoppers, content creation to integration, and classrooms to concert halls, expect nothing but EVERYTHING.' : cardCopy.bodyTwo}</p>
                 <p>{isSaveTheDateTheme ? 'Be our guest in Barcelona.' : cardCopy.bodyThree}</p>

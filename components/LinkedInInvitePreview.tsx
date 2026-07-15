@@ -72,7 +72,7 @@ export default function LinkedInInvitePreview({
 
           <section className="mt-[74px] flex items-start justify-between gap-10">
             <div className="min-w-0 max-w-[500px]">
-              <h2 className="truncate text-[45px] font-semibold uppercase leading-none tracking-[-0.04em] text-white">
+              <h2 className="truncate text-[45px] font-semibold uppercase leading-none tracking-[0em] text-white">
                 {companyName || 'BRAND NAME'}
               </h2>
 
@@ -112,7 +112,7 @@ export default function LinkedInInvitePreview({
 
           <main className="relative flex flex-1 items-end justify-between pb-[20px]">
             <div>
-              <h1 className="max-w-[560px] text-[60px] font-semibold uppercase leading-[0.96] tracking-[-0.055em] text-white">
+              <h1 className="max-w-[560px] text-[60px] font-semibold uppercase leading-[0.96] tracking-[0em] text-white">
                 BARCELONA<br />
                 BECKONS...
               </h1>
@@ -179,7 +179,7 @@ export default function LinkedInInvitePreview({
 
         <section className="mt-[74px] flex items-start justify-between gap-10">
           <div className="min-w-0 max-w-[500px]">
-            <h2 className="truncate text-[45px] font-semibold uppercase leading-none tracking-[-0.04em] text-white">
+            <h2 className="truncate text-[45px] font-semibold uppercase leading-none tracking-[0em] text-white">
               {companyName || 'BRAND NAME'}
             </h2>
 
@@ -218,7 +218,7 @@ export default function LinkedInInvitePreview({
         <div className="mt-[15px] h-px w-full shrink-0 bg-white/75" />
 
         <main className="relative flex flex-1 items-end justify-between pb-[20px]">
-          <h1 className="max-w-[620px] text-[76px] font-semibold uppercase leading-[1.02] tracking-[-0.055em] text-white">
+          <h1 className="max-w-[620px] text-[76px] font-semibold uppercase leading-[1.02] tracking-[0em] text-white">
             BRING<br />
             YOUR WORLD.<br />
             UNITE WITH US.
