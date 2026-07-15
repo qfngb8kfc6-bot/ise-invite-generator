@@ -181,26 +181,38 @@ export default function InvitePreview({
       >
         <div className="absolute inset-0 bg-black/12" />
 
-        <div className="relative flex h-full flex-col items-center px-6 pb-[44px] text-center">
-          <img
-            src={ISE_LOGO_WHITE}
-            alt="Integrated Systems Europe"
-            className="mt-[18px] h-[56px] w-auto object-contain"
-          />
+        {isSaveTheDateTheme ? (
+          <>
+            <img
+              src={ISE_LOGO_WHITE}
+              alt="Integrated Systems Europe"
+              className="absolute left-1/2 top-[28px] h-[52px] w-auto -translate-x-1/2 object-contain"
+            />
 
-          {isSaveTheDateTheme ? (
-            <>
-              <h2 className="mt-[56px] text-[82px] font-semibold uppercase leading-[1.04] tracking-[-0.04em] text-white">
-                SAVE<br />
-                THE DATE
-              </h2>
+            <h2 className="absolute left-1/2 top-[112px] w-full -translate-x-1/2 text-center text-[60px] font-semibold uppercase leading-[0.96] tracking-[-0.052em] text-white">
+              SAVE<br />
+              THE DATE
+            </h2>
 
-              <p className="mt-[28px] text-[20px] font-semibold leading-none tracking-[-0.025em] text-white">
-                2 - 5 Feb {EVENT_YEAR} <span className="px-3">|</span> Fira de Barcelona, Gran Via
-              </p>
-            </>
-          ) : (
-            <>
+            <p className="absolute left-1/2 top-[268px] w-full -translate-x-1/2 text-center text-[20px] font-semibold leading-none tracking-[-0.025em] text-white">
+              2 - 5 Feb {EVENT_YEAR} <span className="px-4">|</span> Fira de Barcelona, Gran Via
+            </p>
+
+            <img
+              src="/branding/toolkit/ise-partners-footer-transparent.png?v=20270623"
+              alt="A joint venture partnership of AVIXA and CEDIA"
+              className="absolute bottom-[34px] left-1/2 z-30 h-auto w-[215px] max-w-none -translate-x-1/2 object-contain opacity-100"
+            />
+          </>
+        ) : (
+          <>
+            <div className="relative flex h-full flex-col items-center px-6 pb-[44px] text-center">
+              <img
+                src={ISE_LOGO_WHITE}
+                alt="Integrated Systems Europe"
+                className="mt-[18px] h-[56px] w-auto object-contain"
+              />
+
               <p className="mt-[30px] text-[19px] font-black uppercase leading-none tracking-[-0.018em] text-white">
                 ISE {EVENT_YEAR}: WHEN WORLDS UNITE
               </p>
@@ -213,16 +225,15 @@ export default function InvitePreview({
               <p className="mt-[18px] text-[19px] font-semibold leading-none tracking-[-0.025em] text-white">
                 2 - 5 Feb {EVENT_YEAR} <span className="px-3">|</span> Fira de Barcelona, Gran Via
               </p>
-            </>
-          )}
+            </div>
 
-        </div>
-
-        <img
-          src="/branding/toolkit/ise-partners-footer-transparent.png?v=20270623"
-          alt="A joint venture partnership of AVIXA and CEDIA"
-          className="absolute bottom-[14px] left-1/2 z-30 h-auto w-[250px] max-w-none -translate-x-1/2 object-contain opacity-100"
-        />
+            <img
+              src="/branding/toolkit/ise-partners-footer-transparent.png?v=20270623"
+              alt="A joint venture partnership of AVIXA and CEDIA"
+              className="absolute bottom-[14px] left-1/2 z-30 h-auto w-[250px] max-w-none -translate-x-1/2 object-contain opacity-100"
+            />
+          </>
+        )}
       </section>
 
       <section className="h-[590px] bg-white px-12 py-9 text-[#050b36]">
