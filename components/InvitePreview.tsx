@@ -139,6 +139,7 @@ export default function InvitePreview({
 
   const fallbackText = getFallbackInviteText(language)
   const cardCopy = getCardCopy(language, EVENT_YEAR)
+  const isSaveTheDateTheme = theme === 'iseBrandingTwo'
 
   const boothList = useMemo(() => {
     return standNumber
@@ -187,18 +188,33 @@ export default function InvitePreview({
             className="mt-[18px] h-[56px] w-auto object-contain"
           />
 
-          <p className="mt-[30px] text-[19px] font-black uppercase leading-none tracking-[-0.018em] text-white">
-            ISE {EVENT_YEAR}: WHEN WORLDS UNITE
-          </p>
+          {isSaveTheDateTheme ? (
+            <>
+              <h2 className="mt-[56px] text-[82px] font-semibold uppercase leading-[1.04] tracking-[-0.04em] text-white">
+                SAVE<br />
+                THE DATE
+              </h2>
 
-          <h2 className="mt-[20px] text-[65px] font-semibold uppercase leading-[0.98] tracking-[-0.052em] text-white">
-            YOUR INVITATION.<br />
-            OUR CELEBRATION.
-          </h2>
+              <p className="mt-[28px] text-[20px] font-semibold leading-none tracking-[-0.025em] text-white">
+                2 - 5 Feb {EVENT_YEAR} <span className="px-3">|</span> Fira de Barcelona, Gran Via
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="mt-[30px] text-[19px] font-black uppercase leading-none tracking-[-0.018em] text-white">
+                ISE {EVENT_YEAR}: WHEN WORLDS UNITE
+              </p>
 
-          <p className="mt-[18px] text-[19px] font-semibold leading-none tracking-[-0.025em] text-white">
-            2 - 5 Feb {EVENT_YEAR} <span className="px-3">|</span> Fira de Barcelona, Gran Via
-          </p>
+              <h2 className="mt-[20px] text-[65px] font-semibold uppercase leading-[0.98] tracking-[-0.052em] text-white">
+                YOUR INVITATION.<br />
+                OUR CELEBRATION.
+              </h2>
+
+              <p className="mt-[18px] text-[19px] font-semibold leading-none tracking-[-0.025em] text-white">
+                2 - 5 Feb {EVENT_YEAR} <span className="px-3">|</span> Fira de Barcelona, Gran Via
+              </p>
+            </>
+          )}
 
         </div>
 
@@ -304,9 +320,9 @@ export default function InvitePreview({
               </div>
             ) : (
               <div className="mt-8 max-w-[600px] space-y-3 text-[14px] font-medium leading-[1.42] text-[#050b36]">
-                <p>{cardCopy.bodyOne}</p>
-                <p>{cardCopy.bodyTwo}</p>
-                <p>{cardCopy.bodyThree}</p>
+                <p>{isSaveTheDateTheme ? 'ISE 2027 will be our largest technology showcase to date.' : cardCopy.bodyOne}</p>
+                <p>{isSaveTheDateTheme ? 'From start-ups to showstoppers, content creation to integration, and classrooms to concert halls, expect nothing but EVERYTHING.' : cardCopy.bodyTwo}</p>
+                <p>{isSaveTheDateTheme ? 'Be our guest in Barcelona.' : cardCopy.bodyThree}</p>
               </div>
             )}
           </div>

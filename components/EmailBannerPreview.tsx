@@ -19,13 +19,11 @@ const ISE_LOGO_WHITE = '/branding/ise-logo-white.png'
 const PARTNERS_FOOTER =
   '/branding/toolkit/ise-partners-footer-transparent.png?v=20270623'
 
-/**
- * IMPORTANT:
- * Per ISE guidance, Email + LinkedIn should use the fixed official
- * background/crop from the campaign examples, not the selectable theme image.
- */
 const EMAIL_BACKGROUND =
   '/branding/ise-2027-digital-invitation/backgrounds/ISE27 - Digital Invitation - Generic.jpg'
+
+const SAVE_THE_DATE_BACKGROUND =
+  '/branding/ise-2027-digital-invitation/backgrounds/ISE27 - Digital Invitation - Save the date.jpg'
 
 function getEmailBannerText(language: LanguageKey) {
   switch (language) {
@@ -99,16 +97,97 @@ export default function EmailBannerPreview({
   standNumber,
   invitationCode,
   logoUrl,
+  theme,
   language,
   mode = 'primary',
 }: EmailBannerPreviewProps) {
   const [failedLogoUrl, setFailedLogoUrl] = useState<string | null>(null)
   const text = getEmailBannerText(language)
   const boothLabel = mode === 'secondary' ? 'Invitation ID:' : text.booth
+  const isSaveTheDateTheme = theme === 'iseBrandingTwo'
+
+  if (isSaveTheDateTheme) {
+    return (
+      <div className="relative h-[300px] w-[1200px] overflow-hidden bg-[#020b56] text-white">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url("${SAVE_THE_DATE_BACKGROUND}")`,
+          }}
+        />
+
+        <div className="relative h-full px-[42px] pt-[26px] pb-[18px]">
+          <div className="flex items-start justify-between">
+            <div className="flex items-start gap-[34px]">
+              <img
+                src={ISE_LOGO_WHITE}
+                alt="Integrated Systems Europe"
+                className="h-[60px] w-auto object-contain"
+              />
+
+              <div className="pt-[2px] text-[18px] font-semibold leading-[1.08] tracking-[-0.03em] text-white">
+                <div>2 - 5 Feb {EVENT_YEAR}</div>
+                <div>Fira de Barcelona, Gran Via</div>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-[22px]">
+              <div className="flex h-[64px] w-[168px] items-center justify-center rounded-[10px] bg-white px-4">
+                {logoUrl && failedLogoUrl !== logoUrl ? (
+                  <img
+                    src={logoUrl}
+                    alt="Company logo"
+                    className="max-h-[44px] max-w-[138px] object-contain"
+                    onError={() => setFailedLogoUrl(logoUrl)}
+                  />
+                ) : (
+                  <span className="text-[22px] font-medium tracking-[-0.03em] text-[#111a4a]">
+                    Logo
+                  </span>
+                )}
+              </div>
+
+              <div className="w-[104px] pt-[2px] text-center text-white">
+                <div className="text-[17px] font-semibold leading-[1.02] tracking-[-0.04em]">
+                  {boothLabel}
+                </div>
+                <div className="mt-[2px] text-[15px] font-medium leading-[1.02] tracking-[-0.035em]">
+                  {standNumber || '000000'}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-[44px] flex items-start justify-between">
+            <div className="min-w-0">
+              <div className="text-[34px] font-medium uppercase leading-none tracking-[-0.04em] text-white">
+                ISE {EVENT_YEAR}
+              </div>
+
+              <div className="mt-[18px] max-w-[620px] text-[74px] font-medium uppercase leading-[0.92] tracking-[-0.06em] text-white">
+                SAVE THE DATE
+              </div>
+            </div>
+
+            <div className="mr-[18px] mt-[2px] w-[220px] text-center text-white">
+              <div className="text-[24px] font-medium uppercase leading-[1.04] tracking-[-0.04em]">
+                {text.ticket}
+              </div>
+
+              <div className="mt-[22px] text-[16px] font-medium leading-[1.1] tracking-[-0.03em]">
+                <div>{text.useCode}</div>
+                <div>{invitationCode || 'XXXXXXX'}</div>
+                <div className="mt-[2px] underline">at {text.inviteUrl}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="relative h-[300px] w-[1200px] overflow-hidden bg-[#020b56] text-white">
-      {/* fixed official full-banner background */}
       <div
         className="absolute inset-0 overflow-hidden"
         aria-hidden="true"
@@ -121,7 +200,6 @@ export default function EmailBannerPreview({
       </div>
 
       <div className="relative h-full px-[42px] pt-[26px] pb-[18px]">
-        {/* top row */}
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-[34px]">
             <img
@@ -171,7 +249,6 @@ export default function EmailBannerPreview({
           </div>
         </div>
 
-        {/* main content */}
         <div className="mt-[42px] flex items-start justify-between">
           <div className="min-w-0">
             <div className="text-[24px] font-medium uppercase leading-none tracking-[-0.035em] text-white">
