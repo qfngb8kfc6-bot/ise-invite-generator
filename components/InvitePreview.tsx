@@ -338,7 +338,7 @@ export default function InvitePreview({
             )}
           </div>
 
-          <div className="flex flex-col items-center justify-start pt-1">
+          <div className="flex flex-col items-center justify-start pt-0">
             <div className="relative flex h-[210px] w-[210px] items-center justify-center">
               <img
                 src={ISE_QR_RINGS}
@@ -368,14 +368,14 @@ export default function InvitePreview({
               </div>
             </div>
 
-            <p className="mt-4 max-w-[245px] text-center text-[22px] font-semibold uppercase leading-[1.08] text-[#050b36]">
+            <p className="mt-[46px] max-w-[245px] text-center text-[22px] font-semibold uppercase leading-[1.08] text-[#050b36]">
               SAVE €250<br />
               AND SECURE<br />
               YOUR FREE<br />
               TICKET TODAY
             </p>
 
-            <p className="mt-8 text-center text-[17px] font-semibold leading-tight text-[#050b36]">
+            <p className="mt-[52px] text-center text-[17px] font-semibold leading-tight text-[#050b36]">
               Use the code: {invitationCode || 'XXX'}<br />
               at iseurope.org/invite
             </p>
