@@ -1,9 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { makeQrDataUrl } from '@/lib/qr'
-import { themes } from '@/lib/themes'
-import QrRingFrame from '@/components/QrRingFrame'
+import { useState } from 'react'
 import type { LanguageKey, ThemeKey } from '@/lib/types'
 
 type EmailBannerPreviewProps = {
@@ -19,174 +16,183 @@ type EmailBannerPreviewProps = {
 
 const EVENT_YEAR = process.env.NEXT_PUBLIC_EVENT_YEAR?.trim() || '2027'
 const ISE_LOGO_WHITE = '/branding/ise-logo-white.png'
+const PARTNERS_FOOTER =
+  '/branding/toolkit/ise-partners-footer-transparent.png?v=20270623'
+
+/**
+ * IMPORTANT:
+ * Per ISE guidance, Email + LinkedIn should use the fixed official
+ * background/crop from the campaign examples, not the selectable theme image.
+ */
+const EMAIL_BACKGROUND =
+  '/branding/ise-2027-digital-invitation/backgrounds/ISE27 - Digital Invitation - Generic.jpg'
 
 function getEmailBannerText(language: LanguageKey) {
   switch (language) {
     case 'es':
       return {
-        headline: `Únase a nosotros en ISE ${EVENT_YEAR}`,
-        freeTicket: 'Entrada gratuita',
-        stand: 'Stand',
-        code: 'Código',
-        scan: 'Escanee para registrarse',
+        join: `ÚNASE A NOSOTROS EN ISE ${EVENT_YEAR}`,
+        headline: 'CUANDO LOS MUNDOS SE UNEN',
+        ticket: 'ASEGURE SU ENTRADA GRATUITA HOY',
+        useCode: 'Use el código:',
+        inviteUrl: 'iseurope.org/invite',
+        booth: 'Número de stand:',
       }
     case 'de':
       return {
-        headline: `Besuchen Sie uns auf der ISE ${EVENT_YEAR}`,
-        freeTicket: 'Kostenloses Ticket',
-        stand: 'Stand',
-        code: 'Code',
-        scan: 'Zum Registrieren scannen',
+        join: `BESUCHEN SIE UNS AUF DER ISE ${EVENT_YEAR}`,
+        headline: 'WENN WELTEN SICH VEREINEN',
+        ticket: 'SICHERN SIE SICH HEUTE IHR KOSTENLOSES TICKET',
+        useCode: 'Code verwenden:',
+        inviteUrl: 'iseurope.org/invite',
+        booth: 'Standnummer:',
       }
     case 'fr':
       return {
-        headline: `Rejoignez-nous à ISE ${EVENT_YEAR}`,
-        freeTicket: 'Billet gratuit',
-        stand: 'Stand',
-        code: 'Code',
-        scan: 'Scanner pour s’inscrire',
+        join: `REJOIGNEZ-NOUS À ISE ${EVENT_YEAR}`,
+        headline: 'QUAND LES MONDES S’UNISSENT',
+        ticket: 'RÉSERVEZ VOTRE BILLET GRATUIT AUJOURD’HUI',
+        useCode: 'Utilisez le code :',
+        inviteUrl: 'iseurope.org/invite',
+        booth: 'Numéro de stand :',
       }
     case 'it':
       return {
-        headline: `Unisciti a noi a ISE ${EVENT_YEAR}`,
-        freeTicket: 'Biglietto gratuito',
-        stand: 'Stand',
-        code: 'Codice',
-        scan: 'Scansiona per registrarti',
+        join: `UNISCITI A NOI A ISE ${EVENT_YEAR}`,
+        headline: 'QUANDO I MONDI SI UNISCONO',
+        ticket: 'ASSICURA OGGI IL TUO BIGLIETTO GRATUITO',
+        useCode: 'Usa il codice:',
+        inviteUrl: 'iseurope.org/invite',
+        booth: 'Numero stand:',
       }
     case 'ca':
       return {
-        headline: `Uneix-te a nosaltres a ISE ${EVENT_YEAR}`,
-        freeTicket: 'ENTRADA GRATUÏTA',
-        stand: 'Estand',
-        code: 'Codi',
-        scan: 'Escaneja per registrar-te',
+        join: `UNEIX-TE A NOSALTRES A ISE ${EVENT_YEAR}`,
+        headline: 'QUAN ELS MONS S’UNEIXEN',
+        ticket: 'ASSEGURA LA TEVA ENTRADA GRATUÏTA AVUI',
+        useCode: 'Utilitza el codi:',
+        inviteUrl: 'iseurope.org/invite',
+        booth: 'Número d’estand:',
       }
     case 'zh-CN':
       return {
-        headline: `欢迎参加 ISE ${EVENT_YEAR}`,
-        freeTicket: '免费门票',
-        stand: '展位',
-        code: '邀请码',
-        scan: '扫码注册',
+        join: `欢迎参加 ISE ${EVENT_YEAR}`,
+        headline: '世界在此汇聚',
+        ticket: '立即获取免费门票',
+        useCode: '使用邀请码：',
+        inviteUrl: 'iseurope.org/invite',
+        booth: '展位号：',
       }
     default:
       return {
-        headline: `Join us at ISE ${EVENT_YEAR}`,
-        freeTicket: 'FREE TICKET',
-        stand: 'Stand',
-        code: 'Code',
-        scan: 'Scan to register',
+        join: `JOIN US AT ISE ${EVENT_YEAR}`,
+        headline: 'WHEN WORLDS UNITE',
+        ticket: 'SECURE YOUR FREE TICKET TODAY',
+        useCode: 'Use the code:',
+        inviteUrl: 'iseurope.org/invite',
+        booth: 'Booth number:',
       }
   }
 }
 
 export default function EmailBannerPreview({
-  companyName,
   standNumber,
   invitationCode,
   logoUrl,
-  registrationUrl,
-  theme,
   language,
   mode = 'primary',
 }: EmailBannerPreviewProps) {
-  const [qrDataUrl, setQrDataUrl] = useState('')
   const [failedLogoUrl, setFailedLogoUrl] = useState<string | null>(null)
-
-  const selectedTheme = themes[theme] ?? themes.audio
   const text = getEmailBannerText(language)
-  const detailLabel = mode === 'secondary' ? 'Invitation ID' : text.stand
-
-  useEffect(() => {
-    let active = true
-
-    async function generateQr() {
-      try {
-        const value = await makeQrDataUrl(registrationUrl)
-        if (active) setQrDataUrl(value)
-      } catch {
-        if (active) setQrDataUrl('')
-      }
-    }
-
-    generateQr()
-
-    return () => {
-      active = false
-    }
-  }, [registrationUrl])
+  const boothLabel = mode === 'secondary' ? 'Invitation ID:' : text.booth
 
   return (
-    <div className="relative h-[300px] w-[1200px] overflow-hidden bg-[#06194c] text-white">
+    <div className="relative h-[300px] w-[1200px] overflow-hidden bg-[#020b56] text-white">
+      {/* fixed official full-banner background */}
       <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url("${selectedTheme.backgroundImage}")` }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#06194c]/96 via-[#06194c]/82 to-[#06194c]/54" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_45%,rgba(0,217,255,0.32),transparent_34%)]" />
+        className="absolute inset-0 overflow-hidden"
+        aria-hidden="true"
+      >
+        <img
+          src={EMAIL_BACKGROUND}
+          alt=""
+          className="absolute left-0 top-0 h-auto w-full"
+        />
+      </div>
 
-      <div className="relative flex h-full items-center justify-between gap-8 px-10 py-8">
-        <div className="flex h-full min-w-0 flex-1 items-center gap-8">
-          <div className="flex w-[250px] shrink-0 flex-col justify-center">
+      <div className="relative h-full px-[42px] pt-[26px] pb-[18px]">
+        {/* top row */}
+        <div className="flex items-start justify-between">
+          <div className="flex items-start gap-[34px]">
             <img
               src={ISE_LOGO_WHITE}
               alt="Integrated Systems Europe"
-              className="h-[76px] w-auto object-contain object-left"
+              className="h-[60px] w-auto object-contain"
             />
 
-            <p className="mt-5 text-[14px] font-semibold uppercase tracking-[0.28em] text-cyan-200">
-              {text.freeTicket}
-            </p>
+            <div className="pt-[2px] text-[18px] font-semibold leading-[1.08] tracking-[-0.03em] text-white">
+              <div>2 - 5 Feb {EVENT_YEAR}</div>
+              <div>Fira de Barcelona, Gran Via</div>
+            </div>
           </div>
 
-          <div className="min-w-0 flex-1">
-            <p className="text-[22px] font-semibold leading-tight text-white/86">
-              {text.headline}
-            </p>
+          <div className="flex items-start gap-[26px]">
+            <img
+              src={PARTNERS_FOOTER}
+              alt="A joint venture partnership of AVIXA and CEDIA"
+              className="mt-[4px] h-auto w-[195px] object-contain"
+            />
 
-            <h2 className="mt-3 max-w-[560px] break-words text-[44px] font-black uppercase leading-[0.9] tracking-[-0.055em] text-white">
-              {companyName || 'Company name'}
-            </h2>
-
-            <div className="mt-5 flex flex-wrap items-center gap-4 text-[18px] font-bold text-white">
-              <div className="rounded-full border border-white/18 bg-white/10 px-5 py-2">
-                {detailLabel}: {standNumber || '—'}
+            <div className="flex items-start gap-[22px]">
+              <div className="flex h-[64px] w-[168px] items-center justify-center rounded-[10px] bg-white px-4">
+                {logoUrl && failedLogoUrl !== logoUrl ? (
+                  <img
+                    src={logoUrl}
+                    alt="Company logo"
+                    className="max-h-[44px] max-w-[138px] object-contain"
+                    onError={() => setFailedLogoUrl(logoUrl)}
+                  />
+                ) : (
+                  <span className="text-[22px] font-medium tracking-[-0.03em] text-[#111a4a]">
+                    Logo
+                  </span>
+                )}
               </div>
 
-              <div className="rounded-full border border-white/18 bg-white/10 px-5 py-2">
-                {text.code}: {invitationCode || '—'}
+              <div className="w-[104px] pt-[2px] text-center text-white">
+                <div className="text-[17px] font-semibold leading-[1.02] tracking-[-0.04em]">
+                  {boothLabel}
+                </div>
+                <div className="mt-[2px] text-[15px] font-medium leading-[1.02] tracking-[-0.035em]">
+                  {standNumber || '000000'}
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex h-full w-[350px] shrink-0 items-center justify-end gap-5">
-          <div className="flex h-[105px] w-[160px] items-center justify-center rounded-[8px] border border-white/18 bg-white px-4">
-            {logoUrl && failedLogoUrl !== logoUrl ? (
-              <img
-                src={logoUrl}
-                alt={`${companyName} logo`}
-                className="max-h-[76px] max-w-[130px] object-contain"
-                onError={() => setFailedLogoUrl(logoUrl)}
-              />
-            ) : (
-              <span className="text-center text-[11px] font-semibold text-zinc-400">
-                Logo unavailable
-              </span>
-            )}
+        {/* main content */}
+        <div className="mt-[42px] flex items-start justify-between">
+          <div className="min-w-0">
+            <div className="text-[24px] font-medium uppercase leading-none tracking-[-0.035em] text-white">
+              {text.join}
+            </div>
+
+            <div className="mt-[12px] max-w-[620px] text-[58px] font-medium uppercase leading-[0.92] tracking-[-0.06em] text-white">
+              {text.headline}
+            </div>
           </div>
 
-          <div className="flex w-[170px] flex-col items-center">
-            <QrRingFrame
-              variant="email"
-              qrDataUrl={qrDataUrl}
-              unavailableText="QR unavailable"
-            />
+          <div className="mr-[18px] mt-[8px] w-[220px] text-right text-white">
+            <div className="text-[24px] font-medium uppercase leading-[1.04] tracking-[-0.04em]">
+              {text.ticket}
+            </div>
 
-            <p className="mt-3 text-center text-[10px] font-bold uppercase leading-tight tracking-[0.16em] text-white/78">
-              {text.scan}
-            </p>
+            <div className="mt-[22px] text-[16px] font-medium leading-[1.1] tracking-[-0.03em]">
+              <div>{text.useCode}</div>
+              <div>{invitationCode || 'XXXXXXX'}</div>
+              <div className="mt-[2px] underline">at {text.inviteUrl}</div>
+            </div>
           </div>
         </div>
       </div>
