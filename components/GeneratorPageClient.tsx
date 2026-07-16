@@ -438,7 +438,7 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
             />
             <div className={isLightMode ? 'absolute inset-0 bg-white/30' : 'absolute inset-0 bg-black/30'} />
             <div className="relative">
-             <div className="text-xl font-semibold">{item.label}</div>
+             <div className="text-xl font-semibold">{(text.themeLabels as Partial<Record<ThemeKey, string>> | undefined)?.[key] ?? item.label}</div>
 
             </div>
            </button>

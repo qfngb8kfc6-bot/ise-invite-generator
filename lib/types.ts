@@ -12,6 +12,8 @@ export type ThemeKey =
   | 'smartBuilding'
   | 'contentProduction'
 
+export type ThemeLabelMap = Partial<Record<ThemeKey, string>>
+
 export type ThemeConfig = {
   label: string
   backgroundImage: string
@@ -38,5 +40,8 @@ export type TranslationBundle = {
     visitUsPlural: string
     codeLabel: string
   }
-  ui: Record<string, string>
+  ui: {
+    themeLabels?: ThemeLabelMap
+    [key: string]: any
+  }
 }

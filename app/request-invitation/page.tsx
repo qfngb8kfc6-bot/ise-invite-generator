@@ -2,6 +2,11 @@ import { themes } from '@/lib/themes'
 import { translations } from '@/lib/translations'
 import RequestInvitationForm from './RequestInvitationForm'
 
+function getUiString(value: unknown, fallback = ''): string {
+  return typeof value === 'string' ? value : fallback
+}
+
+
 export const dynamic = 'force-dynamic'
 
 export default function RequestInvitationPage() {
@@ -12,7 +17,7 @@ export default function RequestInvitationPage() {
 
   const languageOptions = Object.entries(translations).map(([key, bundle]) => ({
     key,
-    label: bundle.ui.languageName,
+    label: getUiString(bundle.ui.languageName, key),
   }))
 
   return (

@@ -8,6 +8,11 @@ import {
 import { logAnalyticsEvent } from '@/lib/analytics'
 import type { LanguageKey, ThemeKey } from '@/lib/types'
 
+function getUiString(value: unknown, fallback = ''): string {
+  return typeof value === 'string' ? value : fallback
+}
+
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -94,7 +99,7 @@ export async function POST(request: Request) {
     contactEmail,
     logoUrl: '',
     themeLabel: themes[themeRaw].label,
-    languageLabel: translations[languageRaw].ui.languageName,
+    languageLabel: getUiString(translations[languageRaw].ui.languageName, languageRaw),
     generatorUrl,
   })
 
