@@ -205,6 +205,15 @@ function getCell(row: unknown[], column: keyof typeof REQUEST_COLUMNS): string {
 
 function mapTheme(value: string): ThemeKey {
   const raw = value.trim()
+  const normalisedRaw = normaliseLookup(raw)
+
+  if (
+    normalisedRaw === 'multitechnology' ||
+    normalisedRaw === 'multi technology' ||
+    normalisedRaw === 'multi-technology'
+  ) {
+    return 'unifiedCommunications'
+  }
 
   if (raw && raw in themes) {
     return raw as ThemeKey

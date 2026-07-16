@@ -25,7 +25,7 @@ export const themes: Record<ThemeKey, ThemeConfig> = {
     backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Lighting & Staging.jpg`,
   },
   unifiedCommunications: {
-    label: 'Multitechnology',
+    label: 'Multi Technology',
     backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Multitechnology.jpg`,
   },
   educationTechnology: {

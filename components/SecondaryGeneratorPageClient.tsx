@@ -29,16 +29,16 @@ type SecondaryGeneratorPageClientProps = {
 }
 
 const orderedThemeKeys: ThemeKey[] = [
-  'iseBrandingOne',
-  'iseBrandingTwo',
   'audio',
-  'residential',
+  'contentProduction',
+  'digitalSignage',
+  'educationTechnology',
+  'iseBrandingOne',
   'lighting',
   'unifiedCommunications',
-  'educationTechnology',
-  'digitalSignage',
+  'residential',
+  'iseBrandingTwo',
   'smartBuilding',
-  'contentProduction',
 ]
 
 function normalizeInitialLogoUrl(value: string): string {

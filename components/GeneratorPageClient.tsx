@@ -25,16 +25,16 @@ type Props = {
 }
 
 const orderedThemeKeys: ThemeKey[] = [
- 'iseBrandingOne',
- 'iseBrandingTwo',
- 'audio',
- 'residential',
- 'lighting',
- 'unifiedCommunications',
- 'educationTechnology',
- 'digitalSignage',
- 'smartBuilding',
- 'contentProduction',
+  'audio',
+  'contentProduction',
+  'digitalSignage',
+  'educationTechnology',
+  'iseBrandingOne',
+  'lighting',
+  'unifiedCommunications',
+  'residential',
+  'iseBrandingTwo',
+  'smartBuilding',
 ]
 
 type DisplayMode = 'dark' | 'light'
