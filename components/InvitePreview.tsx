@@ -24,103 +24,110 @@ const ISE_QR_RINGS = '/branding/toolkit/ise-qr-rings.png?v=20270622'
 function getFallbackInviteText(language: LanguageKey) {
   switch (language) {
     case 'es':
-      return { logoUnavailable: 'Logotipo no disponible', companyName: 'Nombre de la empresa', booth: 'Número de stand', booths: 'Números de stand', invitationCode: 'Código de invitación', qrUnavailable: 'QR no disponible', scanToRegister: 'Escanee para registrarse', registrationUrlUnavailable: 'URL de registro no disponible', freePass: 'Pase gratuito para visitantes', saveTicket: 'Guarde su entrada gratuita', headline: 'Su invitación a ISE', invitedLine: 'te ha invitado a ISE 2027', useCode: 'Usa el código:', heroLineOne: 'TU INVITACIÓN.', heroLineTwo: 'NUESTRA CELEBRACIÓN.', save250LineOne: 'AHORRA 250 €', save250LineTwo: 'Y CONSIGUE', save250LineThree: 'TU ENTRADA', save250LineFour: 'GRATUITA HOY' }
-    case 'de':
-      return { logoUnavailable: 'Logo nicht verfügbar', companyName: 'Firmenname', booth: 'Standnummer', booths: 'Standnummern', invitationCode: 'Einladungscode', qrUnavailable: 'QR nicht verfügbar', scanToRegister: 'Zum Registrieren scannen', registrationUrlUnavailable: 'Registrierungs-URL nicht verfügbar', freePass: 'Kostenloser Besucherpass', saveTicket: 'Sichern Sie sich Ihr kostenloses Ticket', headline: 'Ihre Einladung zur ISE', invitedLine: 'hat Sie zur ISE 2027 eingeladen', useCode: 'Verwenden Sie den Code:', heroLineOne: 'IHRE EINLADUNG.', heroLineTwo: 'UNSERE FEIER.', save250LineOne: 'SPAREN SIE 250 €', save250LineTwo: 'UND SICHERN SIE', save250LineThree: 'SICH IHR KOSTENLOSES', save250LineFour: 'TICKET HEUTE' }
+      return { logoUnavailable: 'Logotipo no disponible', companyName: 'Nombre de la empresa', booth: 'Número de stand', booths: 'Números de stand', invitationCode: 'Código de invitación', qrUnavailable: 'QR no disponible', scanToRegister: 'Escanee para registrarse', registrationUrlUnavailable: 'URL de registro no disponible', freePass: 'Pase gratuito para visitantes', saveTicket: 'ENTRADA GRATUITA', headline: 'Su invitación a ISE', invitedLine: 'te ha invitado a ISE 2027', useCode: 'Usa el código:', inviteUrlPrefix: 'en', heroLineOne: 'TU INVITACIÓN.', heroLineTwo: 'NUESTRA CELEBRACIÓN.', save250LineOne: 'AHORRA 250 €', save250LineTwo: 'Y CONSIGUE HOY', save250LineThree: 'TU ENTRADA', save250LineFour: 'GRATUITA' }
+
     case 'fr':
-      return { logoUnavailable: 'Logo indisponible', companyName: 'Nom de l’entreprise', booth: 'Numéro de stand', booths: 'Numéros de stand', invitationCode: 'Code d’invitation', qrUnavailable: 'QR indisponible', scanToRegister: 'Scanner pour s’inscrire', registrationUrlUnavailable: 'URL d’inscription indisponible', freePass: 'Pass visiteur gratuit', saveTicket: 'Réservez votre billet gratuit', headline: 'Votre invitation à ISE', invitedLine: 'vous a invité à ISE 2027', useCode: 'Utilisez le code :', heroLineOne: 'VOTRE INVITATION.', heroLineTwo: 'NOTRE CÉLÉBRATION.', save250LineOne: 'ÉCONOMISEZ 250 €', save250LineTwo: 'ET OBTENEZ', save250LineThree: 'VOTRE BILLET', save250LineFour: 'GRATUIT AUJOURD’HUI' }
+      return { logoUnavailable: 'Logo indisponible', companyName: 'Nom de l’entreprise', booth: 'Numéro de stand', booths: 'Numéros de stand', invitationCode: 'Code d’invitation', qrUnavailable: 'QR indisponible', scanToRegister: 'Scanner pour s’inscrire', registrationUrlUnavailable: 'URL d’inscription indisponible', freePass: 'Pass visiteur gratuit', saveTicket: 'BILLET GRATUIT', headline: 'Votre invitation à ISE', invitedLine: 'vous a invité à ISE 2027', useCode: 'Utilisez le code :', inviteUrlPrefix: 'sur', heroLineOne: 'VOTRE INVITATION.', heroLineTwo: 'NOTRE CÉLÉBRATION.', save250LineOne: 'ÉCONOMISEZ 250 €', save250LineTwo: 'ET OBTENEZ', save250LineThree: 'VOTRE BADGE GRATUIT', save250LineFour: 'DÈS AUJOURD’HUI' }
+
+    case 'de':
+      return { logoUnavailable: 'Logo nicht verfügbar', companyName: 'Firmenname', booth: 'Standnummer', booths: 'Standnummern', invitationCode: 'Einladungscode', qrUnavailable: 'QR nicht verfügbar', scanToRegister: 'Zum Registrieren scannen', registrationUrlUnavailable: 'Registrierungs-URL nicht verfügbar', freePass: 'Kostenloser Besucherpass', saveTicket: 'KOSTENLOSES TICKET', headline: 'Ihre Einladung zur ISE', invitedLine: 'hat Sie zur ISE 2027 eingeladen', useCode: 'Registrieren Sie sich mit dem Code:', inviteUrlPrefix: 'unter', heroLineOne: 'IHRE EINLADUNG.', heroLineTwo: 'UNSERE FEIER.', save250LineOne: 'SPAREN SIE 250 €', save250LineTwo: 'SICHERN SIE SICH', save250LineThree: 'JETZT IHR KOSTENLOSES', save250LineFour: 'TICKET!' }
+
     case 'it':
-      return { logoUnavailable: 'Logo non disponibile', companyName: 'Nome azienda', booth: 'Numero stand', booths: 'Numeri stand', invitationCode: 'Codice di invito', qrUnavailable: 'QR non disponibile', scanToRegister: 'Scansiona per registrarti', registrationUrlUnavailable: 'URL di registrazione non disponibile', freePass: 'Pass visitatore gratuito', saveTicket: 'Ottieni il tuo biglietto gratuito', headline: 'Il tuo invito a ISE', invitedLine: 'ti ha invitato a ISE 2027', useCode: 'Usa il codice:', heroLineOne: 'IL TUO INVITO.', heroLineTwo: 'LA NOSTRA CELEBRAZIONE.', save250LineOne: 'RISPARMIA 250 €', save250LineTwo: 'E OTTIENI', save250LineThree: 'IL TUO BIGLIETTO', save250LineFour: 'GRATUITO OGGI' }
-    case 'ca':
-      return { logoUnavailable: 'Logotip no disponible', companyName: "Nom de l'empresa", booth: "Número d'estand", booths: "Números d'estand", invitationCode: "Codi d'invitació", qrUnavailable: 'QR no disponible', scanToRegister: "Escaneja per registrar-te", registrationUrlUnavailable: "URL de registre no disponible", freePass: 'Passi gratuït de visitant', saveTicket: 'ENTRADA GRATUÏTA', headline: 'La teva invitació a ISE', invitedLine: "t'ha convidat a ISE 2027", useCode: 'Fes servir el codi:', heroLineOne: 'LA TEVA INVITACIÓ.', heroLineTwo: 'LA NOSTRA CELEBRACIÓ.', save250LineOne: 'ESTALVIA 250 €', save250LineTwo: 'I ACONSEGUEIX', save250LineThree: 'LA TEVA ENTRADA', save250LineFour: 'GRATUÏTA AVUI' }
+      return { logoUnavailable: 'Logo non disponibile', companyName: 'Nome azienda', booth: 'Numero stand', booths: 'Numeri stand', invitationCode: 'Codice di invito', qrUnavailable: 'QR non disponibile', scanToRegister: 'Scansiona per registrarti', registrationUrlUnavailable: 'URL di registrazione non disponibile', freePass: 'Pass visitatore gratuito', saveTicket: 'BIGLIETTO GRATUITO', headline: 'Il tuo invito a ISE', invitedLine: 'ti ha invitato a ISE 2027', useCode: 'Usa il codice:', inviteUrlPrefix: 'su', heroLineOne: 'OLTRE L’INVITO.', heroLineTwo: 'LA GRANDE CELEBRAZIONE.', save250LineOne: 'RISPARMIA 250 €', save250LineTwo: 'ED ASSICURATI OGGI', save250LineThree: 'IL TUO', save250LineFour: 'BIGLIETTO' }
+
     case 'zh-CN':
-      return { logoUnavailable: '暂无标志', companyName: '公司名称', booth: '展位号', booths: '展位号', invitationCode: '邀请码', qrUnavailable: '二维码不可用', scanToRegister: '扫码注册', registrationUrlUnavailable: '注册链接不可用', freePass: '免费观众通行证', saveTicket: '领取您的免费门票', headline: '您的 ISE 邀请函', invitedLine: '邀请您参加 ISE 2027', useCode: '使用邀请码：', heroLineOne: '您的邀请。', heroLineTwo: '我们的庆典。', save250LineOne: '节省 250 欧元', save250LineTwo: '并立即获取', save250LineThree: '您的免费', save250LineFour: '门票' }
+      return { logoUnavailable: '暂无标志', companyName: '公司名称', booth: '展位号', booths: '展位号', invitationCode: '邀请码', qrUnavailable: '二维码不可用', scanToRegister: '扫码注册', registrationUrlUnavailable: '注册链接不可用', freePass: '免费观众通行证', saveTicket: '免费门票', headline: '您的 ISE 邀请函', invitedLine: '邀请您参加 ISE 2027', useCode: '使用邀请码：', inviteUrlPrefix: '访问', heroLineOne: '您的邀请。', heroLineTwo: '我们的庆典。', save250LineOne: '节省 250 欧元', save250LineTwo: '并立即获取', save250LineThree: '您的免费', save250LineFour: '门票' }
+
     default:
-      return { logoUnavailable: 'Logo unavailable', companyName: 'Company name', booth: 'Stand number/s', booths: 'Stand number/s', invitationCode: 'Invitation code', qrUnavailable: 'QR unavailable', scanToRegister: 'Scan to register', registrationUrlUnavailable: 'Registration URL unavailable', freePass: 'Free visitor pass', saveTicket: 'FREE TICKET', headline: 'Your invitation to ISE', invitedLine: 'has invited you to ISE 2027', useCode: 'Use the code:', heroLineOne: 'YOUR INVITATION.', heroLineTwo: 'OUR CELEBRATION.', save250LineOne: 'SAVE €250', save250LineTwo: 'AND SECURE', save250LineThree: 'YOUR FREE', save250LineFour: 'TICKET TODAY' }
+      return { logoUnavailable: 'Logo unavailable', companyName: 'Company name', booth: 'Stand number/s', booths: 'Stand number/s', invitationCode: 'Invitation code', qrUnavailable: 'QR unavailable', scanToRegister: 'Scan to register', registrationUrlUnavailable: 'Registration URL unavailable', freePass: 'Free visitor pass', saveTicket: 'FREE TICKET', headline: 'Your invitation to ISE', invitedLine: 'has invited you to ISE 2027', useCode: 'Use code:', inviteUrlPrefix: 'at', heroLineOne: 'YOUR INVITATION.', heroLineTwo: 'OUR CELEBRATION.', save250LineOne: 'SAVE €250', save250LineTwo: 'AND SECURE', save250LineThree: 'YOUR FREE TICKET', save250LineFour: 'TODAY' }
   }
 }
+
+
 
 function getCardCopy(language: LanguageKey, eventYear: string) {
   switch (language) {
     case 'es':
       return {
-        joinUs: `Únase a nosotros en ISE ${eventYear}`,
-        invitationTitle: 'Invitación',
-        isInviting: `le invita a ISE ${eventYear}`,
-        reconnectHeadline: 'Es hora de reconectar...',
-        bodyOne: 'Integrated Systems Europe es el evento tecnológico anual de referencia mundial para la integración de sistemas y la industria audiovisual.',
-        bodyTwo: 'Únase a nosotros en Barcelona y reconecte con la innovación, las personas, el conocimiento y la tecnología.',
-        bodyThree: `Regístrese gratis con su código de invitación de expositor y asegure su pase de visitante para ISE ${eventYear}.`,
-        freeCode: 'Únase gratis y ahorre con su código de invitación:',
+        reconnectHeadline: 'TU INVITACIÓN. NUESTRA CELEBRACIÓN.',
+        bodyOne: 'Vuelve el salón tecnológico anual de referencia mundial.',
+        bodyTwo: 'Las innovaciones más recientes del mundo.',
+        bodyThree: 'Los grandes referentes de la innovación.',
+        bodyFour: `ISE ${eventYear} reunirá todo esto —y mucho más— en su mejor edición hasta la fecha. Encontrarás:`,
+        bullets: ['Start-ups brillantes y propuestas espectaculares', 'Creadores de contenido e integradores expertos', 'Aulas de nueva generación y auditorios de otro nivel', 'Y mucho más entre medias'],
+        closingOne: 'Prepárate para verlo todo, en todos los sectores y desde todos los horizontes. Nada menos que todo.',
+        closingTwo: 'Porque te espera un mundo de oportunidades…',
+        freeCode: 'Ahorra 250 € y consigue hoy tu entrada gratuita',
       }
-    case 'de':
-      return {
-        joinUs: `Besuchen Sie uns auf der ISE ${eventYear}`,
-        invitationTitle: 'Einladung',
-        isInviting: `lädt Sie zur ISE ${eventYear} ein`,
-        reconnectHeadline: 'Es ist Zeit, sich wieder zu vernetzen...',
-        bodyOne: 'Integrated Systems Europe ist die weltweit führende jährliche Technologiemesse für Systemintegration und die audiovisuelle Branche.',
-        bodyTwo: 'Kommen Sie nach Barcelona und vernetzen Sie sich wieder mit Innovation, Menschen, Wissen und Technologie.',
-        bodyThree: `Registrieren Sie sich kostenlos mit Ihrem Aussteller-Einladungscode und sichern Sie sich Ihren Besucherausweis für ISE ${eventYear}.`,
-        freeCode: 'Kostenlos teilnehmen und mit Ihrem Einladungscode sparen:',
-      }
+
     case 'fr':
       return {
-        joinUs: `Rejoignez-nous à ISE ${eventYear}`,
-        invitationTitle: 'Invitation',
-        isInviting: `vous invite à ISE ${eventYear}`,
-        reconnectHeadline: 'Il est temps de se reconnecter...',
-        bodyOne: 'Integrated Systems Europe est le salon technologique annuel de référence mondiale pour l’intégration de systèmes et l’industrie audiovisuelle.',
-        bodyTwo: 'Rejoignez-nous à Barcelone et reconnectez-vous à l’innovation, aux personnes, au savoir et à la technologie.',
-        bodyThree: `Inscrivez-vous gratuitement avec votre code d’invitation exposant et obtenez votre pass visiteur pour ISE ${eventYear}.`,
-        freeCode: 'Rejoignez-nous gratuitement avec votre code d’invitation :',
+        reconnectHeadline: 'VOTRE INVITATION. NOTRE CÉLÉBRATION.',
+        bodyOne: 'Le salon technologique annuel incontournable est de retour.',
+        bodyTwo: 'Les dernières innovations.',
+        bodyThree: 'Les plus grands acteurs du secteur.',
+        bodyFour: `ISE ${eventYear} s'annonce comme l'édition la plus ambitieuse jamais organisée, réunissant tout ce qui façonne l'avenir de l'audiovisuel et des technologies intégrées. Au programme :`,
+        bullets: ['Des start-ups prometteuses et des démonstrations spectaculaires', 'Des créateurs de contenu visionnaires et des spécialistes de l’intégration', 'Des salles de cours et des salles de spectacle nouvelle génération', 'Et bien plus encore !'],
+        closingOne: 'Tous les secteurs. Tous les horizons. Toute l’innovation réunie en un seul lieu.',
+        closingTwo: 'Un monde d’opportunités vous attend.',
+        freeCode: 'Économisez 250 € et obtenez votre badge gratuit dès aujourd’hui',
       }
+
+    case 'de':
+      return {
+        reconnectHeadline: 'IHRE EINLADUNG. UNSERE FEIER.',
+        bodyOne: 'Die weltweit führende Messe für audiovisuelle Technologien und Systemintegration ist zurück.',
+        bodyTwo: 'Die neuesten Technologien der Welt.',
+        bodyThree: 'Die größten Innovatoren der Welt.',
+        bodyFour: `Die ISE ${eventYear} bringt sie alle zusammen – und verspricht, alle bisherigen Erwartungen zu übertreffen. Bereit für die ganz große Show?`,
+        bullets: ['Aufstrebende Start-ups und renommierte Marktführer', 'Kreative Content-Creator und versierte Integratoren', 'Vom Klassenzimmer der Next-Gen bis zu Konzerthallen auf Next-Level-Niveau', 'und noch so vieles mehr!'],
+        closingOne: 'Erleben Sie Ihre eigene und alle angrenzenden Branchen aus völlig neuen Blickwinkeln.',
+        closingTwo: 'Keine Kompromisse – weil eine Welt voller Chancen auf Sie wartet…',
+        freeCode: 'Sparen Sie 250 € – sichern Sie sich jetzt Ihr kostenloses Ticket!',
+      }
+
     case 'it':
       return {
-        joinUs: `Unisciti a noi a ISE ${eventYear}`,
-        invitationTitle: 'Invito',
-        isInviting: `ti invita a ISE ${eventYear}`,
-        reconnectHeadline: 'È tempo di riconnettersi...',
-        bodyOne: 'Integrated Systems Europe è il principale evento tecnologico annuale al mondo per l’integrazione dei sistemi e il settore audiovisivo.',
-        bodyTwo: 'Unisciti a noi a Barcellona e riconnettiti con innovazione, persone, conoscenza e tecnologia.',
-        bodyThree: `Registrati gratuitamente con il tuo codice invito espositore e assicurati il pass visitatore per ISE ${eventYear}.`,
-        freeCode: 'Partecipa gratis usando il tuo codice invito:',
+        reconnectHeadline: 'OLTRE L’INVITO. LA GRANDE CELEBRAZIONE.',
+        bodyOne: 'Il rinomato appuntamento annuale con la tecnologia è tornato.',
+        bodyTwo: `ISE ${eventYear} si prepara a riunire l'intero settore per dare vita a un'edizione che supererà ogni record. Ecco cosa ti aspetta:`,
+        bodyThree: '',
+        bodyFour: '',
+        bullets: ['Startup brillanti e innovazioni mozzafiato', 'Creatori di contenuti creativi ed esperti integratori di sistemi', 'Aule high-tech e palcoscenici mai visti prima', '...e tantissimo altro ancora.'],
+        closingOne: 'Aspettati una panoramica completa di ogni mercato e settore. Nient’altro che il meglio.',
+        closingTwo: 'Perché un mondo di opportunità ti sta aspettando…',
+        freeCode: 'Risparmia 250 € ed assicurati oggi il tuo biglietto',
       }
-    case 'ca':
-      return {
-        joinUs: `Uneix-te a nosaltres a ISE ${eventYear}`,
-        invitationTitle: 'Invitació',
-        isInviting: `et convida a ISE ${eventYear}`,
-        reconnectHeadline: 'És hora de reconnectar...',
-        bodyOne: 'Integrated Systems Europe és el saló tecnològic anual de referència mundial per a la integració de sistemes i la indústria audiovisual.',
-        bodyTwo: 'Uneix-te a nosaltres a Barcelona i reconnecta amb la innovació, les persones, el coneixement i la tecnologia.',
-        bodyThree: `Registra't gratis amb el teu codi d'invitació d'expositor i assegura el teu passi de visitant per a ISE ${eventYear}.`,
-        freeCode: "Uneix-te gratis i estalvia amb el teu codi d'invitació:",
-      }
+
     case 'zh-CN':
       return {
-        joinUs: `欢迎参加 ISE ${eventYear}`,
-        invitationTitle: '邀请函',
-        isInviting: `诚邀您参加 ISE ${eventYear}`,
-        reconnectHeadline: '是时候重新连接...',
-        bodyOne: 'Integrated Systems Europe 是全球知名的年度科技展会，面向系统集成和视听行业。',
-        bodyTwo: '欢迎来到巴塞罗那，与创新、人脉、知识和技术重新连接。',
-        bodyThree: `使用您的参展商邀请码免费注册，并获取 ISE ${eventYear} 观众通行证。`,
-        freeCode: '使用您的邀请码免费参加：',
+        reconnectHeadline: '您的邀请。我们的庆典。',
+        bodyOne: '世界知名的年度科技展即将回归。',
+        bodyTwo: '全球最新创新。',
+        bodyThree: '世界领先创新者。',
+        bodyFour: `ISE ${eventYear} 将汇聚这一切，带来迄今为止最精彩的一届。您将看到：`,
+        bullets: ['充满活力的初创企业和大胆的展示', '创意内容制作者和专业集成商', '新一代教室和高水平演出场馆', '以及更多精彩内容'],
+        closingOne: '期待来自每个领域、每个方向的机会。',
+        closingTwo: '因为一个充满机会的世界正在等待您…',
+        freeCode: '立即节省 250 欧元并获取您的免费门票',
       }
+
     default:
       return {
-        joinUs: `Join us at ISE ${eventYear}`,
-        invitationTitle: 'Invitation',
-        isInviting: `is inviting you to ISE ${eventYear}`,
-        reconnectHeadline: 'It’s time to reconnect...',
+        reconnectHeadline: 'YOUR INVITATION. OUR CELEBRATION.',
         bodyOne: 'The world-renowned annual tech show is back.',
-        bodyTwo: "The world’s latest innovations. The world’s greatest innovators.",
-        bodyThree: `ISE ${eventYear} is set to bring it all together for its best edition yet. You’ll find:`,
-        freeCode: 'Join us for FREE and save €250 with your invitation code:',
+        bodyTwo: 'The world’s latest innovations.',
+        bodyThree: 'The world’s greatest innovators.',
+        bodyFour: `ISE ${eventYear} is set to bring it all together for its best edition yet. You’ll find:`,
+        bullets: ['Bright start-ups and bold showstoppers', 'Creative content makers and expert integrators', 'Next-gen classrooms and next-level concert halls', 'and a whole lot more in between'],
+        closingOne: '{cardCopy.closingOne}',
+        closingTwo: 'Because a world of opportunity awaits…',
+        freeCode: 'Save €250 and secure your free ticket today',
       }
   }
 }
+
+
 
 export default function InvitePreview({
   companyName,
@@ -309,14 +316,13 @@ export default function InvitePreview({
                 </p>
 
                 <p>
-                  ISE {EVENT_YEAR} is set to bring it all together for its best edition yet. You’ll find:
+                  {cardCopy.bodyFour}
                 </p>
 
                 <ul className="space-y-1">
-                  <li>– Bright start-ups and bold showstoppers</li>
-                  <li>– Creative content makers and expert integrators</li>
-                  <li>– Next-gen classrooms and next-level concert halls</li>
-                  <li>– And a whole lot more in between</li>
+                  {cardCopy.bullets.map((item) => (
+                    <li key={item}>– {item}</li>
+                  ))}
                 </ul>
 
                 <p>
@@ -324,14 +330,14 @@ export default function InvitePreview({
                 </p>
 
                 <p className="font-semibold">
-                  Because a world of opportunity awaits...
+                  {cardCopy.closingTwo}
                 </p>
               </div>
             ) : (
               <div className="mt-10 max-w-[640px] space-y-4 text-[16px] font-medium leading-[1.5] text-[#050b36]">
-                <p>{isSaveTheDateTheme ? 'ISE 2027 will be our largest technology showcase to date.' : cardCopy.bodyOne}</p>
-                <p>{isSaveTheDateTheme ? 'From start-ups to showstoppers, content creation to integration, and classrooms to concert halls, expect nothing but EVERYTHING.' : cardCopy.bodyTwo}</p>
-                <p>{isSaveTheDateTheme ? 'Be our guest in Barcelona.' : cardCopy.bodyThree}</p>
+                The world-renowned annual tech show is back.
+                <p>{isSaveTheDateTheme ? 'From start-ups to showstoppers, content creation to integration, and classrooms to concert halls, expect nothing but EVERYTHING.' : [cardCopy.bodyTwo, cardCopy.bodyThree, cardCopy.bodyFour].filter(Boolean).join(' ')}</p>
+                <p>{isSaveTheDateTheme ? 'Be our guest in Barcelona.' : [cardCopy.closingOne, cardCopy.closingTwo].filter(Boolean).join(' ')}</p>
               </div>
             )}
           </div>
@@ -375,7 +381,7 @@ export default function InvitePreview({
 
             <p className="mt-[52px] text-center text-[17px] font-semibold leading-tight text-[#050b36]">
               {fallbackText.useCode} {invitationCode || 'XXX'}<br />
-              at iseurope.org/invite
+              {fallbackText.inviteUrlPrefix} iseurope.org/invite
             </p>
           </div>
         </div>
