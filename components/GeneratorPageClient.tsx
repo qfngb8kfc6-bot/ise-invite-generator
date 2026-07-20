@@ -349,7 +349,7 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
            onChange={(event) => setCardLanguage(event.target.value as LanguageKey)}
            className={inputClassName}
           >
-           {Object.entries(translations).map(([key, bundle]) => (
+           {Object.entries(translations).filter(([key]) => key !== 'ca').map(([key, bundle]) => (
             <option key={key} value={key} className="text-black">
              {bundle.ui.languageName}
             </option>

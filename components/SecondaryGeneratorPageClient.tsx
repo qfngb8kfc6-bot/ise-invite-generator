@@ -309,7 +309,7 @@ export default function SecondaryGeneratorPageClient({
                       }
                       className={inputClassName}
                     >
-                      {Object.entries(translations).map(([key, bundle]) => (
+                      {Object.entries(translations).filter(([key]) => key !== 'ca').map(([key, bundle]) => (
                         <option key={key} value={key} className="text-black">
                           {bundle.ui.languageName}
                         </option>

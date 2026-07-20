@@ -15,7 +15,7 @@ export default function RequestInvitationPage() {
     label: theme.label,
   }))
 
-  const languageOptions = Object.entries(translations).map(([key, bundle]) => ({
+  const languageOptions = Object.entries(translations).filter(([key]) => key !== 'ca').map(([key, bundle]) => ({
     key,
     label: getUiString(bundle.ui.languageName, key),
   }))

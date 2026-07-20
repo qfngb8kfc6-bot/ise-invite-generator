@@ -24,19 +24,19 @@ const ISE_QR_RINGS = '/branding/toolkit/ise-qr-rings.png?v=20270622'
 function getFallbackInviteText(language: LanguageKey) {
   switch (language) {
     case 'es':
-      return { logoUnavailable: 'Logotipo no disponible', companyName: 'Nombre de la empresa', booth: 'Número de stand', booths: 'Números de stand', invitationCode: 'Código de invitación', qrUnavailable: 'QR no disponible', scanToRegister: 'Escanee para registrarse', registrationUrlUnavailable: 'URL de registro no disponible', freePass: 'Pase gratuito para visitantes', saveTicket: 'Guarde su entrada gratuita', headline: 'Su invitación a ISE' }
+      return { logoUnavailable: 'Logotipo no disponible', companyName: 'Nombre de la empresa', booth: 'Número de stand', booths: 'Números de stand', invitationCode: 'Código de invitación', qrUnavailable: 'QR no disponible', scanToRegister: 'Escanee para registrarse', registrationUrlUnavailable: 'URL de registro no disponible', freePass: 'Pase gratuito para visitantes', saveTicket: 'Guarde su entrada gratuita', headline: 'Su invitación a ISE', invitedLine: 'te ha invitado a ISE 2027', useCode: 'Usa el código:', heroLineOne: 'TU INVITACIÓN.', heroLineTwo: 'NUESTRA CELEBRACIÓN.', save250LineOne: 'AHORRA 250 €', save250LineTwo: 'Y CONSIGUE', save250LineThree: 'TU ENTRADA', save250LineFour: 'GRATUITA HOY' }
     case 'de':
-      return { logoUnavailable: 'Logo nicht verfügbar', companyName: 'Firmenname', booth: 'Standnummer', booths: 'Standnummern', invitationCode: 'Einladungscode', qrUnavailable: 'QR nicht verfügbar', scanToRegister: 'Zum Registrieren scannen', registrationUrlUnavailable: 'Registrierungs-URL nicht verfügbar', freePass: 'Kostenloser Besucherpass', saveTicket: 'Sichern Sie sich Ihr kostenloses Ticket', headline: 'Ihre Einladung zur ISE' }
+      return { logoUnavailable: 'Logo nicht verfügbar', companyName: 'Firmenname', booth: 'Standnummer', booths: 'Standnummern', invitationCode: 'Einladungscode', qrUnavailable: 'QR nicht verfügbar', scanToRegister: 'Zum Registrieren scannen', registrationUrlUnavailable: 'Registrierungs-URL nicht verfügbar', freePass: 'Kostenloser Besucherpass', saveTicket: 'Sichern Sie sich Ihr kostenloses Ticket', headline: 'Ihre Einladung zur ISE', invitedLine: 'hat Sie zur ISE 2027 eingeladen', useCode: 'Verwenden Sie den Code:', heroLineOne: 'IHRE EINLADUNG.', heroLineTwo: 'UNSERE FEIER.', save250LineOne: 'SPAREN SIE 250 €', save250LineTwo: 'UND SICHERN SIE', save250LineThree: 'SICH IHR KOSTENLOSES', save250LineFour: 'TICKET HEUTE' }
     case 'fr':
-      return { logoUnavailable: 'Logo indisponible', companyName: 'Nom de l’entreprise', booth: 'Numéro de stand', booths: 'Numéros de stand', invitationCode: 'Code d’invitation', qrUnavailable: 'QR indisponible', scanToRegister: 'Scanner pour s’inscrire', registrationUrlUnavailable: 'URL d’inscription indisponible', freePass: 'Pass visiteur gratuit', saveTicket: 'Réservez votre billet gratuit', headline: 'Votre invitation à ISE' }
+      return { logoUnavailable: 'Logo indisponible', companyName: 'Nom de l’entreprise', booth: 'Numéro de stand', booths: 'Numéros de stand', invitationCode: 'Code d’invitation', qrUnavailable: 'QR indisponible', scanToRegister: 'Scanner pour s’inscrire', registrationUrlUnavailable: 'URL d’inscription indisponible', freePass: 'Pass visiteur gratuit', saveTicket: 'Réservez votre billet gratuit', headline: 'Votre invitation à ISE', invitedLine: 'vous a invité à ISE 2027', useCode: 'Utilisez le code :', heroLineOne: 'VOTRE INVITATION.', heroLineTwo: 'NOTRE CÉLÉBRATION.', save250LineOne: 'ÉCONOMISEZ 250 €', save250LineTwo: 'ET OBTENEZ', save250LineThree: 'VOTRE BILLET', save250LineFour: 'GRATUIT AUJOURD’HUI' }
     case 'it':
-      return { logoUnavailable: 'Logo non disponibile', companyName: 'Nome azienda', booth: 'Numero stand', booths: 'Numeri stand', invitationCode: 'Codice di invito', qrUnavailable: 'QR non disponibile', scanToRegister: 'Scansiona per registrarti', registrationUrlUnavailable: 'URL di registrazione non disponibile', freePass: 'Pass visitatore gratuito', saveTicket: 'Ottieni il tuo biglietto gratuito', headline: 'Il tuo invito a ISE' }
+      return { logoUnavailable: 'Logo non disponibile', companyName: 'Nome azienda', booth: 'Numero stand', booths: 'Numeri stand', invitationCode: 'Codice di invito', qrUnavailable: 'QR non disponibile', scanToRegister: 'Scansiona per registrarti', registrationUrlUnavailable: 'URL di registrazione non disponibile', freePass: 'Pass visitatore gratuito', saveTicket: 'Ottieni il tuo biglietto gratuito', headline: 'Il tuo invito a ISE', invitedLine: 'ti ha invitato a ISE 2027', useCode: 'Usa il codice:', heroLineOne: 'IL TUO INVITO.', heroLineTwo: 'LA NOSTRA CELEBRAZIONE.', save250LineOne: 'RISPARMIA 250 €', save250LineTwo: 'E OTTIENI', save250LineThree: 'IL TUO BIGLIETTO', save250LineFour: 'GRATUITO OGGI' }
     case 'ca':
-      return { logoUnavailable: 'Logotip no disponible', companyName: "Nom de l'empresa", booth: "Número d'estand", booths: "Números d'estand", invitationCode: "Codi d'invitació", qrUnavailable: 'QR no disponible', scanToRegister: "Escaneja per registrar-te", registrationUrlUnavailable: "URL de registre no disponible", freePass: 'Passi gratuït de visitant', saveTicket: 'ENTRADA GRATUÏTA', headline: 'La teva invitació a ISE' }
+      return { logoUnavailable: 'Logotip no disponible', companyName: "Nom de l'empresa", booth: "Número d'estand", booths: "Números d'estand", invitationCode: "Codi d'invitació", qrUnavailable: 'QR no disponible', scanToRegister: "Escaneja per registrar-te", registrationUrlUnavailable: "URL de registre no disponible", freePass: 'Passi gratuït de visitant', saveTicket: 'ENTRADA GRATUÏTA', headline: 'La teva invitació a ISE', invitedLine: "t'ha convidat a ISE 2027", useCode: 'Fes servir el codi:', heroLineOne: 'LA TEVA INVITACIÓ.', heroLineTwo: 'LA NOSTRA CELEBRACIÓ.', save250LineOne: 'ESTALVIA 250 €', save250LineTwo: 'I ACONSEGUEIX', save250LineThree: 'LA TEVA ENTRADA', save250LineFour: 'GRATUÏTA AVUI' }
     case 'zh-CN':
-      return { logoUnavailable: '暂无标志', companyName: '公司名称', booth: '展位号', booths: '展位号', invitationCode: '邀请码', qrUnavailable: '二维码不可用', scanToRegister: '扫码注册', registrationUrlUnavailable: '注册链接不可用', freePass: '免费观众通行证', saveTicket: '领取您的免费门票', headline: '您的 ISE 邀请函' }
+      return { logoUnavailable: '暂无标志', companyName: '公司名称', booth: '展位号', booths: '展位号', invitationCode: '邀请码', qrUnavailable: '二维码不可用', scanToRegister: '扫码注册', registrationUrlUnavailable: '注册链接不可用', freePass: '免费观众通行证', saveTicket: '领取您的免费门票', headline: '您的 ISE 邀请函', invitedLine: '邀请您参加 ISE 2027', useCode: '使用邀请码：', heroLineOne: '您的邀请。', heroLineTwo: '我们的庆典。', save250LineOne: '节省 250 欧元', save250LineTwo: '并立即获取', save250LineThree: '您的免费', save250LineFour: '门票' }
     default:
-      return { logoUnavailable: 'Logo unavailable', companyName: 'Company name', booth: 'Stand number/s', booths: 'Stand number/s', invitationCode: 'Invitation code', qrUnavailable: 'QR unavailable', scanToRegister: 'Scan to register', registrationUrlUnavailable: 'Registration URL unavailable', freePass: 'Free visitor pass', saveTicket: 'FREE TICKET', headline: 'Your invitation to ISE' }
+      return { logoUnavailable: 'Logo unavailable', companyName: 'Company name', booth: 'Stand number/s', booths: 'Stand number/s', invitationCode: 'Invitation code', qrUnavailable: 'QR unavailable', scanToRegister: 'Scan to register', registrationUrlUnavailable: 'Registration URL unavailable', freePass: 'Free visitor pass', saveTicket: 'FREE TICKET', headline: 'Your invitation to ISE', invitedLine: 'has invited you to ISE 2027', useCode: 'Use the code:', heroLineOne: 'YOUR INVITATION.', heroLineTwo: 'OUR CELEBRATION.', save250LineOne: 'SAVE €250', save250LineTwo: 'AND SECURE', save250LineThree: 'YOUR FREE', save250LineFour: 'TICKET TODAY' }
   }
 }
 
@@ -218,8 +218,8 @@ export default function InvitePreview({
               </p>
 
               <h2 className="mt-[20px] text-[65px] font-semibold uppercase leading-[0.98] tracking-[0em] text-white">
-                YOUR INVITATION.<br />
-                OUR CELEBRATION.
+                {fallbackText.heroLineOne}<br />
+                {fallbackText.heroLineTwo}
               </h2>
 
               <p className="mt-[18px] text-[19px] font-semibold leading-none tracking-[-0.025em] text-white">
@@ -256,10 +256,8 @@ export default function InvitePreview({
             </h3>
 
             <p className="mt-2 text-[18px] font-medium leading-tight text-[#050b36]">
-              {isSecondaryMode
-                ? `Has created your ISE ${EVENT_YEAR} invitation`
-                : `Has invited you to ISE ${EVENT_YEAR}`}
-            </p>
+                {fallbackText.invitedLine}
+              </p>
           </div>
 
           <div className="flex min-h-[76px] w-[250px] items-center justify-center border border-[#050b36]/35 bg-white px-5">
@@ -369,14 +367,14 @@ export default function InvitePreview({
             </div>
 
             <p className="mt-[46px] max-w-[245px] text-center text-[22px] font-semibold uppercase leading-[1.08] text-[#050b36]">
-              SAVE €250<br />
-              AND SECURE<br />
-              YOUR FREE<br />
-              TICKET TODAY
+              {fallbackText.save250LineOne}<br />
+              {fallbackText.save250LineTwo}<br />
+              {fallbackText.save250LineThree}<br />
+              {fallbackText.save250LineFour}
             </p>
 
             <p className="mt-[52px] text-center text-[17px] font-semibold leading-tight text-[#050b36]">
-              Use the code: {invitationCode || 'XXX'}<br />
+              {fallbackText.useCode} {invitationCode || 'XXX'}<br />
               at iseurope.org/invite
             </p>
           </div>
