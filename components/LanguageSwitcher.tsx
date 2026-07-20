@@ -92,7 +92,7 @@ export default function LanguageSwitcher({
           : 'rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none transition focus:border-zinc-400'
       }
     >
-      {Object.entries(translations).map(([key, bundle]) => (
+      {Object.entries(translations).filter(([key]) => key !== 'ca').map(([key, bundle]) => (
         <option key={key} value={key} className="text-black">
           {bundle.ui.languageName}
         </option>
