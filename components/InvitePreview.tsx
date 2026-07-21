@@ -297,8 +297,7 @@ export default function InvitePreview({
             <h3 className="max-w-[600px] text-[52px] font-semibold uppercase leading-[1.02] tracking-[0em] text-[#050b36]">
               {language === 'en' ? (
                 <>
-                  BRING YOUR WORLD.<br />
-                  UNITE WITH US.
+                  {cardCopy.reconnectHeadline}
                 </>
               ) : (
                 cardCopy.reconnectHeadline
@@ -308,7 +307,7 @@ export default function InvitePreview({
             {language === 'en' ? (
               <div className="mt-10 max-w-[640px] space-y-4 text-[16px] font-medium leading-[1.5] text-[#050b36]">
                 <p className="font-semibold">
-                  The world-renowned annual tech show is back.
+                  {cardCopy.bodyOne}
                 </p>
 
                 <p>
@@ -335,7 +334,7 @@ export default function InvitePreview({
               </div>
             ) : (
               <div className="mt-10 max-w-[640px] space-y-4 text-[16px] font-medium leading-[1.5] text-[#050b36]">
-                The world-renowned annual tech show is back.
+                {cardCopy.bodyOne}
                 <p>{isSaveTheDateTheme ? 'From start-ups to showstoppers, content creation to integration, and classrooms to concert halls, expect nothing but EVERYTHING.' : [cardCopy.bodyTwo, cardCopy.bodyThree, cardCopy.bodyFour].filter(Boolean).join(' ')}</p>
                 <p>{isSaveTheDateTheme ? 'Be our guest in Barcelona.' : [cardCopy.closingOne, cardCopy.closingTwo].filter(Boolean).join(' ')}</p>
               </div>
@@ -367,7 +366,7 @@ export default function InvitePreview({
 
               <div className="absolute inset-0 flex items-center justify-center text-center">
                 <p className="max-w-[126px] translate-y-[-88px] text-[20px] font-semibold uppercase leading-[1.08] text-[#050b36] opacity-0">
-                  SAVE €250 AND SECURE YOUR FREE TICKET TODAY
+                  {cardCopy.freeCode}
                 </p>
               </div>
             </div>
