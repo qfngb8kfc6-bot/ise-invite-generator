@@ -104,6 +104,8 @@ export default function EmailBannerPreview({
   const [failedLogoUrl, setFailedLogoUrl] = useState<string | null>(null)
   const text = getEmailBannerText(language)
   const boothLabel = mode === 'secondary' ? 'Invitation ID:' : text.booth
+  const boothDisplay = standNumber?.trim() || '000000'
+  const codeDisplay = invitationCode?.trim() || 'ISE2027'
   const isSaveTheDateTheme = theme === 'iseBrandingTwo'
 
   if (isSaveTheDateTheme) {
@@ -152,7 +154,7 @@ export default function EmailBannerPreview({
                   {boothLabel}
                 </div>
                 <div className="mt-[2px] text-[15px] font-medium leading-[1.02] tracking-[-0.035em]">
-                  {standNumber || '000000'}
+                  {boothDisplay}
                 </div>
               </div>
             </div>
@@ -176,8 +178,8 @@ export default function EmailBannerPreview({
 
               <div className="mt-[22px] text-[16px] font-medium leading-[1.1] tracking-[-0.03em]">
                 <div>{text.useCode}</div>
-                <div>{invitationCode || 'XXXXXXX'}</div>
-                <div className="mt-[2px] underline">at {text.inviteUrl}</div>
+                <div>{codeDisplay}</div>
+                <div className="mt-[2px] text-center underline">at {text.inviteUrl}</div>
               </div>
             </div>
           </div>
@@ -242,7 +244,7 @@ export default function EmailBannerPreview({
                   {boothLabel}
                 </div>
                 <div className="mt-[2px] text-[15px] font-medium leading-[1.02] tracking-[-0.035em]">
-                  {standNumber || '000000'}
+                  {boothDisplay}
                 </div>
               </div>
             </div>
@@ -260,15 +262,15 @@ export default function EmailBannerPreview({
             </div>
           </div>
 
-          <div className="mr-[18px] mt-[8px] w-[220px] text-right text-white">
+          <div className="mr-[18px] mt-[8px] w-[220px] text-center text-white">
             <div className="text-[24px] font-medium uppercase leading-[1.04] tracking-[0em]">
               {text.ticket}
             </div>
 
             <div className="mt-[22px] text-[16px] font-medium leading-[1.1] tracking-[-0.03em]">
               <div>{text.useCode}</div>
-              <div>{invitationCode || 'XXXXXXX'}</div>
-              <div className="mt-[2px] underline">at {text.inviteUrl}</div>
+              <div>{codeDisplay}</div>
+              <div className="mt-[2px] text-center underline">at {text.inviteUrl}</div>
             </div>
           </div>
         </div>
