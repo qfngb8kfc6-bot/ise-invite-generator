@@ -79,12 +79,13 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
  const [exportError, setExportError] = useState<string | null>(null)
  const [showDownloadPanel, setShowDownloadPanel] = useState(false)
  const [sessionMessage, setSessionMessage] = useState<string | null>(initialData?.sessionMessage || null)
+ const [isSessionLoading, setIsSessionLoading] = useState(Boolean(initialToken))
 
  const [exhibitorId, setExhibitorId] = useState(initialData?.exhibitorId || '')
- const [companyName, setCompanyName] = useState(initialData?.companyName || 'Samsung')
+ const [companyName, setCompanyName] = useState(initialData?.companyName || '')
  const [standNumber, setStandNumber] = useState(initialData?.standNumber || '')
- const [invitationCode, setInvitationCode] = useState(initialData?.invitationCode || 'ISE2027')
- const [registrationUrl, setRegistrationUrl] = useState(initialData?.registrationUrl || 'https://www.iseurope.org/welcome/registration')
+ const [invitationCode, setInvitationCode] = useState(initialData?.invitationCode || '')
+ const [registrationUrl, setRegistrationUrl] = useState(initialData?.registrationUrl || '')
  const [logoUrl, setLogoUrl] = useState(initialData?.logoUrl || '')
  const [logoMessage, setLogoMessage] = useState<string | null>(null)
  const [theme, setTheme] = useState<ThemeKey>(initialData?.theme || 'audio')
@@ -152,9 +153,13 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
 
  useEffect(() => {
   async function loadSession() {
-   if (!initialToken) return
+   if (!initialToken) {
+    setIsSessionLoading(false)
+    return
+   }
 
    try {
+    setIsSessionLoading(true)
     setSessionMessage('Loading verified exhibitor details...')
 
     const response = await fetch('/api/session', {
@@ -175,10 +180,10 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
     const exhibitor = data.exhibitor
 
     setExhibitorId(exhibitor.id || exhibitor.exhibitorId || '')
-    setCompanyName(exhibitor.companyName || exhibitor.name || companyName)
-    setStandNumber(exhibitor.standNumber || exhibitor.stand || standNumber)
-    setInvitationCode(exhibitor.invitationCode || exhibitor.code || invitationCode)
-    setRegistrationUrl(exhibitor.registrationUrl || registrationUrl)
+    setCompanyName(exhibitor.companyName || exhibitor.name || '')
+    setStandNumber(exhibitor.standNumber || exhibitor.stand || '')
+    setInvitationCode(exhibitor.invitationCode || exhibitor.code || '')
+    setRegistrationUrl(exhibitor.registrationUrl || '')
     setLogoUrl(exhibitor.logoUrl || '')
 
     if (exhibitor.theme) {
@@ -192,17 +197,13 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
     setSessionMessage('Verified exhibitor details loaded.')
    } catch {
     setSessionMessage('Could not load exhibitor details.')
+   } finally {
+    setIsSessionLoading(false)
    }
   }
 
   loadSession()
- }, [
-  initialToken,
-  companyName,
-  standNumber,
-  invitationCode,
-  registrationUrl,
- ])
+ }, [initialToken])
 
  async function runExport(type: 'pdf' | 'zip' | ExportFormatKey) {
   const exportNode = type === 'email' ? emailBannerExportRef.current : type === 'square' ? exportPreviewRef.current : type === 'linkedin' ? linkedinExportRef.current : exportPreviewRef.current
@@ -470,13 +471,13 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
     <section className={previewClassName}>
      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.18),transparent_65%)]" />
 
-     <div className="relative scale-[0.46] xl:scale-[0.46] 2xl:scale-[0.46]">
+     <div className="relative scale-[0.46] xl:scale-[0.48] 2xl:scale-[0.50]">
       <InvitePreview
-       companyName={companyName}
-       standNumber={standNumber}
-       invitationCode={invitationCode}
-       logoUrl={logoUrl}
-       registrationUrl={registrationUrl}
+       companyName={isSessionLoading ? '' : companyName}
+       standNumber={isSessionLoading ? '' : standNumber}
+       invitationCode={isSessionLoading ? '' : invitationCode}
+       logoUrl={isSessionLoading ? '' : logoUrl}
+       registrationUrl={isSessionLoading ? '' : registrationUrl}
        theme={theme}
        language={cardLanguage}
       />
@@ -487,11 +488,11 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
    <div className="pointer-events-none absolute -left-[99999px] top-0">
     <div ref={exportPreviewRef}>
      <InvitePreview
-      companyName={companyName}
-      standNumber={standNumber}
-      invitationCode={invitationCode}
-      logoUrl={logoUrl}
-      registrationUrl={registrationUrl}
+      companyName={isSessionLoading ? '' : companyName}
+      standNumber={isSessionLoading ? '' : standNumber}
+      invitationCode={isSessionLoading ? '' : invitationCode}
+      logoUrl={isSessionLoading ? '' : logoUrl}
+      registrationUrl={isSessionLoading ? '' : registrationUrl}
       theme={theme}
       language={cardLanguage}
      />
@@ -499,22 +500,22 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
 
     <div ref={emailBannerExportRef}>
      <EmailBannerPreview
-      companyName={companyName}
-      standNumber={standNumber}
-      invitationCode={invitationCode}
-      logoUrl={logoUrl}
-      registrationUrl={registrationUrl}
+      companyName={isSessionLoading ? '' : companyName}
+      standNumber={isSessionLoading ? '' : standNumber}
+      invitationCode={isSessionLoading ? '' : invitationCode}
+      logoUrl={isSessionLoading ? '' : logoUrl}
+      registrationUrl={isSessionLoading ? '' : registrationUrl}
       theme={theme}
       language={cardLanguage}
      />
     </div>
     <div ref={linkedinExportRef}>
      <LinkedInInvitePreview
-      companyName={companyName}
-      standNumber={standNumber}
-      invitationCode={invitationCode}
-      logoUrl={logoUrl}
-      registrationUrl={registrationUrl}
+      companyName={isSessionLoading ? '' : companyName}
+      standNumber={isSessionLoading ? '' : standNumber}
+      invitationCode={isSessionLoading ? '' : invitationCode}
+      logoUrl={isSessionLoading ? '' : logoUrl}
+      registrationUrl={isSessionLoading ? '' : registrationUrl}
       theme={theme}
       language={cardLanguage}
      />

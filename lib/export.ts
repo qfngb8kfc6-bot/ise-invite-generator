@@ -97,12 +97,54 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   })
 }
 
-async function renderNodeToBasePng(node: HTMLElement): Promise<string> {
-  return toPng(node, {
+function getActualExportNode(node: HTMLElement): HTMLElement {
+  const firstChild = node.firstElementChild
+
+  if (firstChild instanceof HTMLElement) {
+    return firstChild
+  }
+
+  return node
+}
+
+function getNodeExportSize(node: HTMLElement) {
+  const exportNode = getActualExportNode(node)
+  const rect = exportNode.getBoundingClientRect()
+
+  return {
+    node: exportNode,
+    width: Math.ceil(rect.width || exportNode.offsetWidth || exportNode.scrollWidth),
+    height: Math.ceil(rect.height || exportNode.offsetHeight || exportNode.scrollHeight),
+  }
+}
+
+async function renderNodeToBasePng(node: HTMLElement): Promise<{
+  dataUrl: string
+  width: number
+  height: number
+}> {
+  const size = getNodeExportSize(node)
+
+  const dataUrl = await toPng(size.node, {
     cacheBust: true,
     backgroundColor: '#ffffff',
+    width: size.width,
+    height: size.height,
+    canvasWidth: size.width,
+    canvasHeight: size.height,
     pixelRatio: 2,
+    style: {
+      margin: '0',
+      boxShadow: 'none',
+      transform: 'none',
+    },
   })
+
+  return {
+    dataUrl,
+    width: size.width,
+    height: size.height,
+  }
 }
 
 async function renderPngForFormat(
@@ -110,15 +152,26 @@ async function renderPngForFormat(
   format: ExportFormatKey
 ): Promise<Blob> {
   const config = EXPORT_FORMATS[format]
+  const size = getNodeExportSize(node)
 
-  const dataUrl = await toPng(node, {
+  const shouldUseExactCardSize = format === 'square' || format === 'print'
+
+  const width = shouldUseExactCardSize ? size.width : config.width
+  const height = shouldUseExactCardSize ? size.height : config.height
+
+  const dataUrl = await toPng(size.node, {
     cacheBust: true,
     backgroundColor: '#ffffff',
-    width: config.width,
-    height: config.height,
-    canvasWidth: config.width,
-    canvasHeight: config.height,
+    width,
+    height,
+    canvasWidth: width,
+    canvasHeight: height,
     pixelRatio: config.pixelRatio,
+    style: {
+      margin: '0',
+      boxShadow: 'none',
+      transform: 'none',
+    },
   })
 
   return dataUrlToBlob(dataUrl)
@@ -135,39 +188,26 @@ export async function exportPng(
 }
 
 export async function exportPdf(node: HTMLElement, baseName: string) {
-  const pngDataUrl = await renderNodeToBasePng(node)
-  const image = await loadImage(pngDataUrl)
+  const rendered = await renderNodeToBasePng(node)
 
   const pdf = new jsPDF({
-    orientation: 'landscape',
-    unit: 'pt',
-    format: 'a4',
+    orientation: rendered.width >= rendered.height ? 'landscape' : 'portrait',
+    unit: 'px',
+    format: [rendered.width, rendered.height],
+    compress: true,
   })
 
-  const pageWidth = pdf.internal.pageSize.getWidth()
-  const pageHeight = pdf.internal.pageSize.getHeight()
-  const margin = 24
-
-  const usableWidth = pageWidth - margin * 2
-  const usableHeight = pageHeight - margin * 2
-
-  const imageRatio = image.width / image.height
-  let renderWidth = usableWidth
-  let renderHeight = renderWidth / imageRatio
-
-  if (renderHeight > usableHeight) {
-    renderHeight = usableHeight
-    renderWidth = renderHeight * imageRatio
-  }
-
-  const x = (pageWidth - renderWidth) / 2
-  const y = (pageHeight - renderHeight) / 2
-
-  pdf.addImage(pngDataUrl, 'PNG', x, y, renderWidth, renderHeight)
+  pdf.addImage(rendered.dataUrl, 'PNG', 0, 0, rendered.width, rendered.height)
   pdf.save(`${baseName}.pdf`)
 }
 
-export async function exportZipPack(node: HTMLElement, baseName: string, emailNode?: HTMLElement, squareNode?: HTMLElement, linkedinNode?: HTMLElement) {
+export async function exportZipPack(
+  node: HTMLElement,
+  baseName: string,
+  emailNode?: HTMLElement,
+  squareNode?: HTMLElement,
+  linkedinNode?: HTMLElement
+) {
   const zip = new JSZip()
 
   for (const format of Object.keys(EXPORT_FORMATS) as ExportFormatKey[]) {
@@ -184,35 +224,16 @@ export async function exportZipPack(node: HTMLElement, baseName: string, emailNo
     zip.file(`${baseName}-${EXPORT_FORMATS[format].fileLabel}.png`, blob)
   }
 
-  const pdfDataUrl = await renderNodeToBasePng(node)
-  const image = await loadImage(pdfDataUrl)
+  const rendered = await renderNodeToBasePng(node)
 
   const pdf = new jsPDF({
-    orientation: 'landscape',
-    unit: 'pt',
-    format: 'a4',
+    orientation: rendered.width >= rendered.height ? 'landscape' : 'portrait',
+    unit: 'px',
+    format: [rendered.width, rendered.height],
+    compress: true,
   })
 
-  const pageWidth = pdf.internal.pageSize.getWidth()
-  const pageHeight = pdf.internal.pageSize.getHeight()
-  const margin = 24
-
-  const usableWidth = pageWidth - margin * 2
-  const usableHeight = pageHeight - margin * 2
-  const imageRatio = image.width / image.height
-
-  let renderWidth = usableWidth
-  let renderHeight = renderWidth / imageRatio
-
-  if (renderHeight > usableHeight) {
-    renderHeight = usableHeight
-    renderWidth = renderHeight * imageRatio
-  }
-
-  const x = (pageWidth - renderWidth) / 2
-  const y = (pageHeight - renderHeight) / 2
-
-  pdf.addImage(pdfDataUrl, 'PNG', x, y, renderWidth, renderHeight)
+  pdf.addImage(rendered.dataUrl, 'PNG', 0, 0, rendered.width, rendered.height)
 
   zip.file(`${baseName}.pdf`, pdf.output('blob'))
 

@@ -177,7 +177,7 @@ export default function InvitePreview({
   }, [registrationUrl])
 
   return (
-    <div className="w-[980px] overflow-hidden rounded-[18px] bg-white shadow-[0_28px_90px_rgba(2,6,23,0.42)] ring-1 ring-white/15">
+    <div className="w-[980px] overflow-hidden bg-white">
       <section
         className="relative h-[500px] overflow-hidden bg-[#06194c] px-12 py-9 text-white"
         style={{
