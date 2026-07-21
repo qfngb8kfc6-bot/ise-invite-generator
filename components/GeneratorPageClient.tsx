@@ -25,15 +25,15 @@ type Props = {
 }
 
 const orderedThemeKeys: ThemeKey[] = [
+  'iseBrandingTwo',
+  'iseBrandingOne',
   'audio',
   'contentProduction',
   'digitalSignage',
   'educationTechnology',
-  'iseBrandingOne',
   'lighting',
   'unifiedCommunications',
   'residential',
-  'iseBrandingTwo',
   'smartBuilding',
 ]
 
