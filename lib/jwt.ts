@@ -30,7 +30,7 @@ export async function signExhibitorToken(exhibitorId: string): Promise<string> {
     .setAudience(JWT_AUDIENCE)
     .setSubject(exhibitorId)
     .setIssuedAt()
-    .setExpirationTime('15m')
+    .setExpirationTime('365d')
     .sign(secret)
 }
 
