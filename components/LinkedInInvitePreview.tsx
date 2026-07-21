@@ -72,7 +72,7 @@ export default function LinkedInInvitePreview({
 
           <section className="mt-[74px] flex items-start justify-between gap-10">
             <div className="min-w-0 max-w-[500px]">
-              <h2 className="truncate text-[45px] font-semibold uppercase leading-none tracking-[0em] text-white">
+              <h2 className="line-clamp-2 overflow-hidden break-words text-[39px] font-semibold uppercase leading-[0.94] tracking-[0em] text-white">
                 {companyName || 'BRAND NAME'}
               </h2>
 
@@ -179,7 +179,7 @@ export default function LinkedInInvitePreview({
 
         <section className="mt-[74px] flex items-start justify-between gap-10">
           <div className="min-w-0 max-w-[500px]">
-            <h2 className="truncate text-[45px] font-semibold uppercase leading-none tracking-[0em] text-white">
+            <h2 className="line-clamp-2 overflow-hidden break-words text-[39px] font-semibold uppercase leading-[0.94] tracking-[0em] text-white">
               {companyName || 'BRAND NAME'}
             </h2>
 

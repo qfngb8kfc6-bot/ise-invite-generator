@@ -244,19 +244,21 @@ export default function InvitePreview({
       </section>
 
       <section className="h-[710px] bg-white px-12 py-10 text-[#050b36]">
-        <div className="flex items-start justify-between gap-8 border-b border-[#050b36]/80 pb-5">
-          <div className="min-w-0 max-w-[390px]">
+        <div className="flex items-start justify-between gap-5 border-b border-[#050b36]/80 pb-5">
+          <div className="min-w-0 w-[470px] max-w-[470px]">
             <h3
-              className="overflow-hidden whitespace-nowrap font-semibold uppercase leading-none tracking-[0em] text-[#050b36]"
+              className="max-h-[82px] overflow-hidden break-words pt-[3px] font-semibold uppercase leading-[1.02] tracking-[0em] text-[#050b36]"
               style={{
                 fontSize:
-                  (companyName || fallbackText.companyName).length > 42
-                    ? '23px'
-                    : (companyName || fallbackText.companyName).length > 34
-                      ? '26px'
-                      : (companyName || fallbackText.companyName).length > 28
-                        ? '30px'
-                        : '36px',
+                  (companyName || fallbackText.companyName).length > 70
+                    ? '18px'
+                    : (companyName || fallbackText.companyName).length > 58
+                      ? '20px'
+                      : (companyName || fallbackText.companyName).length > 46
+                        ? '23px'
+                        : (companyName || fallbackText.companyName).length > 34
+                          ? '28px'
+                          : '36px',
               }}
             >
               {companyName || fallbackText.companyName}
@@ -267,12 +269,12 @@ export default function InvitePreview({
               </p>
           </div>
 
-          <div className="flex min-h-[76px] w-[250px] items-center justify-center border border-[#050b36]/35 bg-white px-5">
+          <div className="flex min-h-[76px] w-[230px] items-center justify-center border border-[#050b36]/35 bg-white px-5">
             {logoUrl && failedLogoUrl !== logoUrl ? (
               <img
                 src={logoUrl}
                 alt={`${companyName} logo`}
-                className="max-h-14 max-w-[210px] object-contain"
+                className="max-h-14 max-w-[190px] object-contain"
                 onError={() => setFailedLogoUrl(logoUrl)}
               />
             ) : (
