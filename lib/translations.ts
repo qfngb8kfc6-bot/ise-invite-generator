@@ -108,7 +108,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
       downloadLinkedIn: "LinkedIn",
       downloadEmailBanner: "Email Banner",
       downloadZipPack: "ZIP Pack (all formats)",
-      secondaryGeneratorTitle: "Secondary invitation generator",
+      secondaryGeneratorTitle: "Visitor invitation generator",
       secondaryGeneratorDescription: "These values have been loaded from an approved invitation request. You can change the logo, language and theme before downloading.",
       secondaryInvitationDetails: "Invitation details",
       secondaryInvitationDescription: "Review the approved details that will appear on the invitation card.",

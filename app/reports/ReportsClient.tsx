@@ -303,7 +303,7 @@ const enReportsText: ReportsText = {
   flow: 'Flow',
   allFlows: 'All activity',
   primaryGenerator: 'Primary exhibitors',
-  secondaryGenerator: 'Secondary requests',
+  secondaryGenerator: 'Visitor requests',
   customDateRange: 'Custom date range',
   allTime: 'All time',
   open: 'Open',

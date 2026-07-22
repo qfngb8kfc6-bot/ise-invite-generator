@@ -240,7 +240,7 @@ export default function SecondaryGeneratorPageClient({
         <aside className="relative flex h-full min-h-0 flex-col border-r border-white/10 bg-white/[0.075] shadow-[22px_0_70px_rgba(0,0,0,0.36)] backdrop-blur-2xl">
           <div className="shrink-0 border-b border-white/10 px-7 py-6">
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/38">
-              {text.secondaryGeneratorTitle || 'Secondary invitation generator'}
+              {text.secondaryGeneratorTitle || 'Visitor invitation generator'}
             </p>
             <p className={`mt-2 leading-6 ${helperClassName}`}>
               {text.secondaryGeneratorDescription || 'These values have been loaded from an approved invitation request. You can change the logo, language and theme before downloading.'}
