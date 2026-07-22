@@ -19,7 +19,7 @@ export default async function RequestInvitationSuccessPage({
   const params = searchParams ? await searchParams : {}
   const requestId = getRequestId(params.requestId).trim()
   const generatorHref = requestId
-    ? `/secondary/${encodeURIComponent(requestId)}`
+    ? `/visitors/${encodeURIComponent(requestId)}`
     : ''
 
   return (

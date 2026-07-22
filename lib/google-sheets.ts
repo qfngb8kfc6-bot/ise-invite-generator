@@ -303,7 +303,7 @@ export function buildSecondaryGeneratorUrl(requestId: string): string {
     process.env.SITE_URL ||
     'https://invitations.iseurope.org'
 
-  return `${baseUrl.replace(/\/$/, '')}/secondary/${encodeURIComponent(requestId)}`
+  return `${baseUrl.replace(/\/$/, '')}/visitors/${encodeURIComponent(requestId)}`
 }
 
 export function buildSecondaryRegistrationUrl(invitationCode: string): string {
