@@ -307,7 +307,7 @@ export default function InvitePreview({
             </h3>
 
             {language === 'en' ? (
-              <div className="mt-10 max-w-[640px] space-y-4 text-[16px] font-medium leading-[1.5] text-[#050b36]">
+              <div className="mt-10 max-w-[640px] space-y-4 text-[17px] font-medium leading-[1.45] text-[#050b36]">
                 <p className="font-semibold">
                   {cardCopy.bodyOne}
                 </p>
@@ -335,7 +335,7 @@ export default function InvitePreview({
                 </p>
               </div>
             ) : (
-              <div className="mt-10 max-w-[640px] space-y-4 text-[16px] font-medium leading-[1.5] text-[#050b36]">
+              <div className="mt-10 max-w-[640px] space-y-4 text-[20px] font-medium leading-[1.4] text-[#050b36]">
                 {cardCopy.bodyOne}
                 <p>{isSaveTheDateTheme ? 'From start-ups to showstoppers, content creation to integration, and classrooms to concert halls, expect nothing but EVERYTHING.' : [cardCopy.bodyTwo, cardCopy.bodyThree, cardCopy.bodyFour].filter(Boolean).join(' ')}</p>
                 <p>{isSaveTheDateTheme ? 'Be our guest in Barcelona.' : [cardCopy.closingOne, cardCopy.closingTwo].filter(Boolean).join(' ')}</p>
