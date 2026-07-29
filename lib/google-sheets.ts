@@ -307,9 +307,17 @@ export function buildSecondaryGeneratorUrl(requestId: string): string {
 }
 
 export function buildSecondaryRegistrationUrl(invitationCode: string): string {
-  return `https://www.iseurope.org/welcome/registration?code=${encodeURIComponent(
-    invitationCode
-  )}`
+  const baseUrl =
+    process.env.NEXT_PUBLIC_VISITOR_REGISTRATION_BASE_URL ||
+    process.env.VISITOR_REGISTRATION_BASE_URL ||
+    'https://register.visitcloud.com/survey/0hztq4lbmv5rp'
+
+  const url = new URL(baseUrl)
+
+  url.searchParams.set('actioncode', invitationCode)
+  url.searchParams.set('discountcode', 'ABD123')
+
+  return url.toString()
 }
 
 export function isSecondaryInvitationApproved(status: string): boolean {
