@@ -238,7 +238,7 @@ export default function SecondaryGeneratorPageClient({
     <main className="h-[calc(100vh-128px)] overflow-hidden bg-transparent text-white">
       <div className="grid h-full lg:grid-cols-[500px_1fr]">
         <aside className="relative flex h-full min-h-0 flex-col border-r border-white/10 bg-white/[0.075] shadow-[22px_0_70px_rgba(0,0,0,0.36)] backdrop-blur-2xl">
-          <div className="shrink-0 border-b border-white/10 px-7 py-10">
+          <div className="shrink-0 border-b border-white/10 px-7 py-6">
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/38">
               {text.secondaryGeneratorTitle || 'Visitor invitation generator'}
             </p>
@@ -247,7 +247,7 @@ export default function SecondaryGeneratorPageClient({
             </p>
           </div>
 
-          <div className="flex-1 overflow-y-auto px-7 py-10">
+          <div className="flex-1 overflow-y-auto px-7 py-6">
             <div className="space-y-5">
               <section className="rounded-[28px] border border-white/10 bg-white/[0.055] p-5 shadow-[0_18px_45px_rgba(0,0,0,0.26)] backdrop-blur-xl">
                 <h2 className="text-xl font-semibold">{text.secondaryInvitationDetails}</h2>
@@ -343,7 +343,7 @@ export default function SecondaryGeneratorPageClient({
                       ) : null}
                     </div>
 
-                    <label className="flex cursor-pointer items-start justify-center rounded-xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-4 text-sm text-white/55 transition hover:border-blue-400/40 hover:bg-blue-500/10">
+                    <label className="flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-4 text-sm text-white/55 transition hover:border-blue-400/40 hover:bg-blue-500/10">
                       {text.secondaryUploadLogo || 'Upload logo'}
                       <input
                         type="file"
@@ -421,7 +421,7 @@ export default function SecondaryGeneratorPageClient({
           </div>
         </aside>
 
-        <section className="relative hidden h-full min-h-0 items-start justify-center overflow-hidden bg-black/18 lg:flex">
+        <section className="relative hidden h-full min-h-0 items-center justify-center overflow-hidden bg-black/18 lg:flex">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.18),transparent_65%)]" />
 
           <div
@@ -431,7 +431,7 @@ export default function SecondaryGeneratorPageClient({
 
           <div className="absolute inset-0 bg-[#020617]/62" />
 
-          <div className="relative scale-[0.36] xl:scale-[0.36] 2xl:scale-[0.36] min-[1800px]:scale-[0.46]">
+          <div className="relative scale-[0.46] xl:scale-[0.48] 2xl:scale-[0.50]">
             <InvitePreview
               companyName={companyName}
               standNumber={invitationId}
@@ -487,7 +487,7 @@ export default function SecondaryGeneratorPageClient({
       </div>
 
       {showDownloadPanel ? (
-        <div className="fixed inset-0 z-[90] flex items-start justify-center px-4">
+        <div className="fixed inset-0 z-[90] flex items-center justify-center px-4">
           <button
             type="button"
             aria-label="Close download panel"
