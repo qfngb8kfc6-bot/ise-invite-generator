@@ -431,7 +431,7 @@ export default function SecondaryGeneratorPageClient({
 
           <div className="absolute inset-0 bg-[#020617]/62" />
 
-          <div className="relative scale-[0.40] xl:scale-[0.44] 2xl:scale-[0.44] 2xl:scale-[0.50]">
+          <div className="relative scale-[0.36] xl:scale-[0.36] 2xl:scale-[0.36] min-[1800px]:scale-[0.46]">
             <InvitePreview
               companyName={companyName}
               standNumber={invitationId}
