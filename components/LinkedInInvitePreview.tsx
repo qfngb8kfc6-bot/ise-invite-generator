@@ -26,7 +26,7 @@ function getLinkedInText(language: LanguageKey) {
       return {
         invitedLine: `te ha invitado a ISE ${EVENT_YEAR}`,
         headline: 'TU INVITACIÓN. NUESTRA CELEBRACIÓN.',
-        ticket: 'AHORRA 250 € Y CONSIGUE HOY TU ENTRADA GRATUITA',
+        ticket: 'AHORRA 300 € Y CONSIGUE HOY TU ENTRADA GRATUITA',
         useCode: 'Usa el código:',
         invitePrefix: 'en',
         inviteUrl: 'iseurope.org/invite',
@@ -36,7 +36,7 @@ function getLinkedInText(language: LanguageKey) {
       return {
         invitedLine: `hat Sie zur ISE ${EVENT_YEAR} eingeladen`,
         headline: 'IHRE EINLADUNG. UNSERE FEIER.',
-        ticket: 'SPAREN SIE 250 € UND SICHERN SIE SICH JETZT IHR KOSTENLOSES TICKET',
+        ticket: 'SPAREN SIE 300 € UND SICHERN SIE SICH JETZT IHR KOSTENLOSES TICKET',
         useCode: 'Registrieren Sie sich mit dem Code:',
         invitePrefix: 'unter',
         inviteUrl: 'iseurope.org/invite',
@@ -46,7 +46,7 @@ function getLinkedInText(language: LanguageKey) {
       return {
         invitedLine: `vous a invité à ISE ${EVENT_YEAR}`,
         headline: 'VOTRE INVITATION. NOTRE CÉLÉBRATION.',
-        ticket: 'ÉCONOMISEZ 250 € ET OBTENEZ VOTRE BADGE GRATUIT DÈS AUJOURD’HUI',
+        ticket: 'ÉCONOMISEZ 300 € ET OBTENEZ VOTRE BADGE GRATUIT DÈS AUJOURD’HUI',
         useCode: 'Utilisez le code :',
         invitePrefix: 'sur',
         inviteUrl: 'iseurope.org/invite',
@@ -56,7 +56,7 @@ function getLinkedInText(language: LanguageKey) {
       return {
         invitedLine: `ti ha invitato a ISE ${EVENT_YEAR}`,
         headline: 'OLTRE L’INVITO. LA GRANDE CELEBRAZIONE.',
-        ticket: 'RISPARMIA 250 € ED ASSICURATI OGGI IL TUO BIGLIETTO',
+        ticket: 'RISPARMIA 300 € ED ASSICURATI OGGI IL TUO BIGLIETTO',
         useCode: 'Usa il codice:',
         invitePrefix: 'su',
         inviteUrl: 'iseurope.org/invite',
@@ -66,7 +66,7 @@ function getLinkedInText(language: LanguageKey) {
       return {
         invitedLine: `邀请您参加 ISE ${EVENT_YEAR}`,
         headline: '您的邀请。我们的庆典。',
-        ticket: '节省 250 欧元并立即获取您的免费门票',
+        ticket: '节省 300 欧元并立即获取您的免费门票',
         useCode: '使用邀请码：',
         invitePrefix: '访问',
         inviteUrl: 'iseurope.org/invite',
@@ -76,7 +76,7 @@ function getLinkedInText(language: LanguageKey) {
       return {
         invitedLine: `has invited you to ISE ${EVENT_YEAR}`,
         headline: 'YOUR INVITATION. OUR CELEBRATION.',
-        ticket: 'SAVE €250 AND SECURE YOUR FREE TICKET TODAY',
+        ticket: 'SAVE €300 AND SECURE YOUR FREE TICKET TODAY',
         useCode: 'Use the code:',
         invitePrefix: 'at',
         inviteUrl: 'iseurope.org/invite',
