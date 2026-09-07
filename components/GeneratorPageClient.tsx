@@ -246,8 +246,8 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
   : 'relative flex h-full min-h-0 flex-col border-r border-white/10 bg-white/[0.075] shadow-[22px_0_70px_rgba(0,0,0,0.36)] backdrop-blur-2xl '
 
  const previewClassName = isLightMode
-  ? 'relative hidden h-full min-h-0 items-center justify-center overflow-hidden bg-white/12 -[2px] lg:flex'
-  : 'relative hidden h-full min-h-0 items-center justify-center overflow-hidden bg-black/18 -[2px] lg:flex'
+  ? 'relative hidden h-full min-h-0 items-start justify-center overflow-hidden bg-white/12 -[2px] lg:flex'
+  : 'relative hidden h-full min-h-0 items-start justify-center overflow-hidden bg-black/18 -[2px] lg:flex'
 
  const inputClassName = isLightMode
   ? 'w-full rounded-[18px] border border-slate-200/80 bg-white/90 px-4 py-4 text-slate-950 shadow-[0_1px_2px_rgba(15,23,42,0.04)] outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10'
@@ -273,7 +273,7 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
   <main className={pageClassName}>
    <div className="grid h-full lg:grid-cols-[500px_1fr]">
     <aside className={sidebarClassName}>
-     <div className={isLightMode ? 'shrink-0 border-b border-white/70 px-7 py-6' : 'shrink-0 border-b border-white/10 px-7 py-6'}>
+     <div className={isLightMode ? 'shrink-0 border-b border-white/70 px-7 py-10' : 'shrink-0 border-b border-white/10 px-7 py-10'}>
       <p className={isLightMode ? 'text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500' : 'text-[11px] font-semibold uppercase tracking-[0.22em] text-white/38'}>
        Generator controls
       </p>
@@ -282,7 +282,7 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
       </p>
      </div>
 
-     <div className="flex-1 overflow-y-auto px-7 py-6">
+     <div className="flex-1 overflow-y-auto px-7 py-10">
       <div className="space-y-5">
        <section className={isLightMode ? 'rounded-[28px] border border-white/70 bg-white/70 p-5 shadow-[0_18px_45px_rgba(15,23,42,0.08)] backdrop-blur-xl' : 'rounded-[28px] border border-white/10 bg-white/[0.055] p-5 shadow-[0_18px_45px_rgba(0,0,0,0.26)] backdrop-blur-xl'}>
         <h2 className="text-xl font-semibold">{text.generatorInputsTitle}</h2>
@@ -391,8 +391,8 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
           <label
            className={
             isLightMode
-             ? 'flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white px-4 py-4 text-sm text-slate-500 transition hover:border-blue-400 hover:bg-blue-50'
-             : 'flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-4 text-sm text-white/55 transition hover:border-blue-400/40 hover:bg-blue-500/10'
+             ? 'flex cursor-pointer items-start justify-center rounded-xl border border-dashed border-slate-300 bg-white px-4 py-4 text-sm text-slate-500 transition hover:border-blue-400 hover:bg-blue-50'
+             : 'flex cursor-pointer items-start justify-center rounded-xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-4 text-sm text-white/55 transition hover:border-blue-400/40 hover:bg-blue-500/10'
            }
           >
            {text.generatorLogoUpload}
@@ -471,7 +471,7 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
     <section className={previewClassName}>
      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.18),transparent_65%)]" />
 
-     <div className="relative scale-[0.46] xl:scale-[0.48] 2xl:scale-[0.50]">
+     <div className="relative scale-[0.40] xl:scale-[0.44] 2xl:scale-[0.44] 2xl:scale-[0.50]">
       <InvitePreview
        companyName={isSessionLoading ? '' : companyName}
        standNumber={isSessionLoading ? '' : standNumber}
@@ -523,7 +523,7 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
    </div>
 
    {showDownloadPanel ? (
-    <div className="fixed inset-0 z-[90] flex items-center justify-center px-4">
+    <div className="fixed inset-0 z-[90] flex items-start justify-center px-4">
      <button
       type="button"
       aria-label="Close download panel"
