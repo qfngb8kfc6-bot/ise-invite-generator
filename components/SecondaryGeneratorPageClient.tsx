@@ -65,6 +65,42 @@ export default function SecondaryGeneratorPageClient({
   const exportPreviewRef = useRef<HTMLDivElement | null>(null)
   const emailBannerExportRef = useRef<HTMLDivElement | null>(null)
   const linkedinExportRef = useRef<HTMLDivElement | null>(null)
+  const previewAreaRef = useRef<HTMLElement | null>(null)
+  const [previewScale, setPreviewScale] = useState(0.46)
+
+  useEffect(() => {
+    const calculatePreviewScale = () => {
+      const area = previewAreaRef.current
+
+      if (!area) return
+
+      const safeWidth = Math.max(area.clientWidth - 96, 320)
+      const safeHeight = Math.max(area.clientHeight - 120, 320)
+
+      const widthScale = safeWidth / 980
+      const heightScale = safeHeight / 1210
+      const nextScale = Math.max(0.36, Math.min(0.5, widthScale, heightScale))
+
+      setPreviewScale(Number(nextScale.toFixed(3)))
+    }
+
+    calculatePreviewScale()
+
+    const area = previewAreaRef.current
+    const observer =
+      typeof ResizeObserver !== 'undefined' && area
+        ? new ResizeObserver(calculatePreviewScale)
+        : null
+
+    observer?.observe(area)
+    window.addEventListener('resize', calculatePreviewScale)
+
+    return () => {
+      observer?.disconnect()
+      window.removeEventListener('resize', calculatePreviewScale)
+    }
+  }, [])
+
 
   const [companyName, setCompanyName] = useState(data.companyName)
   const [logoUrl, setLogoUrl] = useState(() =>
@@ -421,7 +457,7 @@ export default function SecondaryGeneratorPageClient({
           </div>
         </aside>
 
-        <section className="relative hidden h-full min-h-0 items-center justify-center overflow-hidden bg-black/18 lg:flex">
+        <section ref={previewAreaRef} className="relative hidden h-full min-h-0 items-center justify-center overflow-hidden bg-black/18 lg:flex">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.18),transparent_65%)]" />
 
           <div
@@ -431,7 +467,7 @@ export default function SecondaryGeneratorPageClient({
 
           <div className="absolute inset-0 bg-[#020617]/62" />
 
-          <div className="relative scale-[0.46] xl:scale-[0.48] 2xl:scale-[0.50]">
+          <div className="relative origin-center" style={{ transform: `scale(${previewScale})` }}>
             <InvitePreview
               companyName={companyName}
               standNumber={invitationId}
