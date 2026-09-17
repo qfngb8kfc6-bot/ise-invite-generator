@@ -30,7 +30,7 @@ export const themes: Record<ThemeKey, ThemeConfig> = {
   },
   lighting: {
     label: 'Lighting & Staging',
-    backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Lighting & Staging.jpg`,
+    backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/lighting-staging.jpg`,
   },
   unifiedCommunications: {
     label: 'Multi Technology',

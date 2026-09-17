@@ -73,7 +73,10 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
         ? new ResizeObserver(calculatePreviewScale)
         : null
 
-    observer?.observe(area)
+    if (observer && area) {
+      observer.observe(area)
+    }
+
     window.addEventListener('resize', calculatePreviewScale)
 
     return () => {
