@@ -42,6 +42,7 @@ export function buildVisitCloudRegistrationUrl(actionCode: string): string {
   }
 
   const url = new URL(VISITCLOUD_REGISTRATION_URL)
+  url.searchParams.set('actioncode', normalisedActionCode)
   url.searchParams.set('registration-code', normalisedActionCode)
   url.searchParams.set('discount-code', discountCode)
 
