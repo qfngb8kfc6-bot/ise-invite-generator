@@ -22,6 +22,7 @@ type Props = {
   exhibitorId?: string
   sessionMessage?: string
  }
+ enableQrTracking?: boolean
 }
 
 const orderedThemeKeys: ThemeKey[] = [
@@ -42,7 +43,11 @@ type DisplayMode = 'dark' | 'light'
 const CARD_LANGUAGE_STORAGE_KEY = 'ise-card-language'
 const DISPLAY_MODE_STORAGE_KEY = 'ise-generator-display-mode'
 
-export default function GeneratorPageClient({ initialToken, initialData }: Props) {
+export default function GeneratorPageClient({
+ initialToken,
+ initialData,
+ enableQrTracking = true,
+}: Props) {
  const exportPreviewRef = useRef<HTMLDivElement | null>(null)
  const emailBannerExportRef = useRef<HTMLDivElement | null>(null)
  const linkedinExportRef = useRef<HTMLDivElement | null>(null)
@@ -130,6 +135,13 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
  const [theme, setTheme] = useState<ThemeKey>(initialData?.theme || 'audio')
 
  const isLightMode = displayMode === 'light'
+
+ const appBaseUrl =
+  process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ||
+  (typeof window !== 'undefined' ? window.location.origin : '')
+ const qrTrackingUrl = enableQrTracking && exhibitorId
+  ? `${appBaseUrl}/r/${encodeURIComponent(exhibitorId)}`
+  : registrationUrl
 
 
 
@@ -516,7 +528,7 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
        standNumber={isSessionLoading ? '' : standNumber}
        invitationCode={isSessionLoading ? '' : invitationCode}
        logoUrl={isSessionLoading ? '' : logoUrl}
-       registrationUrl={isSessionLoading ? '' : registrationUrl}
+       registrationUrl={isSessionLoading ? '' : qrTrackingUrl}
        theme={theme}
        language={cardLanguage}
       />
@@ -531,7 +543,7 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
       standNumber={isSessionLoading ? '' : standNumber}
       invitationCode={isSessionLoading ? '' : invitationCode}
       logoUrl={isSessionLoading ? '' : logoUrl}
-      registrationUrl={isSessionLoading ? '' : registrationUrl}
+      registrationUrl={isSessionLoading ? '' : qrTrackingUrl}
       theme={theme}
       language={cardLanguage}
      />
@@ -543,7 +555,7 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
       standNumber={isSessionLoading ? '' : standNumber}
       invitationCode={isSessionLoading ? '' : invitationCode}
       logoUrl={isSessionLoading ? '' : logoUrl}
-      registrationUrl={isSessionLoading ? '' : registrationUrl}
+      registrationUrl={isSessionLoading ? '' : qrTrackingUrl}
       theme={theme}
       language={cardLanguage}
      />
@@ -554,7 +566,7 @@ export default function GeneratorPageClient({ initialToken, initialData }: Props
       standNumber={isSessionLoading ? '' : standNumber}
       invitationCode={isSessionLoading ? '' : invitationCode}
       logoUrl={isSessionLoading ? '' : logoUrl}
-      registrationUrl={isSessionLoading ? '' : registrationUrl}
+      registrationUrl={isSessionLoading ? '' : qrTrackingUrl}
       theme={theme}
       language={cardLanguage}
      />

@@ -29,6 +29,13 @@ export async function GET(
       )
     }
 
+    if (!exhibitor.registrationUrl) {
+      return NextResponse.json(
+        { ok: false, error: 'Registration URL is not ready' },
+        { status: 409, headers: { 'Cache-Control': 'no-store' } }
+      )
+    }
+
     await logAnalyticsEvent({
       exhibitorId: exhibitor.id,
       companyName: exhibitor.companyName,

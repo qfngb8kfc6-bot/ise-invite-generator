@@ -1,5 +1,6 @@
 import GeneratorPageClient from '@/components/GeneratorPageClient'
 import {
+  buildSecondaryRegistrationUrl,
   getSecondaryInvitationRequestById,
   isSecondaryInvitationApproved,
 } from '@/lib/google-sheets'
@@ -83,16 +84,15 @@ export default async function SecondaryGeneratorPage({
         companyName: request.companyName,
         standNumber: '',
         invitationCode: request.assignedInvitationCode,
-        registrationUrl:
-          request.generatorUrl ||
-          `https://www.iseurope.org/welcome/registration?code=${encodeURIComponent(
-            request.assignedInvitationCode
-          )}`,
+        registrationUrl: buildSecondaryRegistrationUrl(
+          request.assignedInvitationCode
+        ),
         logoUrl: request.logoUrl,
         theme: request.theme,
         language: request.language,
         sessionMessage: 'Secondary invitation request loaded from Google Sheets.',
       }}
+      enableQrTracking={false}
     />
   )
 }

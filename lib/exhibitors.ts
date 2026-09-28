@@ -1,6 +1,10 @@
 import 'server-only'
 
 import { env } from '@/lib/env'
+import {
+  buildVisitCloudRegistrationUrl,
+  extractActionCodeFromUrl,
+} from '@/lib/visitcloud'
 
 export type ThemeName = 'audio' | 'residential' | 'lighting'
 export type LanguageCode = 'en' | 'es' | 'de'
@@ -21,8 +25,8 @@ const mockExhibitors: Record<string, Exhibitor> = {
     id: '1001',
     companyName: 'Acme Audio Ltd',
     standNumber: 'A12',
-    invitationCode: 'ACME-A12-2027',
-    registrationUrl: 'https://example.com/register/ACME-A12-2027',
+    invitationCode: 'Code not ready / email support',
+    registrationUrl: '',
     logoUrl: null,
     theme: 'audio',
     language: 'en',
@@ -31,8 +35,8 @@ const mockExhibitors: Record<string, Exhibitor> = {
     id: '1002',
     companyName: 'Luma Living',
     standNumber: 'R08',
-    invitationCode: 'LUMA-R08-2027',
-    registrationUrl: 'https://example.com/register/LUMA-R08-2027',
+    invitationCode: 'Code not ready / email support',
+    registrationUrl: '',
     logoUrl: null,
     theme: 'residential',
     language: 'de',
@@ -41,8 +45,8 @@ const mockExhibitors: Record<string, Exhibitor> = {
     id: '1003',
     companyName: 'Northlight Systems',
     standNumber: 'L21',
-    invitationCode: 'NORTH-L21-2027',
-    registrationUrl: 'https://example.com/register/NORTH-L21-2027',
+    invitationCode: 'Code not ready / email support',
+    registrationUrl: '',
     logoUrl: null,
     theme: 'lighting',
     language: 'es',
@@ -160,8 +164,6 @@ function debugLog(label: string, payload: Record<string, unknown>) {
   if (!isDevelopment()) {
     return
   }
-
-  console.log(`[MYS DEBUG] ${label}`, payload)
 }
 
 function warnLog(label: string, payload: Record<string, unknown>) {
@@ -249,12 +251,6 @@ function getMysCategorySummary(record: Record<string, unknown>): string {
   return names.join(' ')
 }
 
-function buildFallbackInvitationCode(exhibitorId: string, standNumber: string): string {
-const year = '2027'
-  const standPart = standNumber ? standNumber.replace(/\s+/g, '').toUpperCase() : 'INVITE'
-  return `${exhibitorId}-${standPart}-${year}`
-}
-
 function inferThemeFromMys(record: Record<string, unknown>): ThemeName {
   const categoryText = getMysCategorySummary(record).toLowerCase()
 
@@ -271,96 +267,35 @@ function inferThemeFromMys(record: Record<string, unknown>): ThemeName {
   return 'audio'
 }
 
-function extractActionCodeFromRegistrationUrl(value: string) {
-  if (!value) {
-    return ''
-  }
-
-  try {
-    const url = new URL(value)
-
-    const actionCode =
-      url.searchParams.get('actioncode') ||
-      url.searchParams.get('actionCode') ||
-      url.searchParams.get('action_code')
-
-    return actionCode?.trim() || ''
-  } catch {
-    return ''
-  }
-}
-
-function buildRegistrationUrl(
-  record: Record<string, unknown>,
-  invitationCode: string,
-  exhibitorId: string
-): string {
-  const explicit = getFirstString(record, [
-    'registrationUrl',
-    'registration_url',
-    'inviteUrl',
-    'invite_url',
-    'registrationLink',
-    'inviteLink',
-    'inviteurl',
-  ])
-
-  if (explicit) {
-    return explicit
-  }
-
-  const base = env.EBO_REGISTRATION_BASE_URL?.trim() || ''
-  if (!base) {
-    return ''
-  }
-
-  const joiner = base.includes('?') ? '&' : '?'
-
-  if (invitationCode) {
-    return `${base}${joiner}code=${encodeURIComponent(invitationCode)}`
-  }
-
-  return `${base}${joiner}exhibitorId=${encodeURIComponent(exhibitorId)}`
-}
-
 function normaliseMysExhibitor(input: unknown): Exhibitor | null {
   const outer = asRecord(input)
   if (!outer) return null
 
   const record = asRecord(outer.exhibitor) ?? outer
-
-  console.log(
-    '[MYS FULL RECORD]',
-    JSON.stringify(record, null, 2)
-  )
-
   if (!record) return null
 
   const id = getFirstString(record, ['exhid', 'exhID', 'id', 'exhibitorId', 'alt_id'])
   const companyName = getFirstString(record, ['exhname', 'legal_name', 'companyName', 'name'])
   const standNumber = getMysPrimaryBoothNumber(record)
 
-  const inviteUrl = getFirstString(record, ['inviteurl', 'inviteUrl', 'inviteURL'])
+  const inviteUrl = getFirstString(record, [
+    'inviteurl',
+    'inviteUrl',
+    'inviteURL',
+    'invite_url',
+    'inviteLink',
+    'registrationUrl',
+    'registration_url',
+    'registrationLink',
+  ])
 
-  const rawInvitationCode =
-    getFirstString(record, [
-      'promocode',
-      'promoCode',
-      'promo_code',
-      'invitecode',
-      'inviteCode',
-      'invitationCode',
-      'actioncode',
-      'actionCode',
-    ]) ||
-    (inviteUrl ? new URL(inviteUrl).searchParams.get('actioncode') || '' : '') ||
-    buildFallbackInvitationCode(id, standNumber)
+  const actionCode =
+    getFirstString(record, ['actioncode', 'actionCode']) ||
+    extractActionCodeFromUrl(inviteUrl)
 
-  const registrationUrl = inviteUrl || buildRegistrationUrl(record, rawInvitationCode, id)
-
-  const actionCode = extractActionCodeFromRegistrationUrl(registrationUrl)
-
-  const invitationCode = registrationUrl || rawInvitationCode
+  const registrationUrl = actionCode
+    ? buildVisitCloudRegistrationUrl(actionCode)
+    : ''
 
 
   const logoUrl =
@@ -385,7 +320,7 @@ function normaliseMysExhibitor(input: unknown): Exhibitor | null {
       'thumbnail_url',
     ]) || null
 
-  if (!id || !companyName || !standNumber || !registrationUrl) {
+  if (!id || !companyName || !standNumber) {
     return null
   }
 

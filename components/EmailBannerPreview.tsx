@@ -15,7 +15,7 @@ type EmailBannerPreviewProps = {
 }
 
 const EVENT_YEAR = process.env.NEXT_PUBLIC_EVENT_YEAR?.trim() || '2027'
-const ISE_LOGO_WHITE = '/branding/ise-logo-white.png'
+const ISE_LOGO_WHITE = '/branding/ise-2027/ise-logo-short-white.png'
 const PARTNERS_FOOTER =
   '/branding/toolkit/ise-partners-footer-transparent.png?v=20270623'
 

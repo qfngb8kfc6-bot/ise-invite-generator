@@ -18,7 +18,7 @@ type SquareInvitePreviewProps = {
 }
 
 const EVENT_YEAR = process.env.NEXT_PUBLIC_EVENT_YEAR?.trim() || '2027'
-const ISE_LOGO_WHITE = '/branding/ise-logo-white.png'
+const ISE_LOGO_WHITE = '/branding/ise-2027/ise-logo-short-white.png'
 
 function getSquareText(language: LanguageKey) {
   switch (language) {

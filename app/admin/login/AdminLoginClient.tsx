@@ -53,7 +53,7 @@ export default function AdminLoginClient() {
       <div className="relative w-full max-w-[520px]">
         <div className="mb-5 flex justify-center">
           <Image
-            src="/branding/ise-logo-white.png"
+            src="/branding/ise-2027/ise-logo-short-white.png"
             alt="Integrated Systems Europe"
             width={230}
             height={110}

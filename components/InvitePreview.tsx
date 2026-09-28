@@ -18,7 +18,7 @@ type InvitePreviewProps = {
 
 const EVENT_YEAR = process.env.NEXT_PUBLIC_EVENT_YEAR?.trim() || '2027'
 
-const ISE_LOGO_WHITE = '/branding/ise-logo-white.png'
+const ISE_LOGO_WHITE = '/branding/ise-2027/ise-logo-short-white.png'
 const ISE_QR_RINGS = '/branding/toolkit/ise-qr-rings.png?v=20270622'
 
 function getFallbackInviteText(language: LanguageKey) {
@@ -120,7 +120,7 @@ function getCardCopy(language: LanguageKey, eventYear: string) {
         bodyThree: 'The world’s greatest innovators.',
         bodyFour: `ISE ${eventYear} is set to bring it all together for its best edition yet. You’ll find:`,
         bullets: ['Bright start-ups and bold showstoppers', 'Creative content makers and expert integrators', 'Next-gen classrooms and next-level concert halls', 'and a whole lot more in between'],
-        closingOne: '{cardCopy.closingOne}',
+        closingOne: 'So expect every vertical from every horizon. Nothing but everything.',
         closingTwo: 'Because a world of opportunity awaits…',
         freeCode: 'Save €300 and secure your free ticket today',
       }

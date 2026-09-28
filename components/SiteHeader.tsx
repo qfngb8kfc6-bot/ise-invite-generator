@@ -240,8 +240,8 @@ export default function SiteHeader() {
   }
 
   const logoSrc = isLight
-    ? '/branding/ise-logo-blue.png'
-    : '/branding/ise-logo-white.png'
+    ? '/branding/ise-2027/ise-logo-short-blue.png'
+    : '/branding/ise-2027/ise-logo-short-white.png'
 
   return (
     <header

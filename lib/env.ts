@@ -20,12 +20,12 @@ export type Env = {
   MYS_SHOWCODE: string
   MYS_API_TIMEOUT_MS: string
   MYS_EVENT_ID: string
+  ISE_REGISTRATION_DISCOUNT_CODE: string
 
   EBO_API_BASE_URL: string
   EBO_API_KEY: string
   EBO_API_TIMEOUT_MS: string
   EBO_LAUNCH_SECRET: string
-  EBO_REGISTRATION_BASE_URL: string
 }
 
 function getRequiredEnv(name: keyof NodeJS.ProcessEnv): string {
@@ -89,10 +89,10 @@ export const env: Env = {
   MYS_SHOWCODE: getOptionalEnv('MYS_SHOWCODE'),
   MYS_API_TIMEOUT_MS: getOptionalEnv('MYS_API_TIMEOUT_MS'),
   MYS_EVENT_ID: getOptionalEnv('MYS_EVENT_ID'),
+  ISE_REGISTRATION_DISCOUNT_CODE: getOptionalEnv('ISE_REGISTRATION_DISCOUNT_CODE'),
 
   EBO_API_BASE_URL: getOptionalEnv('EBO_API_BASE_URL'),
   EBO_API_KEY: getOptionalEnv('EBO_API_KEY'),
   EBO_API_TIMEOUT_MS: getOptionalEnv('EBO_API_TIMEOUT_MS'),
   EBO_LAUNCH_SECRET: getOptionalEnv('EBO_LAUNCH_SECRET'),
-  EBO_REGISTRATION_BASE_URL: getOptionalEnv('EBO_REGISTRATION_BASE_URL'),
 }

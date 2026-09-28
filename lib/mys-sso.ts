@@ -17,8 +17,6 @@ function debugLog(label: string, payload: Record<string, unknown>) {
   if (!isDevelopment()) {
     return
   }
-
-  console.log(`[MYS SSO DEBUG] ${label}`, payload)
 }
 
 function asRecord(value: unknown): Record<string, unknown> | null {

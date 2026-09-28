@@ -2,6 +2,7 @@ import 'server-only'
 import { google } from 'googleapis'
 import { themes } from '@/lib/themes'
 import { translations } from '@/lib/translations'
+import { buildVisitCloudRegistrationUrl } from '@/lib/visitcloud'
 import type { LanguageKey, ThemeKey } from '@/lib/types'
 
 export type SecondaryInvitationRequest = {
@@ -306,18 +307,8 @@ export function buildSecondaryGeneratorUrl(requestId: string): string {
   return `${baseUrl.replace(/\/$/, '')}/visitors/${encodeURIComponent(requestId)}`
 }
 
-export function buildSecondaryRegistrationUrl(invitationCode: string): string {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_VISITOR_REGISTRATION_BASE_URL ||
-    process.env.VISITOR_REGISTRATION_BASE_URL ||
-    'https://register.visitcloud.com/survey/0hztq4lbmv5rp'
-
-  const url = new URL(baseUrl)
-
-  url.searchParams.set('actioncode', invitationCode)
-  url.searchParams.set('discountcode', 'ABD123')
-
-  return url.toString()
+export function buildSecondaryRegistrationUrl(actionCode: string): string {
+  return buildVisitCloudRegistrationUrl(actionCode)
 }
 
 export function isSecondaryInvitationApproved(status: string): boolean {
