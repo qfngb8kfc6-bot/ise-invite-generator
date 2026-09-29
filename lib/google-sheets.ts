@@ -143,7 +143,8 @@ function getSheetsConfig() {
   const clientEmail = process.env.GOOGLE_SHEETS_CLIENT_EMAIL
   const spreadsheetId = process.env.GOOGLE_SHEETS_SPREADSHEET_ID
   const requestsSheet = process.env.GOOGLE_SHEETS_REQUESTS_SHEET || 'Requests'
-  const codePoolSheet = process.env.GOOGLE_SHEETS_CODE_POOL_SHEET || 'Code Pool'
+  const actionCodesSheet =
+    process.env.GOOGLE_SHEETS_ACTION_CODES_SHEET || 'ActionCodes'
 
   if (!clientEmail) throw new Error('Missing GOOGLE_SHEETS_CLIENT_EMAIL')
   if (!spreadsheetId) throw new Error('Missing GOOGLE_SHEETS_SPREADSHEET_ID')
@@ -152,7 +153,7 @@ function getSheetsConfig() {
     clientEmail,
     spreadsheetId,
     requestsSheet,
-    codePoolSheet,
+    actionCodesSheet,
   }
 }
 
@@ -323,57 +324,45 @@ export function isSecondaryInvitationApproved(status: string): boolean {
   )
 }
 
-async function assignNextAvailableCode(input: NewSecondaryInvitationRequestInput) {
-  const { spreadsheetId, codePoolSheet } = getSheetsConfig()
+async function assignNextAvailableCode(
+  input: NewSecondaryInvitationRequestInput
+) {
+  const { spreadsheetId, requestsSheet, actionCodesSheet } = getSheetsConfig()
   const sheets = await getSheetsClient()
 
-  const response = await sheets.spreadsheets.values.get({
-    spreadsheetId,
-    range: `${codePoolSheet}!${CODE_POOL_RANGE}`,
-  })
-
-  const rows = response.data.values || []
-
-  for (let index = 0; index < rows.slice(1).length; index += 1) {
-    const row = rows[index + 1]
-    const codeId = getCodePoolCell(row, 'codeId')
-    const invitationCode = getCodePoolCell(row, 'invitationCode')
-    const status = getCodePoolCell(row, 'status')
-
-    if (!codeId || !invitationCode || !isCodePoolStatusAvailable(status)) {
-      continue
-    }
-
-    const sheetRowNumber = index + 2
-
-    await sheets.spreadsheets.values.update({
+  const [codesResponse, requestsResponse] = await Promise.all([
+    sheets.spreadsheets.values.get({
       spreadsheetId,
-      range: `${codePoolSheet}!C${sheetRowNumber}:I${sheetRowNumber}`,
-      valueInputOption: 'USER_ENTERED',
-      requestBody: {
-        values: [
-          [
-            CODE_POOL_ASSIGNED_STATUS,
-            input.requestId,
-            input.companyName,
-            input.logoUrl,
-            input.themeLabel,
-            input.languageLabel,
-            input.submittedAt,
-          ],
-        ],
-      },
-    })
+      range: `${actionCodesSheet}!A2:A`,
+    }),
+    sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: `${requestsSheet}!K2:K`,
+    }),
+  ])
 
-    return {
-      assignedCodeId: codeId,
-      assignedInvitationCode: invitationCode,
-    }
+  const officialCodes = (codesResponse.data.values || [])
+    .map((row) => normaliseCell(row[0]))
+    .filter(Boolean)
+
+  const usedCodes = new Set(
+    (requestsResponse.data.values || [])
+      .map((row) => normaliseCell(row[0]))
+      .filter(Boolean)
+  )
+
+  const nextCode = officialCodes.find((code) => !usedCodes.has(code))
+
+  if (!nextCode) {
+    throw new Error(
+      'No unused official ISE visitor invitation codes are available.'
+    )
   }
 
-  throw new Error(
-    'No available invitation codes were found in the Code Pool sheet.'
-  )
+  return {
+    assignedCodeId: nextCode,
+    assignedInvitationCode: nextCode,
+  }
 }
 
 export async function appendSecondaryInvitationRequest(
