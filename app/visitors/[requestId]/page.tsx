@@ -84,9 +84,7 @@ export default async function SecondaryGeneratorPage({
         companyName: request.companyName,
         standNumber: '',
         invitationCode: request.assignedInvitationCode,
-        registrationUrl: buildSecondaryRegistrationUrl(
-          request.assignedInvitationCode
-        ),
+        registrationUrl: `${process.env.NEXT_PUBLIC_APP_URL?.trim() || 'https://invitations.iseurope.org'}/rv/${encodeURIComponent(request.requestId)}`,
         logoUrl: request.logoUrl,
         theme: request.theme,
         language: request.language,
