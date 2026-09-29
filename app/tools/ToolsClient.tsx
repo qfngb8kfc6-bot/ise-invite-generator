@@ -92,6 +92,9 @@ type ToolsText = {
   failedToGenerateLaunchLinkFor: string
   failedToFindExhibitor: string
   failedToGenerateLaunchLink: string
+  visitorInvitationTitle: string
+  visitorInvitationDescription: string
+  openVisitorInvitation: string
 }
 
 const toolsText: Record<LanguageKey, ToolsText> = {
@@ -163,6 +166,10 @@ const toolsText: Record<LanguageKey, ToolsText> = {
     failedToGenerateLaunchLinkFor: 'Failed to generate launch link for',
     failedToFindExhibitor: 'Failed to find exhibitor',
     failedToGenerateLaunchLink: 'Failed to generate launch link',
+    visitorInvitationTitle: 'Visitor Invitation',
+    visitorInvitationDescription:
+      'Open the public visitor invitation request form to create and test visitor invitations.',
+    openVisitorInvitation: 'Open Visitor Invitation Form',
   },
   es: {
     internalTools: 'Herramientas internas',
@@ -232,6 +239,10 @@ const toolsText: Record<LanguageKey, ToolsText> = {
     failedToGenerateLaunchLinkFor: 'No se pudo generar el enlace para',
     failedToFindExhibitor: 'No se pudo encontrar el expositor',
     failedToGenerateLaunchLink: 'No se pudo generar el enlace de acceso',
+    visitorInvitationTitle: 'Invitación para visitantes',
+    visitorInvitationDescription:
+      'Abre el formulario público de solicitud de invitación para crear y probar invitaciones de visitantes.',
+    openVisitorInvitation: 'Abrir formulario de invitación para visitantes',
   },
   de: {
     internalTools: 'Interne Tools',
@@ -301,6 +312,10 @@ const toolsText: Record<LanguageKey, ToolsText> = {
     failedToGenerateLaunchLinkFor: 'Startlink konnte nicht erzeugt werden für',
     failedToFindExhibitor: 'Aussteller konnte nicht gefunden werden',
     failedToGenerateLaunchLink: 'Startlink konnte nicht erzeugt werden',
+    visitorInvitationTitle: 'Besuchereinladung',
+    visitorInvitationDescription:
+      'Öffnen Sie das öffentliche Anfrageformular, um Besuchereinladungen zu erstellen und zu testen.',
+    openVisitorInvitation: 'Formular für Besuchereinladung öffnen',
   },
   fr: {
     internalTools: 'Outils internes',
@@ -370,6 +385,10 @@ const toolsText: Record<LanguageKey, ToolsText> = {
     failedToGenerateLaunchLinkFor: 'Impossible de générer le lien pour',
     failedToFindExhibitor: 'Impossible de trouver l’exposant',
     failedToGenerateLaunchLink: 'Impossible de générer le lien',
+    visitorInvitationTitle: 'Invitation visiteur',
+    visitorInvitationDescription:
+      'Ouvrez le formulaire public de demande pour créer et tester des invitations visiteurs.',
+    openVisitorInvitation: 'Ouvrir le formulaire d’invitation visiteur',
   },
   it: {
     internalTools: 'Strumenti interni',
@@ -439,6 +458,10 @@ const toolsText: Record<LanguageKey, ToolsText> = {
     failedToGenerateLaunchLinkFor: 'Impossibile generare il link per',
     failedToFindExhibitor: 'Impossibile trovare espositore',
     failedToGenerateLaunchLink: 'Impossibile generare link',
+    visitorInvitationTitle: 'Invito visitatore',
+    visitorInvitationDescription:
+      'Apri il modulo pubblico di richiesta per creare e testare inviti per visitatori.',
+    openVisitorInvitation: 'Apri modulo invito visitatore',
   },
   ca: {
     internalTools: 'Eines internas',
@@ -508,6 +531,10 @@ const toolsText: Record<LanguageKey, ToolsText> = {
     failedToGenerateLaunchLinkFor: 'No se pudo generar el enlace para',
     failedToFindExhibitor: 'No se pudo encontrar el expositor',
     failedToGenerateLaunchLink: 'No se pudo generar el enlace de acceso',
+    visitorInvitationTitle: 'Invitació per a visitants',
+    visitorInvitationDescription:
+      'Obre el formulari públic de sol·licitud per crear i provar invitacions de visitants.',
+    openVisitorInvitation: 'Obrir formulari d’invitació per a visitants',
   },
 
   'zh-CN': {
@@ -578,6 +605,10 @@ const toolsText: Record<LanguageKey, ToolsText> = {
     failedToGenerateLaunchLinkFor: '无法生成启动链接：',
     failedToFindExhibitor: '无法找到参展商',
     failedToGenerateLaunchLink: '无法生成启动链接',
+    visitorInvitationTitle: '访客邀请',
+    visitorInvitationDescription:
+      '打开公开访客邀请申请表，用于创建和测试访客邀请。',
+    openVisitorInvitation: '打开访客邀请表单',
   },
 }
 
@@ -1071,6 +1102,22 @@ export default function ToolsClient() {
             </div>
           </div>
         </header>
+
+        <SectionCard
+          title={t.visitorInvitationTitle}
+          description={t.visitorInvitationDescription}
+        >
+          <div className="flex flex-wrap gap-3">
+            <ActionButton
+              onClick={() =>
+                openLink('https://invitations.iseurope.org/request-invitation')
+              }
+              variant="primary"
+            >
+              {t.openVisitorInvitation}
+            </ActionButton>
+          </div>
+        </SectionCard>
 
         {error ? (
           <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-4 text-sm text-red-200">
