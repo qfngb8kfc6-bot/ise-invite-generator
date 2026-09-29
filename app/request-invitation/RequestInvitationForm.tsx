@@ -90,7 +90,7 @@ export default function RequestInvitationForm({
             ))}
           </select>
           <p className={helperClass}>
-            This sets the starting background style. Exhibitors can change it later inside the generator.
+            This sets the starting background style. Visitors can change it later inside the generator.
           </p>
         </div>
 
@@ -109,7 +109,7 @@ export default function RequestInvitationForm({
             ))}
           </select>
           <p className={helperClass}>
-            This sets the starting language. Exhibitors can change it later and download assets in multiple languages.
+            This sets the starting language. Visitors can change it later and download assets in multiple languages.
           </p>
         </div>
       </div>

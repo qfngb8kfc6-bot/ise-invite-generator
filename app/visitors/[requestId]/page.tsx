@@ -1,6 +1,5 @@
 import GeneratorPageClient from '@/components/GeneratorPageClient'
 import {
-  buildSecondaryRegistrationUrl,
   getSecondaryInvitationRequestById,
   isSecondaryInvitationApproved,
 } from '@/lib/google-sheets'
@@ -90,6 +89,7 @@ export default async function SecondaryGeneratorPage({
         language: request.language,
       }}
       enableQrTracking={false}
+      mode="secondary"
     />
   )
 }

@@ -36,7 +36,7 @@ export default function RequestInvitationPage() {
             </div>
 
             <h1 className="max-w-xl text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-              Request your exhibitor invitation assets
+              Request your visitor invitation assets
             </h1>
 
             <p className="mt-5 max-w-xl text-base leading-8 text-white/62">

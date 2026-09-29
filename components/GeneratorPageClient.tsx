@@ -23,6 +23,7 @@ type Props = {
   sessionMessage?: string
  }
  enableQrTracking?: boolean
+ mode?: 'primary' | 'secondary'
 }
 
 const orderedThemeKeys: ThemeKey[] = [
@@ -47,6 +48,7 @@ export default function GeneratorPageClient({
  initialToken,
  initialData,
  enableQrTracking = true,
+ mode = 'primary',
 }: Props) {
  const exportPreviewRef = useRef<HTMLDivElement | null>(null)
  const emailBannerExportRef = useRef<HTMLDivElement | null>(null)
@@ -328,7 +330,7 @@ export default function GeneratorPageClient({
       <div className="space-y-5">
        <section className={isLightMode ? 'rounded-[26px] border border-white/70 bg-white/70 p-4 shadow-[0_18px_45px_rgba(15,23,42,0.08)] backdrop-blur-xl' : 'rounded-[26px] border border-white/10 bg-white/[0.055] p-4 shadow-[0_18px_45px_rgba(0,0,0,0.26)] backdrop-blur-xl'}>
         <h2 className="text-xl font-semibold">{text.generatorInputsTitle}</h2>
-        <p className={`mt-1 ${helperClassName}`}>
+        <p className={`mt-1 whitespace-nowrap ${helperClassName}`}>
          {text.generatorEditableDescription || 'Manage the editable details that appear on the invitation card.'}
         </p>
 
@@ -535,6 +537,7 @@ export default function GeneratorPageClient({
        registrationUrl={isSessionLoading ? '' : qrTrackingUrl}
        theme={theme}
        language={cardLanguage}
+       mode={mode}
       />
      </div>
     </section>
