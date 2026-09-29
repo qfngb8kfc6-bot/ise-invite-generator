@@ -158,7 +158,7 @@ export default function InvitePreview({
   const hasMultipleBooths = boothList.length > 1
   const boothDisplay = boothList.join(' · ')
   const detailLabel = isSecondaryMode
-    ? 'Invitation ID'
+    ? 'Invitation code'
     : hasMultipleBooths
       ? fallbackText.booths
       : fallbackText.booth
@@ -289,7 +289,7 @@ export default function InvitePreview({
               {detailLabel}:
             </p>
             <p className="mt-1 break-words text-[18px] font-medium leading-tight text-[#050b36]">
-              {boothDisplay || '000000'}
+              {isSecondaryMode ? invitationCode : boothDisplay || '000000'}
             </p>
           </div>
         </div>

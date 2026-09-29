@@ -103,7 +103,7 @@ export default function EmailBannerPreview({
 }: EmailBannerPreviewProps) {
   const [failedLogoUrl, setFailedLogoUrl] = useState<string | null>(null)
   const text = getEmailBannerText(language)
-  const boothLabel = mode === 'secondary' ? 'Invitation ID:' : text.booth
+  const boothLabel = mode === 'secondary' ? 'Invitation code:' : text.booth
   const boothDisplay = standNumber?.trim() || '000000'
   const codeDisplay = invitationCode?.trim() || 'ISE2027'
   const isSaveTheDateTheme = theme === 'iseBrandingTwo'
@@ -154,7 +154,7 @@ export default function EmailBannerPreview({
                   {boothLabel}
                 </div>
                 <div className="mt-[2px] text-[15px] font-medium leading-[1.02] tracking-[-0.035em]">
-                  {boothDisplay}
+                  {mode === 'secondary' ? codeDisplay : boothDisplay}
                 </div>
               </div>
             </div>
@@ -244,7 +244,7 @@ export default function EmailBannerPreview({
                   {boothLabel}
                 </div>
                 <div className="mt-[2px] text-[15px] font-medium leading-[1.02] tracking-[-0.035em]">
-                  {boothDisplay}
+                  {mode === 'secondary' ? codeDisplay : boothDisplay}
                 </div>
               </div>
             </div>

@@ -40,7 +40,7 @@ const headerText: Record<
     homeTitle: 'ISE 2027 Exhibitor Platform',
     toolsSubtitle: 'Internal launch-link and testing tools',
     reportsSubtitle: 'Analytics Dashboard',
-    generatorSubtitle: 'Official exhibitor invitation asset creator',
+    generatorSubtitle: 'Invitation assets',
     homeSubtitle: 'Invitation assets, launch links, exports and analytics',
     toolsNav: 'Tools',
     reportsNav: 'Reports',
@@ -56,7 +56,7 @@ const headerText: Record<
     homeTitle: 'Plataforma de Expositores ISE 2027',
     toolsSubtitle: 'Herramientas internas de enlaces y pruebas',
     reportsSubtitle: 'Panel Analítico',
-    generatorSubtitle: 'Creador oficial de invitaciones para expositores',
+    generatorSubtitle: 'Recursos de invitación',
     homeSubtitle: 'Invitaciones, enlaces, exportaciones y analítica',
     toolsNav: 'Herramientas',
     reportsNav: 'Informes',
@@ -72,7 +72,7 @@ const headerText: Record<
     homeTitle: 'ISE 2027 Ausstellerplattform',
     toolsSubtitle: 'Interne Launch-Link- und Test-Tools',
     reportsSubtitle: 'Analyse-Dashboard',
-    generatorSubtitle: 'Offizieller Aussteller-Einladungsgenerator',
+    generatorSubtitle: 'Einladungsmedien',
     homeSubtitle: 'Einladungen, Links, Exporte und Analysen',
     toolsNav: 'Tools',
     reportsNav: 'Berichte',
@@ -88,7 +88,7 @@ const headerText: Record<
     homeTitle: 'Plateforme Exposants ISE 2027',
     toolsSubtitle: 'Outils internes de liens et de tests',
     reportsSubtitle: 'Tableau analytique',
-    generatorSubtitle: 'Créateur officiel d’invitations exposants',
+    generatorSubtitle: 'Ressources d’invitation',
     homeSubtitle: 'Invitations, liens, exports et analytique',
     toolsNav: 'Outils',
     reportsNav: 'Rapports',
@@ -104,7 +104,7 @@ const headerText: Record<
     homeTitle: 'Piattaforma Espositori ISE 2027',
     toolsSubtitle: 'Strumenti interni per link e test',
     reportsSubtitle: 'Dashboard Analitica',
-    generatorSubtitle: 'Creatore ufficiale di inviti per espositori',
+    generatorSubtitle: 'Risorse per gli inviti',
     homeSubtitle: 'Inviti, link, esportazioni e analytics',
     toolsNav: 'Strumenti',
     reportsNav: 'Report',
@@ -120,7 +120,7 @@ const headerText: Record<
     homeTitle: "Plataforma d'expositors ISE 2027",
     toolsSubtitle: "Eines internes d'enllaços i proves",
     reportsSubtitle: "Tauler d'analítica",
-    generatorSubtitle: "Creador oficial d'invitacions per a expositors",
+    generatorSubtitle: "Recursos d'invitació",
     homeSubtitle: "Invitacions, enllaços, exportacions i analítica",
     toolsNav: 'Eines',
     reportsNav: 'Informes',
@@ -137,7 +137,7 @@ const headerText: Record<
     homeTitle: 'ISE 2027 参展商平台',
     toolsSubtitle: '内部链接与测试工具',
     reportsSubtitle: '分析仪表板',
-    generatorSubtitle: '官方参展商邀请函生成工具',
+    generatorSubtitle: '邀请函素材',
     homeSubtitle: '邀请函、链接、导出和分析',
     toolsNav: '工具',
     reportsNav: '报告',
@@ -192,6 +192,10 @@ export default function SiteHeader() {
   const isReports = pathname.startsWith('/reports')
   const isAdminLogin = pathname.startsWith('/admin/login')
   const isGenerator = pathname.startsWith('/generator')
+  const isVisitorArea =
+    pathname.startsWith('/visitors') ||
+    pathname.startsWith('/secondary') ||
+    pathname.startsWith('/request-invitation')
   const isAdminArea = isTools || isReports || isAdminLogin
   const showAdminNav = isTools || isReports
 
@@ -210,6 +214,11 @@ export default function SiteHeader() {
 
   if (isGenerator) {
     title = text.generatorTitle
+    subtitle = text.generatorSubtitle
+  }
+
+  if (isVisitorArea) {
+    title = 'ISE 2027 Visitor Platform'
     subtitle = text.generatorSubtitle
   }
 

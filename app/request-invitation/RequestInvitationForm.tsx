@@ -12,8 +12,6 @@ type RequestInvitationFormProps = {
   languages: Option[]
 }
 
-const MAX_LOGO_BYTES = 3 * 1024 * 1024
-
 const inputClass =
   'w-full rounded-2xl border border-white/10 bg-black/35 px-4 py-4 text-white outline-none transition placeholder:text-white/28 focus:border-blue-400 focus:bg-black/45'
 
@@ -25,36 +23,6 @@ export default function RequestInvitationForm({
   themes,
   languages,
 }: RequestInvitationFormProps) {
-  const [logoMessage, setLogoMessage] = useState('')
-  const [logoMessageType, setLogoMessageType] = useState<'info' | 'error'>('info')
-
-  function handleLogoChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0]
-
-    if (!file) {
-      setLogoMessage('')
-      setLogoMessageType('info')
-      return
-    }
-
-    if (file.size > MAX_LOGO_BYTES) {
-      setLogoMessage('Logo is too large. Please upload a file under 3MB.')
-      setLogoMessageType('error')
-      event.target.value = ''
-      return
-    }
-
-    if (!file.type.startsWith('image/')) {
-      setLogoMessage('Logo must be an image file: PNG, JPG, WEBP or SVG.')
-      setLogoMessageType('error')
-      event.target.value = ''
-      return
-    }
-
-    setLogoMessage(`${file.name} selected. This logo will be reviewed after submission.`)
-    setLogoMessageType('info')
-  }
-
   return (
     <form
       action="/api/request-invitation"
@@ -106,34 +74,6 @@ export default function RequestInvitationForm({
         </div>
       </div>
 
-      <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
-        <label className={labelClass}>Preferred company logo</label>
-        <input
-          name="logo"
-          type="file"
-          accept="image/png,image/jpeg,image/webp,image/svg+xml"
-          onChange={handleLogoChange}
-          className="w-full cursor-pointer rounded-2xl border border-white/10 bg-black/35 px-4 py-4 text-sm text-white/70 file:mr-4 file:cursor-pointer file:rounded-xl file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-500"
-        />
-        <p className={helperClass}>
-          Optional at this stage. Accepted formats: PNG, JPG, WEBP or SVG.
-          Maximum file size: 3MB. Recommended minimum size: 300 × 120px.
-          Exhibitors can upload or replace their logo later inside the generator.
-        </p>
-
-        {logoMessage ? (
-          <p
-            className={
-              logoMessageType === 'error'
-                ? 'mt-3 rounded-2xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-xs font-medium text-red-100'
-                : 'mt-3 rounded-2xl border border-blue-400/20 bg-blue-500/10 px-4 py-3 text-xs font-medium text-blue-100'
-            }
-          >
-            {logoMessage}
-          </p>
-        ) : null}
-      </div>
-
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label className={labelClass}>Sector image</label>
@@ -178,7 +118,7 @@ export default function RequestInvitationForm({
         <p className="text-sm font-semibold text-white">Before submitting</p>
         <p className="mt-2 text-sm leading-6 text-white/48">
           Please check that the company name, contact email and preferences are correct.
-          Logo, language and sector image can still be changed later inside the approved generator.
+          Language and sector image can still be changed later inside the approved generator.
           After submission, the ISE team will review the request and assign the invitation details.
         </p>
       </div>

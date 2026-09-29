@@ -88,7 +88,6 @@ export default async function SecondaryGeneratorPage({
         logoUrl: request.logoUrl,
         theme: request.theme,
         language: request.language,
-        sessionMessage: 'Secondary invitation request loaded from Google Sheets.',
       }}
       enableQrTracking={false}
     />

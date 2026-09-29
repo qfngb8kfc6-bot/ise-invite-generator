@@ -41,8 +41,6 @@ export default function RequestInvitationPage() {
 
             <p className="mt-5 max-w-xl text-base leading-8 text-white/62">
               Submit your company details, preferred sector image and preferred language.
-              You can also include a preferred logo, but exhibitors can upload or replace
-              the final logo later inside the approved generator.
             </p>
 
             <div className="mt-8 grid gap-4">
@@ -59,19 +57,10 @@ export default function RequestInvitationPage() {
                 <p className="text-sm font-semibold text-white">Your generator</p>
                 <p className="mt-2 text-sm leading-6 text-white/52">
                   Approved requests can generate PNG, PDF, LinkedIn, Email Banner and
-                  ZIP Pack assets with your company name, logo and invitation code.
+                  ZIP Pack assets with your company name and invitation code.
                 </p>
               </div>
 
-              <div className="rounded-3xl border border-blue-400/20 bg-blue-500/10 p-5">
-                <p className="text-sm font-semibold text-blue-100">
-                  Logo recommendation
-                </p>
-                <p className="mt-2 text-sm leading-6 text-blue-100/65">
-                  A logo upload is optional at request stage. Exhibitors can upload or
-                  replace their final logo inside the approved generator before downloading assets.
-                </p>
-              </div>
             </div>
           </section>
 
@@ -85,7 +74,7 @@ export default function RequestInvitationPage() {
               </h2>
               <p className="mt-2 text-sm leading-6 text-white/50">
                 Please use the company details exactly as you would like them to appear.
-                Logo, theme and language can still be changed later inside the generator.
+                Theme and language can still be changed later inside the generator.
               </p>
             </div>
 

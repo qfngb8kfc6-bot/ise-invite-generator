@@ -101,7 +101,7 @@ export default function LinkedInInvitePreview({
   const selectedTheme = isSaveTheDateTheme
     ? themes.iseBrandingTwo
     : themes.iseBrandingOne
-  const detailLabel = mode === 'secondary' ? 'Invitation ID' : text.booth
+  const detailLabel = mode === 'secondary' ? 'Invitation code' : text.booth
   const boothDisplay = standNumber?.trim() || '000000'
   const codeDisplay = invitationCode?.trim() || 'ISE2027'
   const companyDisplay = companyName?.trim() || 'BRAND NAME'
@@ -176,7 +176,7 @@ export default function LinkedInInvitePreview({
           {detailLabel}:
         </p>
         <p className="mx-auto mt-[4px] max-w-[135px] break-words text-center text-[17px] font-medium leading-[1.05] tracking-[-0.035em]">
-          {boothDisplay}
+          {mode === 'secondary' ? codeDisplay : boothDisplay}
         </p>
       </div>
 

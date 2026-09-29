@@ -324,18 +324,9 @@ export default function GeneratorPageClient({
   <main className={pageClassName}>
    <div className="grid h-full lg:grid-cols-[500px_1fr]">
     <aside className={sidebarClassName}>
-     <div className={isLightMode ? 'shrink-0 border-b border-white/70 px-7 py-6' : 'shrink-0 border-b border-white/10 px-7 py-6'}>
-      <p className={isLightMode ? 'text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500' : 'text-[11px] font-semibold uppercase tracking-[0.22em] text-white/38'}>
-       Generator controls
-      </p>
-      <p className={`mt-2 leading-6 ${helperClassName}`}>
-       {text.generatorInputsDescription}
-      </p>
-     </div>
-
      <div className="flex-1 overflow-y-auto px-7 py-6">
       <div className="space-y-5">
-       <section className={isLightMode ? 'rounded-[28px] border border-white/70 bg-white/70 p-5 shadow-[0_18px_45px_rgba(15,23,42,0.08)] backdrop-blur-xl' : 'rounded-[28px] border border-white/10 bg-white/[0.055] p-5 shadow-[0_18px_45px_rgba(0,0,0,0.26)] backdrop-blur-xl'}>
+       <section className={isLightMode ? 'rounded-[26px] border border-white/70 bg-white/70 p-4 shadow-[0_18px_45px_rgba(15,23,42,0.08)] backdrop-blur-xl' : 'rounded-[26px] border border-white/10 bg-white/[0.055] p-4 shadow-[0_18px_45px_rgba(0,0,0,0.26)] backdrop-blur-xl'}>
         <h2 className="text-xl font-semibold">{text.generatorInputsTitle}</h2>
         <p className={`mt-1 ${helperClassName}`}>
          {text.generatorEditableDescription || 'Manage the editable details that appear on the invitation card.'}
@@ -353,7 +344,7 @@ export default function GeneratorPageClient({
          </div>
         ) : null}
 
-        <div className="mt-4 space-y-4">
+        <div className="mt-3 space-y-3">
          <label className="block">
           <span className={labelClassName}>{text.generatorCompanyName}</span>
           <input
@@ -368,29 +359,42 @@ export default function GeneratorPageClient({
            <div>
             <p className="text-sm font-semibold">{text.generatorVerifiedDetailsTitle || 'Verified invitation details'}</p>
             <p className={`mt-1 text-xs ${helperClassName}`}>
-             {text.generatorVerifiedDetailsDescription || 'These values are pulled from the exhibitor profile and cannot be edited here.'}
+             These values cannot be edited here.
             </p>
            </div>
           </div>
 
           <div className="mt-4 grid grid-cols-2 gap-3">
-           <div className={isLightMode ? 'rounded-2xl border border-slate-200 bg-white/70 p-4' : 'rounded-2xl border border-white/10 bg-white/[0.04] p-4'}>
-            <p className={isLightMode ? 'text-xs font-semibold uppercase tracking-[0.18em] text-slate-500' : 'text-xs font-semibold uppercase tracking-[0.18em] text-white/40'}>
-             {text.generatorStandNumber}
-            </p>
-            <p className={isLightMode ? 'mt-2 break-words text-base font-semibold text-slate-950' : 'mt-2 break-words text-base font-semibold text-white'}>
-             {standNumber || '—'}
-            </p>
-           </div>
+           {standNumber ? (
+            <>
+             <div className={isLightMode ? 'rounded-2xl border border-slate-200 bg-white/70 p-4' : 'rounded-2xl border border-white/10 bg-white/[0.04] p-4'}>
+              <p className={isLightMode ? 'text-xs font-semibold uppercase tracking-[0.18em] text-slate-500' : 'text-xs font-semibold uppercase tracking-[0.18em] text-white/40'}>
+               {text.generatorStandNumber}
+              </p>
+              <p className={isLightMode ? 'mt-2 break-words text-base font-semibold text-slate-950' : 'mt-2 break-words text-base font-semibold text-white'}>
+               {standNumber}
+              </p>
+             </div>
 
-           <div className={isLightMode ? 'rounded-2xl border border-slate-200 bg-white/70 p-4' : 'rounded-2xl border border-white/10 bg-white/[0.04] p-4'}>
-            <p className={isLightMode ? 'text-xs font-semibold uppercase tracking-[0.18em] text-slate-500' : 'text-xs font-semibold uppercase tracking-[0.18em] text-white/40'}>
-             {text.generatorInvitationCode}
-            </p>
-            <p className={isLightMode ? 'mt-2 break-words text-base font-semibold text-slate-950' : 'mt-2 break-words text-base font-semibold text-white'}>
-             {invitationCode || '—'}
-            </p>
-           </div>
+             <div className={isLightMode ? 'rounded-2xl border border-slate-200 bg-white/70 p-4' : 'rounded-2xl border border-white/10 bg-white/[0.04] p-4'}>
+              <p className={isLightMode ? 'text-xs font-semibold uppercase tracking-[0.18em] text-slate-500' : 'text-xs font-semibold uppercase tracking-[0.18em] text-white/40'}>
+               {text.generatorInvitationCode}
+              </p>
+              <p className={isLightMode ? 'mt-2 break-words text-base font-semibold text-slate-950' : 'mt-2 break-words text-base font-semibold text-white'}>
+               {invitationCode || '—'}
+              </p>
+             </div>
+            </>
+           ) : (
+            <div className={`col-span-2 ${isLightMode ? 'rounded-2xl border border-slate-200 bg-white/70 p-4' : 'rounded-2xl border border-white/10 bg-white/[0.04] p-4'}`}>
+             <p className={isLightMode ? 'text-xs font-semibold uppercase tracking-[0.18em] text-slate-500' : 'text-xs font-semibold uppercase tracking-[0.18em] text-white/40'}>
+              {text.generatorInvitationCode}
+             </p>
+             <p className={isLightMode ? 'mt-2 break-words text-base font-semibold text-slate-950' : 'mt-2 break-words text-base font-semibold text-white'}>
+              {invitationCode || '—'}
+             </p>
+            </div>
+           )}
           </div>
          </div>
 
@@ -408,7 +412,7 @@ export default function GeneratorPageClient({
            ))}
           </select>
 
-          <p className={`mt-2 text-xs ${isLightMode ? 'text-slate-500' : 'text-white/40'}`}>
+          <p className={`mt-1 text-xs ${isLightMode ? 'text-slate-500' : 'text-white/40'}`}>
            {text.generatorCardLanguageHelp || 'This changes the invitation card and exports only.'}
           </p>
          </label>
@@ -442,8 +446,8 @@ export default function GeneratorPageClient({
           <label
            className={
             isLightMode
-             ? 'flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white px-4 py-4 text-sm text-slate-500 transition hover:border-blue-400 hover:bg-blue-50'
-             : 'flex cursor-pointer items-center justify-center rounded-xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-4 text-sm text-white/55 transition hover:border-blue-400/40 hover:bg-blue-500/10'
+             ? 'flex min-h-[96px] cursor-pointer items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white px-4 py-6 text-sm text-slate-500 transition hover:border-blue-400 hover:bg-blue-50'
+             : 'flex min-h-[96px] cursor-pointer items-center justify-center rounded-xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-6 text-sm text-white/55 transition hover:border-blue-400/40 hover:bg-blue-500/10'
            }
           >
            {text.generatorLogoUpload}
@@ -464,7 +468,7 @@ export default function GeneratorPageClient({
         </div>
        </section>
 
-       <section className={isLightMode ? 'rounded-[28px] border border-white/70 bg-white/70 p-5 shadow-[0_18px_45px_rgba(15,23,42,0.08)] backdrop-blur-xl' : 'rounded-[28px] border border-white/10 bg-white/[0.055] p-5 shadow-[0_18px_45px_rgba(0,0,0,0.26)] backdrop-blur-xl'}>
+       <section className={isLightMode ? 'rounded-[26px] border border-white/70 bg-white/70 p-4 shadow-[0_18px_45px_rgba(15,23,42,0.08)] backdrop-blur-xl' : 'rounded-[26px] border border-white/10 bg-white/[0.055] p-4 shadow-[0_18px_45px_rgba(0,0,0,0.26)] backdrop-blur-xl'}>
         <h2 className="text-xl font-semibold">{text.generatorChooseTheme || 'Choose your theme'}</h2>
         <div className="mt-5 grid gap-3">
          {orderedThemeKeys.map((key) => {
