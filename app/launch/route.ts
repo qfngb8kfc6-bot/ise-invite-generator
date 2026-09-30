@@ -231,11 +231,16 @@ export async function GET(request: NextRequest) {
       request.nextUrl.searchParams.get('valueguid') ||
       request.nextUrl.searchParams.get('valueGUID')
 
+    const exhid =
+      request.nextUrl.searchParams.get('exhid') ||
+      request.nextUrl.searchParams.get('ExhID') ||
+      request.nextUrl.searchParams.get('exhID')
+
     const showId =
       request.nextUrl.searchParams.get('showid') ||
       request.nextUrl.searchParams.get('showId')
 
-    if (!valueGuid || !showId) {
+    if ((!valueGuid && !exhid) || !showId) {
       return errorRedirect(request, 'missing_parameters')
     }
 
@@ -246,13 +251,27 @@ export async function GET(request: NextRequest) {
       return errorRedirect(request, 'invalid_show')
     }
 
-    const authorisedShowCode = env.MYS_SHOWCODE || showId
-    const mysToken = await authoriseWithMys(authorisedShowCode)
+    const cleanValueGuid = valueGuid?.trim() || ''
+    const cleanExhId = exhid?.trim() || ''
 
-    const { exhibitorId } = await resolveValueGuid(
-      valueGuid,
-      mysToken
-    )
+    // Original MYS integration supported passing the ExhibitorID directly.
+    // Some MYS links currently place that numeric ExhID in the valueguid field,
+    // so preserve backwards compatibility with that setup.
+    let exhibitorId =
+      cleanExhId ||
+      (/^\d+$/.test(cleanValueGuid) ? cleanValueGuid : '')
+
+    if (!exhibitorId) {
+      const authorisedShowCode = env.MYS_SHOWCODE || showId
+      const mysToken = await authoriseWithMys(authorisedShowCode)
+
+      const resolved = await resolveValueGuid(
+        cleanValueGuid,
+        mysToken
+      )
+
+      exhibitorId = resolved.exhibitorId
+    }
 
     const exhibitor = await getExhibitorById(exhibitorId)
 
