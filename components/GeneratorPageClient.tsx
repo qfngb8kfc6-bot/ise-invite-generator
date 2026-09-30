@@ -291,8 +291,8 @@ export default function GeneratorPageClient({
  }
 
  const pageClassName = isLightMode
-  ? 'h-[calc(100vh-128px)] overflow-hidden bg-transparent text-slate-950'
-  : 'h-[calc(100vh-128px)] overflow-hidden bg-transparent text-white'
+  ? 'h-[calc(100vh-64px)] overflow-hidden bg-transparent text-slate-950'
+  : 'h-[calc(100vh-64px)] overflow-hidden bg-transparent text-white'
 
  const sidebarClassName = isLightMode
   ? 'relative flex h-full min-h-0 flex-col border-r border-white/60 bg-white/72 shadow-[18px_0_70px_rgba(15,23,42,0.10)] backdrop-blur-2xl '
