@@ -234,11 +234,15 @@ export async function GET(request: NextRequest) {
     const exhid =
       request.nextUrl.searchParams.get('exhid') ||
       request.nextUrl.searchParams.get('ExhID') ||
-      request.nextUrl.searchParams.get('exhID')
+      request.nextUrl.searchParams.get('exhID') ||
+      request.nextUrl.searchParams.get('ExhibitorID') ||
+      request.nextUrl.searchParams.get('exhibitorId') ||
+      request.nextUrl.searchParams.get('exhibitorid')
 
     const showId =
       request.nextUrl.searchParams.get('showid') ||
-      request.nextUrl.searchParams.get('showId')
+      request.nextUrl.searchParams.get('showId') ||
+      env.MYS_SHOWCODE
 
     if ((!valueGuid && !exhid) || !showId) {
       return errorRedirect(request, 'missing_parameters')
