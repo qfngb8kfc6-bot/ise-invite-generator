@@ -84,7 +84,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
 
 
       generatorClose: 'Close',
-      generatorLogoHelp: 'PNG/JPG/WebP. Max 3MB. Recommended 300 × 120px minimum.',
+      generatorLogoHelp: 'PNG/JPG/WebP. Max 3MB. Recommended 300 × 120px min',
       generatorRemoveLogo: 'Remove',
       generatorExportAssets: 'Export assets',
       generatorDownloadChoice: 'Download the format of your choice',
