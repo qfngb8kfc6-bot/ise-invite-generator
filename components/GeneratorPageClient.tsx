@@ -441,7 +441,7 @@ export default function GeneratorPageClient({
             {text.generatorLogoUpload}
            </div>
 
-           <div className={isLightMode ? 'mt-0.5 whitespace-nowrap text-[10px] text-slate-500' : 'mt-0.5 whitespace-nowrap text-[10px] text-white/35'}>
+           <div className={isLightMode ? 'mt-0.5 max-w-[220px] whitespace-normal text-[10px] leading-tight text-slate-500' : 'mt-0.5 max-w-[220px] whitespace-normal text-[10px] leading-tight text-white/35'}>
             {text.generatorLogoHelp || 'PNG/JPG/WebP. Max 3MB. Recommended 300 × 120px min'}
            </div>
 
