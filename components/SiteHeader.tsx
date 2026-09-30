@@ -286,7 +286,7 @@ export default function SiteHeader() {
             </div>
           </div>
 
-          <div className="origin-right scale-75">
+          <div className="origin-right scale-100">
             <LanguageSwitcher dark />
           </div>
         </div>

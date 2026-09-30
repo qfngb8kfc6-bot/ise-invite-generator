@@ -273,12 +273,12 @@ export default function InvitePreview({
               </p>
           </div>
 
-          <div className="flex min-h-[76px] w-[230px] items-center justify-center border border-[#050b36]/35 bg-white px-5">
+          <div className="flex min-h-[96px] w-[240px] items-center justify-center border border-[#050b36]/35 bg-white px-4">
             {logoUrl && failedLogoUrl !== logoUrl ? (
               <img
                 src={logoUrl}
                 alt={`${companyName} logo`}
-                className="max-h-14 max-w-[190px] object-contain"
+                className="max-h-[74px] max-w-[215px] object-contain"
                 onError={() => setFailedLogoUrl(logoUrl)}
               />
             ) : (
