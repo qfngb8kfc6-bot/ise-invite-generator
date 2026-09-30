@@ -410,16 +410,48 @@ export default function GeneratorPageClient({
           </p>
          </label>
 
-         <div className={panelClassName}>
-          <div className="mb-3 flex items-center justify-between gap-3">
-           <div>
-            <div className={isLightMode ? 'text-sm font-medium text-slate-700' : 'text-sm font-medium text-white/70'}>
-             {text.generatorLogoUpload}
-            </div>
-            <div className={isLightMode ? 'mt-1 whitespace-nowrap text-[11px] text-slate-500' : 'mt-1 whitespace-nowrap text-[11px] text-white/35'}>
-             {text.generatorLogoHelp || 'PNG/JPG/WebP. Max 3MB. Recommended 300 × 120px minimum.'}
-            </div>
+         <div
+          className={
+           isLightMode
+            ? 'flex items-center justify-between gap-3 rounded-[18px] border border-white/70 bg-white/72 px-3 py-2.5 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur-xl'
+            : 'flex items-center justify-between gap-3 rounded-[18px] border border-white/10 bg-white/[0.055] px-3 py-2.5 shadow-[0_10px_26px_rgba(0,0,0,0.20)] backdrop-blur-xl'
+          }
+         >
+          <div className="min-w-0">
+           <div className={isLightMode ? 'text-xs font-medium text-slate-700' : 'text-xs font-medium text-white/70'}>
+            {text.generatorLogoUpload}
            </div>
+
+           <div className={isLightMode ? 'mt-0.5 whitespace-nowrap text-[10px] text-slate-500' : 'mt-0.5 whitespace-nowrap text-[10px] text-white/35'}>
+            {text.generatorLogoHelp || 'PNG/JPG/WebP. Max 3MB. Recommended 300 × 120px min'}
+           </div>
+
+           {logoMessage ? (
+            <div className="mt-1 text-[10px] text-amber-300">
+             {logoMessage}
+            </div>
+           ) : null}
+          </div>
+
+          <div className="flex shrink-0 items-center gap-2">
+           <label className="cursor-pointer">
+            <span
+             className={
+              isLightMode
+               ? 'inline-flex rounded-lg border border-slate-200 bg-white/80 px-3 py-1.5 text-[11px] font-semibold text-slate-700 transition hover:bg-white'
+               : 'inline-flex rounded-lg border border-white/10 bg-white/[0.07] px-3 py-1.5 text-[11px] font-semibold text-white/75 transition hover:bg-white/[0.12]'
+             }
+            >
+             {text.generatorLogoUpload}
+            </span>
+
+            <input
+             type="file"
+             accept="image/png,image/jpeg,image/webp,image/svg+xml"
+             onChange={(event) => handleLogoUpload(event.target.files?.[0] ?? null)}
+             className="hidden"
+            />
+           </label>
 
            {logoUrl ? (
             <button
@@ -427,39 +459,14 @@ export default function GeneratorPageClient({
              onClick={removeLogo}
              className={
               isLightMode
-               ? 'rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-600 hover:bg-slate-100'
-               : 'rounded-xl border border-white/10 px-3 py-2 text-xs text-white/70 hover:bg-white/10'
+               ? 'rounded-lg border border-slate-200 px-3 py-1.5 text-[11px] text-slate-600 hover:bg-slate-100'
+               : 'rounded-lg border border-white/10 px-3 py-1.5 text-[11px] text-white/65 hover:bg-white/[0.08]'
              }
             >
              {text.generatorRemoveLogo || 'Remove'}
             </button>
            ) : null}
           </div>
-
-          <label className="inline-flex cursor-pointer items-center">
-           <span
-            className={
-             isLightMode
-              ? 'rounded-xl border border-slate-200 bg-white/60 px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-white'
-              : 'rounded-xl border border-white/10 bg-white/[0.06] px-4 py-2 text-xs font-semibold text-white/70 transition hover:bg-white/[0.10]'
-            }
-           >
-            {text.generatorLogoUpload}
-           </span>
-
-           <input
-            type="file"
-            accept="image/png,image/jpeg,image/webp,image/svg+xml"
-            onChange={(event) => handleLogoUpload(event.target.files?.[0] ?? null)}
-            className="hidden"
-           />
-          </label>
-
-          {logoMessage ? (
-           <div className="mt-3 rounded-xl border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-xs text-amber-700">
-            {logoMessage}
-           </div>
-          ) : null}
          </div>
         </div>
        </section>
