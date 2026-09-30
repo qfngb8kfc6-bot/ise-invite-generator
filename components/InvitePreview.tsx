@@ -247,18 +247,22 @@ export default function InvitePreview({
         <div className="flex items-start justify-between gap-5 border-b border-[#050b36]/80 pb-5">
           <div className="min-w-0 w-[470px] max-w-[470px]">
             <h3
-              className="max-h-[82px] overflow-hidden break-words pt-[3px] font-semibold uppercase leading-[1.02] tracking-[0em] text-[#050b36]"
+              className="max-h-[82px] overflow-hidden break-words pt-[3px] font-semibold uppercase leading-[0.98] tracking-[0em] text-[#050b36]"
               style={{
                 fontSize:
-                  (companyName || fallbackText.companyName).length > 70
-                    ? '18px'
-                    : (companyName || fallbackText.companyName).length > 58
-                      ? '20px'
-                      : (companyName || fallbackText.companyName).length > 46
-                        ? '23px'
-                        : (companyName || fallbackText.companyName).length > 34
-                          ? '28px'
-                          : '36px',
+                  (companyName || fallbackText.companyName).length > 85
+                    ? '14px'
+                    : (companyName || fallbackText.companyName).length > 72
+                      ? '16px'
+                      : (companyName || fallbackText.companyName).length > 60
+                        ? '18px'
+                        : (companyName || fallbackText.companyName).length > 48
+                          ? '20px'
+                          : (companyName || fallbackText.companyName).length > 38
+                            ? '24px'
+                            : (companyName || fallbackText.companyName).length > 30
+                              ? '29px'
+                              : '36px',
               }}
             >
               {companyName || fallbackText.companyName}
