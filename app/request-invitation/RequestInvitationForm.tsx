@@ -90,7 +90,7 @@ export default function RequestInvitationForm({
             ))}
           </select>
           <p className={helperClass}>
-            This sets the starting background style. Visitors can change it later inside the generator.
+            This sets out the background style, which can be changed in the next step.
           </p>
         </div>
 
@@ -109,7 +109,7 @@ export default function RequestInvitationForm({
             ))}
           </select>
           <p className={helperClass}>
-            This sets the starting language. Visitors can change it later and download assets in multiple languages.
+            This sets the starting language, which can be changed in the next step.
           </p>
         </div>
       </div>
@@ -117,9 +117,7 @@ export default function RequestInvitationForm({
       <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5">
         <p className="text-sm font-semibold text-white">Before submitting</p>
         <p className="mt-2 text-sm leading-6 text-white/48">
-          Please check that the company name, contact email and preferences are correct.
-          Language and sector image can still be changed later inside the approved generator.
-          After submission, the ISE team will review the request and assign the invitation details.
+          Please check that the details above are correct. Changes can be made in the next step.
         </p>
       </div>
 
@@ -132,7 +130,7 @@ export default function RequestInvitationForm({
 
       <p className="text-center text-xs leading-5 text-white/35">
         By submitting this form, your details will be added to the ISE invitation
-        request workflow for review.
+        request workflow
       </p>
     </form>
   )

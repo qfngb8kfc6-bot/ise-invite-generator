@@ -23,7 +23,7 @@ export default async function RequestInvitationSuccessPage({
     : ''
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#020617] text-white">
+    <main className="min-h-screen overflow-hidden bg-transparent text-white">
       <div className="pointer-events-none fixed inset-0">
         <div className="absolute left-[-160px] top-[-160px] h-[420px] w-[420px] rounded-full bg-blue-500/20 blur-3xl" />
         <div className="absolute bottom-[-180px] right-[-120px] h-[520px] w-[520px] rounded-full bg-cyan-400/10 blur-3xl" />

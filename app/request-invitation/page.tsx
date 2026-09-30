@@ -21,7 +21,7 @@ export default function RequestInvitationPage() {
   }))
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#020617] text-white">
+    <main className="min-h-screen overflow-hidden bg-transparent text-white">
       <div className="pointer-events-none fixed inset-0">
         <div className="absolute left-[-160px] top-[-160px] h-[420px] w-[420px] rounded-full bg-blue-500/20 blur-3xl" />
         <div className="absolute bottom-[-180px] right-[-120px] h-[520px] w-[520px] rounded-full bg-cyan-400/10 blur-3xl" />
@@ -36,32 +36,13 @@ export default function RequestInvitationPage() {
             </div>
 
             <h1 className="max-w-xl text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-              Request your visitor invitation assets
+              Request your invitation cards
             </h1>
 
             <p className="mt-5 max-w-xl text-base leading-8 text-white/62">
               Submit your company details, preferred sector image and preferred language.
             </p>
 
-            <div className="mt-8 grid gap-4">
-              <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
-                <p className="text-sm font-semibold text-white">What happens next?</p>
-                <p className="mt-2 text-sm leading-6 text-white/52">
-                  Your request is added to the ISE invitation system for review. Once
-                  approved, the ISE team will assign an invitation ID, invitation code
-                  and generator link.
-                </p>
-              </div>
-
-              <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
-                <p className="text-sm font-semibold text-white">Your generator</p>
-                <p className="mt-2 text-sm leading-6 text-white/52">
-                  Approved requests can generate PNG, PDF, LinkedIn, Email Banner and
-                  ZIP Pack assets with your company name and invitation code.
-                </p>
-              </div>
-
-            </div>
           </section>
 
           <section className="rounded-[36px] border border-white/10 bg-white/[0.06] p-5 shadow-2xl backdrop-blur-2xl sm:p-7">
