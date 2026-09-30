@@ -448,8 +448,8 @@ export default function GeneratorPageClient({
           <label
            className={
             isLightMode
-             ? 'flex min-h-[96px] cursor-pointer items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white px-4 py-6 text-sm text-slate-500 transition hover:border-blue-400 hover:bg-blue-50'
-             : 'flex min-h-[96px] cursor-pointer items-center justify-center rounded-xl border border-dashed border-white/15 bg-white/[0.03] px-4 py-6 text-sm text-white/55 transition hover:border-blue-400/40 hover:bg-blue-500/10'
+             ? 'flex min-h-[120px] cursor-pointer items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white/10 px-4 py-8 text-sm text-slate-500 transition hover:border-blue-400 hover:bg-white/15'
+             : 'flex min-h-[120px] cursor-pointer items-center justify-center rounded-xl border border-dashed border-white/15 bg-white/10 px-4 py-8 text-sm text-white/55 transition hover:border-blue-400/40 hover:bg-white/15'
            }
           >
            {text.generatorLogoUpload}
