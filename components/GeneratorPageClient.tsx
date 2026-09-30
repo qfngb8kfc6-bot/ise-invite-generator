@@ -347,26 +347,17 @@ export default function GeneratorPageClient({
         ) : null}
 
         <div className="mt-3 space-y-3">
-         <label className="block">
-          <span className={labelClassName}>{text.generatorCompanyName}</span>
-          <input
-           value={companyName}
-           onChange={(event) => setCompanyName(event.target.value)}
-           className={inputClassName}
-          />
-         </label>
-
          <div className={panelClassName}>
-          <div className="flex items-start justify-between gap-4">
-           <div>
-            <p className="text-sm font-semibold">{text.generatorVerifiedDetailsTitle || 'Verified invitation details'}</p>
-            <p className={`mt-1 text-xs ${helperClassName}`}>
-             These values cannot be edited here.
-            </p>
-           </div>
-          </div>
+          <label className="block">
+           <span className={labelClassName}>{text.generatorCompanyName}</span>
+           <input
+            value={companyName}
+            onChange={(event) => setCompanyName(event.target.value)}
+            className={inputClassName}
+           />
+          </label>
 
-          <div className="mt-4 grid grid-cols-2 gap-3">
+          <div className="mt-3 grid grid-cols-2 gap-3">
            {standNumber ? (
             <>
              <div className={isLightMode ? 'rounded-2xl border border-slate-200 bg-white/70 p-4' : 'rounded-2xl border border-white/10 bg-white/[0.04] p-4'}>
