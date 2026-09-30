@@ -66,7 +66,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
       generatorPngPrint: 'PNG Print',
       generatorPdf: 'PDF',
       generatorZipPack: 'ZIP Pack',
-      generatorInputsTitle: 'Generator inputs',
+      generatorInputsTitle: 'Invitation card options',
       generatorInputsDescription:
         'These values are verified by your EBO profile.',
       generatorCompanyName: 'Company name',
@@ -89,7 +89,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
       generatorExportAssets: 'Export assets',
       generatorDownloadChoice: 'Download the format of your choice',
       generatorDownloadDescription: 'Choose a single format or download the complete ZIP pack.',
-      generatorEditableDescription: 'Manage the editable details that appear on the invitation card.',
+      generatorEditableDescription: 'Manage the details that appear on the invitation card.',
       generatorVerifiedDetailsTitle: 'Verified invitation details',
       generatorVerifiedDetailsDescription: 'These values are pulled from the exhibitor profile and cannot be edited here.',
 
@@ -193,7 +193,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
       generatorPngPrint: 'PNG Impresión',
       generatorPdf: 'PDF',
       generatorZipPack: 'Paquete ZIP',
-      generatorInputsTitle: 'Campos del generador',
+      generatorInputsTitle: 'Opciones de la tarjeta de invitación',
       generatorInputsDescription:
         'Estos valores se rellenan desde la sesión verificada del expositor.',
       generatorCompanyName: 'Nombre de la empresa',
@@ -215,7 +215,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
       generatorExportAssets: 'Exportar recursos',
       generatorDownloadChoice: 'Descarga el formato que prefieras',
       generatorDownloadDescription: 'Elige un formato individual o descarga el paquete ZIP completo.',
-      generatorEditableDescription: 'Gestiona los datos editables que aparecen en la invitación.',
+      generatorEditableDescription: 'Gestiona los datos que aparecen en la tarjeta de invitación.',
       generatorVerifiedDetailsTitle: 'Detalles verificados de la invitación',
       generatorVerifiedDetailsDescription: 'Estos valores proceden del perfil del expositor y no se pueden editar aquí.',
 
@@ -319,7 +319,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
       generatorPngPrint: 'PNG Druck',
       generatorPdf: 'PDF',
       generatorZipPack: 'ZIP-Paket',
-      generatorInputsTitle: 'Generator-Eingaben',
+      generatorInputsTitle: 'Optionen der Einladungskarte',
       generatorInputsDescription:
         'Diese Werte werden aus der verifizierten Aussteller-Sitzung vorausgefüllt.',
       generatorCompanyName: 'Firmenname',
@@ -445,7 +445,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
       generatorPngPrint: 'PNG Impression',
       generatorPdf: 'PDF',
       generatorZipPack: 'Pack ZIP',
-      generatorInputsTitle: 'Champs du générateur',
+      generatorInputsTitle: 'Options de la carte d’invitation',
       generatorInputsDescription:
         "Ces valeurs sont préremplies à partir de la session vérifiée de l'exposant.",
       generatorCompanyName: "Nom de l'entreprise",
@@ -571,7 +571,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
       generatorPngPrint: 'PNG Stampa',
       generatorPdf: 'PDF',
       generatorZipPack: 'Pacchetto ZIP',
-      generatorInputsTitle: 'Campi del generatore',
+      generatorInputsTitle: 'Opzioni della carta d’invito',
       generatorInputsDescription:
         "Questi valori sono precompilati dalla sessione verificata dell'espositore.",
       generatorCompanyName: 'Nome azienda',
@@ -697,7 +697,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
       generatorPngPrint: 'PNG impressió',
       generatorPdf: 'PDF',
       generatorZipPack: 'Paquet ZIP',
-      generatorInputsTitle: 'Camps del generador',
+      generatorInputsTitle: 'Opcions de la targeta d’invitació',
       generatorInputsDescription:
         'Aquests valors es verifiquen amb el teu perfil EBO.',
       generatorCompanyName: "Nom de l'empresa",
@@ -824,7 +824,7 @@ export const translations: Record<LanguageKey, TranslationBundle> = {
       generatorPngPrint: 'PNG 打印',
       generatorPdf: 'PDF',
       generatorZipPack: 'ZIP 压缩包',
-      generatorInputsTitle: '生成器输入',
+      generatorInputsTitle: '邀请卡选项',
       generatorInputsDescription:
         '这些值已从已验证的参展商会话中预填充。',
       generatorCompanyName: '公司名称',

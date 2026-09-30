@@ -331,7 +331,7 @@ export default function GeneratorPageClient({
        <section className={isLightMode ? 'rounded-[26px] border border-white/70 bg-white/70 p-4 shadow-[0_18px_45px_rgba(15,23,42,0.08)] backdrop-blur-xl' : 'rounded-[26px] border border-white/10 bg-white/[0.055] p-4 shadow-[0_18px_45px_rgba(0,0,0,0.26)] backdrop-blur-xl'}>
         <h2 className="text-xl font-semibold">{text.generatorInputsTitle}</h2>
         <p className={`mt-1 whitespace-nowrap text-[11px] ${helperClassName}`}>
-         {text.generatorEditableDescription || 'Manage the editable details that appear on the invitation card.'}
+         {text.generatorEditableDescription || 'Manage the details that appear on the invitation card.'}
         </p>
 
         {sessionMessage ? (
@@ -445,14 +445,17 @@ export default function GeneratorPageClient({
            ) : null}
           </div>
 
-          <label
-           className={
-            isLightMode
-             ? 'flex min-h-[120px] cursor-pointer items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white/10 px-4 py-8 text-sm text-slate-500 transition hover:border-blue-400 hover:bg-white/15'
-             : 'flex min-h-[120px] cursor-pointer items-center justify-center rounded-xl border border-dashed border-white/15 bg-white/10 px-4 py-8 text-sm text-white/55 transition hover:border-blue-400/40 hover:bg-white/15'
-           }
-          >
-           {text.generatorLogoUpload}
+          <label className="inline-flex cursor-pointer items-center">
+           <span
+            className={
+             isLightMode
+              ? 'rounded-xl border border-slate-200 bg-white/60 px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-white'
+              : 'rounded-xl border border-white/10 bg-white/[0.06] px-4 py-2 text-xs font-semibold text-white/70 transition hover:bg-white/[0.10]'
+            }
+           >
+            {text.generatorLogoUpload}
+           </span>
+
            <input
             type="file"
             accept="image/png,image/jpeg,image/webp,image/svg+xml"
