@@ -62,12 +62,12 @@ export default function GeneratorPageClient({
 
       if (!area) return
 
-      const safeWidth = Math.max(area.clientWidth - 96, 320)
-      const safeHeight = Math.max(area.clientHeight - 120, 320)
+      const safeWidth = Math.max(area.clientWidth - 72, 320)
+      const safeHeight = Math.max(area.clientHeight - 72, 320)
 
       const widthScale = safeWidth / 980
       const heightScale = safeHeight / 1210
-      const nextScale = Math.max(0.36, Math.min(0.5, widthScale, heightScale))
+      const nextScale = Math.max(0.36, Math.min(0.58, widthScale, heightScale))
 
       setPreviewScale(Number(nextScale.toFixed(3)))
     }
