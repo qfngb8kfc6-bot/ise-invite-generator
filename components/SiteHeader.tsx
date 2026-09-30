@@ -265,7 +265,7 @@ export default function SiteHeader() {
       <header className="relative z-50 w-full bg-transparent text-white">
         <div className="flex w-full items-center justify-between gap-3 px-4 py-2 sm:px-6 lg:px-8">
           <div className="flex min-w-0 items-center gap-5">
-            <div className="relative flex h-12 w-28 shrink-0 items-center justify-center overflow-hidden">
+            <div className="relative flex h-16 w-36 shrink-0 items-center justify-center overflow-hidden">
               <Image
                 src={logoSrc}
                 alt="Integrated Systems Europe"
@@ -276,11 +276,11 @@ export default function SiteHeader() {
             </div>
 
             <div className="min-w-0">
-              <div className="truncate text-xs font-semibold tracking-wide text-white sm:text-sm">
+              <div className="truncate text-base font-semibold tracking-wide text-white sm:text-lg">
                 {text.generatorTitle}
               </div>
 
-              <div className="mt-0.5 truncate text-[8px] tracking-wide text-neutral-400 sm:text-[9px]">
+              <div className="mt-0.5 truncate text-[11px] tracking-wide text-neutral-400 sm:text-xs">
                 {text.generatorSubtitle}
               </div>
             </div>

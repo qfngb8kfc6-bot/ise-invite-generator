@@ -351,15 +351,15 @@ export default function GeneratorPageClient({
           <label
            className={
             isLightMode
-             ? 'block rounded-2xl border border-slate-200 bg-white/70 p-4'
-             : 'block rounded-2xl border border-white/10 bg-white/[0.04] p-4'
+             ? 'block rounded-xl border border-slate-200 bg-white/70 p-3'
+             : 'block rounded-xl border border-white/10 bg-white/[0.04] p-3'
            }
           >
            <span
             className={
              isLightMode
-              ? 'block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500'
-              : 'block text-xs font-semibold uppercase tracking-[0.18em] text-white/40'
+              ? 'block text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-500'
+              : 'block text-[10px] font-semibold uppercase tracking-[0.15em] text-white/40'
             }
            >
             {text.generatorCompanyName}
@@ -370,8 +370,8 @@ export default function GeneratorPageClient({
             onChange={(event) => setCompanyName(event.target.value)}
             className={
              isLightMode
-              ? 'mt-2 w-full border-0 bg-transparent p-0 text-base font-semibold text-slate-950 outline-none'
-              : 'mt-2 w-full border-0 bg-transparent p-0 text-base font-semibold text-white outline-none'
+              ? 'mt-1.5 w-full border-0 bg-transparent p-0 text-sm font-semibold text-slate-950 outline-none'
+              : 'mt-1.5 w-full border-0 bg-transparent p-0 text-sm font-semibold text-white outline-none'
             }
            />
           </label>
@@ -379,30 +379,30 @@ export default function GeneratorPageClient({
           <div className="mt-3 grid grid-cols-2 gap-3">
            {standNumber ? (
             <>
-             <div className={isLightMode ? 'rounded-2xl border border-slate-200 bg-white/70 p-4' : 'rounded-2xl border border-white/10 bg-white/[0.04] p-4'}>
-              <p className={isLightMode ? 'text-xs font-semibold uppercase tracking-[0.18em] text-slate-500' : 'text-xs font-semibold uppercase tracking-[0.18em] text-white/40'}>
+             <div className={isLightMode ? 'rounded-xl border border-slate-200 bg-white/70 p-3' : 'rounded-xl border border-white/10 bg-white/[0.04] p-3'}>
+              <p className={isLightMode ? 'text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-500' : 'text-[10px] font-semibold uppercase tracking-[0.15em] text-white/40'}>
                {text.generatorStandNumber}
               </p>
-              <p className={isLightMode ? 'mt-2 break-words text-base font-semibold text-slate-950' : 'mt-2 break-words text-base font-semibold text-white'}>
+              <p className={isLightMode ? 'mt-1.5 break-words text-sm font-semibold text-slate-950' : 'mt-1.5 break-words text-sm font-semibold text-white'}>
                {standNumber}
               </p>
              </div>
 
-             <div className={isLightMode ? 'rounded-2xl border border-slate-200 bg-white/70 p-4' : 'rounded-2xl border border-white/10 bg-white/[0.04] p-4'}>
-              <p className={isLightMode ? 'text-xs font-semibold uppercase tracking-[0.18em] text-slate-500' : 'text-xs font-semibold uppercase tracking-[0.18em] text-white/40'}>
+             <div className={isLightMode ? 'rounded-xl border border-slate-200 bg-white/70 p-3' : 'rounded-xl border border-white/10 bg-white/[0.04] p-3'}>
+              <p className={isLightMode ? 'text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-500' : 'text-[10px] font-semibold uppercase tracking-[0.15em] text-white/40'}>
                {text.generatorInvitationCode}
               </p>
-              <p className={isLightMode ? 'mt-2 break-words text-base font-semibold text-slate-950' : 'mt-2 break-words text-base font-semibold text-white'}>
+              <p className={isLightMode ? 'mt-1.5 break-words text-sm font-semibold text-slate-950' : 'mt-1.5 break-words text-sm font-semibold text-white'}>
                {invitationCode || '—'}
               </p>
              </div>
             </>
            ) : (
-            <div className={`col-span-2 ${isLightMode ? 'rounded-2xl border border-slate-200 bg-white/70 p-4' : 'rounded-2xl border border-white/10 bg-white/[0.04] p-4'}`}>
-             <p className={isLightMode ? 'text-xs font-semibold uppercase tracking-[0.18em] text-slate-500' : 'text-xs font-semibold uppercase tracking-[0.18em] text-white/40'}>
+            <div className={`col-span-2 ${isLightMode ? 'rounded-xl border border-slate-200 bg-white/70 p-3' : 'rounded-xl border border-white/10 bg-white/[0.04] p-3'}`}>
+             <p className={isLightMode ? 'text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-500' : 'text-[10px] font-semibold uppercase tracking-[0.15em] text-white/40'}>
               {text.generatorInvitationCode}
              </p>
-             <p className={isLightMode ? 'mt-2 break-words text-base font-semibold text-slate-950' : 'mt-2 break-words text-base font-semibold text-white'}>
+             <p className={isLightMode ? 'mt-1.5 break-words text-sm font-semibold text-slate-950' : 'mt-1.5 break-words text-sm font-semibold text-white'}>
               {invitationCode || '—'}
              </p>
             </div>
