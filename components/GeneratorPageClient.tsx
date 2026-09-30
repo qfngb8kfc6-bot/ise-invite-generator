@@ -442,7 +442,7 @@ export default function GeneratorPageClient({
                : 'inline-flex rounded-lg border border-white/10 bg-white/[0.07] px-3 py-1.5 text-[11px] font-semibold text-white/75 transition hover:bg-white/[0.12]'
              }
             >
-             {text.generatorLogoUpload}
+             Upload
             </span>
 
             <input
