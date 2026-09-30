@@ -348,12 +348,31 @@ export default function GeneratorPageClient({
 
         <div className="mt-3 space-y-3">
          <div className={panelClassName}>
-          <label className="block">
-           <span className={labelClassName}>{text.generatorCompanyName}</span>
+          <label
+           className={
+            isLightMode
+             ? 'block rounded-2xl border border-slate-200 bg-white/70 p-4'
+             : 'block rounded-2xl border border-white/10 bg-white/[0.04] p-4'
+           }
+          >
+           <span
+            className={
+             isLightMode
+              ? 'block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500'
+              : 'block text-xs font-semibold uppercase tracking-[0.18em] text-white/40'
+            }
+           >
+            {text.generatorCompanyName}
+           </span>
+
            <input
             value={companyName}
             onChange={(event) => setCompanyName(event.target.value)}
-            className={inputClassName}
+            className={
+             isLightMode
+              ? 'mt-2 w-full border-0 bg-transparent p-0 text-base font-semibold text-slate-950 outline-none'
+              : 'mt-2 w-full border-0 bg-transparent p-0 text-base font-semibold text-white outline-none'
+            }
            />
           </label>
 
