@@ -134,18 +134,22 @@ export default function LinkedInInvitePreview({
         className="absolute left-[760px] top-[12px] h-auto w-[354px] object-contain"
       />
 
-      <div className="absolute left-[42px] top-[155px] w-[395px]">
+      <div className="absolute left-[42px] top-[155px] w-[650px]">
         <h2
-          className="max-h-[58px] overflow-hidden break-words pt-[3px] font-semibold uppercase leading-[1.02] tracking-[0em] text-white"
+          className="max-h-[86px] overflow-hidden break-words pt-[3px] font-semibold uppercase leading-[1.02] tracking-[0em] text-white"
           style={{
             fontSize:
-              companyDisplay.length > 70
-                ? '25px'
-                : companyDisplay.length > 58
-                  ? '28px'
-                  : companyDisplay.length > 42
-                    ? '34px'
-                    : '43px',
+              companyDisplay.length > 85
+                ? '23px'
+                : companyDisplay.length > 70
+                  ? '26px'
+                  : companyDisplay.length > 55
+                    ? '29px'
+                    : companyDisplay.length > 40
+                      ? '33px'
+                      : companyDisplay.length > 28
+                        ? '37px'
+                        : '43px',
           }}
         >
           {companyDisplay}
