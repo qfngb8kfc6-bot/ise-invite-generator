@@ -192,10 +192,13 @@ export default function SiteHeader() {
   const isReports = pathname.startsWith('/reports')
   const isAdminLogin = pathname.startsWith('/admin/login')
   const isGenerator = pathname.startsWith('/generator')
-  const isVisitorArea =
+  const isVisitorGenerator =
     pathname.startsWith('/visitors') ||
-    pathname.startsWith('/secondary') ||
+    pathname.startsWith('/secondary')
+  const isVisitorArea =
+    isVisitorGenerator ||
     pathname.startsWith('/request-invitation')
+  const isGeneratorPage = isGenerator || isVisitorGenerator
   const isAdminArea = isTools || isReports || isAdminLogin
   const showAdminNav = isTools || isReports
 
@@ -219,6 +222,11 @@ export default function SiteHeader() {
 
   if (isVisitorArea) {
     title = 'ISE 2027 Visitor Platform'
+    subtitle = text.generatorSubtitle
+  }
+
+  if (isVisitorGenerator) {
+    title = text.generatorTitle
     subtitle = text.generatorSubtitle
   }
 
@@ -251,6 +259,40 @@ export default function SiteHeader() {
   const logoSrc = isLight
     ? '/branding/ise-2027/ise-logo-short-blue.png'
     : '/branding/ise-2027/ise-logo-short-white.png'
+
+  if (isGeneratorPage) {
+    return (
+      <header className="relative z-50 w-full bg-transparent text-white">
+        <div className="flex w-full items-center justify-between gap-3 px-4 py-2 sm:px-6 lg:px-8">
+          <div className="flex min-w-0 items-center gap-5">
+            <div className="relative flex h-12 w-28 shrink-0 items-center justify-center overflow-hidden">
+              <Image
+                src={logoSrc}
+                alt="Integrated Systems Europe"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
+
+            <div className="min-w-0">
+              <div className="truncate text-xs font-semibold tracking-wide text-white sm:text-sm">
+                {text.generatorTitle}
+              </div>
+
+              <div className="mt-0.5 truncate text-[8px] tracking-wide text-neutral-400 sm:text-[9px]">
+                {text.generatorSubtitle}
+              </div>
+            </div>
+          </div>
+
+          <div className="origin-right scale-50">
+            <LanguageSwitcher dark />
+          </div>
+        </div>
+      </header>
+    )
+  }
 
   return (
     <header
