@@ -8,38 +8,52 @@ export const themes: Record<ThemeKey, ThemeConfig> = {
     label: 'Save the Date',
     backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Save the date.jpg`,
   },
+
   iseBrandingOne: {
     label: 'ISE themed',
     backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Generic.jpg`,
   },
+
   audio: {
     label: 'Audio',
     backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Audio.jpg`,
   },
+
   contentProduction: {
     label: 'Broadcast',
     backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Broadcast.jpg`,
   },
+
+  comms: {
+    label: 'Comms',
+    backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Comms.jpg`,
+  },
+
   digitalSignage: {
     label: 'Digital Signage',
     backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Digital Signage.jpg`,
   },
+
   educationTechnology: {
     label: 'Education',
     backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Education.jpg`,
   },
+
   lighting: {
     label: 'Lighting & Staging',
-    backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/lighting-staging.jpg`,
+    backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Lighting & Staging.jpg`,
   },
+
   unifiedCommunications: {
-    label: 'Multi Technology',
+    label: 'Multitechnology',
     backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Multitechnology.jpg`,
   },
+
   residential: {
     label: 'Residential',
     backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Residential.jpg`,
   },
+
   smartBuilding: {
     label: 'Smart Building',
     backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Smart building.jpg`,

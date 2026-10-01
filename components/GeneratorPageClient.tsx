@@ -31,6 +31,7 @@ const orderedThemeKeys: ThemeKey[] = [
   'iseBrandingOne',
   'audio',
   'contentProduction',
+  'comms',
   'digitalSignage',
   'educationTechnology',
   'lighting',

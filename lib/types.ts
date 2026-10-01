@@ -11,6 +11,7 @@ export type ThemeKey =
   | 'digitalSignage'
   | 'smartBuilding'
   | 'contentProduction'
+  | 'comms'
 
 export type ThemeLabelMap = Partial<Record<ThemeKey, string>>
 
