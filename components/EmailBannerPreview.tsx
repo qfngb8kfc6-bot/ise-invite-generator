@@ -30,7 +30,7 @@ function getEmailBannerText(language: LanguageKey) {
     case 'es':
       return {
         join: `ÚNASE A NOSOTROS EN ISE ${EVENT_YEAR}`,
-        headline: 'CUANDO LOS MUNDOS SE UNEN',
+        headline: 'WHEN WORLDS UNITE',
         ticket: 'ASEGURE SU ENTRADA GRATUITA HOY',
         useCode: 'Use el código:',
         inviteUrl: 'iseurope.org/invite',
@@ -39,7 +39,7 @@ function getEmailBannerText(language: LanguageKey) {
     case 'de':
       return {
         join: `BESUCHEN SIE UNS AUF DER ISE ${EVENT_YEAR}`,
-        headline: 'WENN WELTEN SICH VEREINEN',
+        headline: 'WHEN WORLDS UNITE',
         ticket: 'SICHERN SIE SICH HEUTE IHR KOSTENLOSES TICKET',
         useCode: 'Code verwenden:',
         inviteUrl: 'iseurope.org/invite',
@@ -48,7 +48,7 @@ function getEmailBannerText(language: LanguageKey) {
     case 'fr':
       return {
         join: `REJOIGNEZ-NOUS À ISE ${EVENT_YEAR}`,
-        headline: 'QUAND LES MONDES S’UNISSENT',
+        headline: 'WHEN WORLDS UNITE',
         ticket: 'RÉSERVEZ VOTRE BILLET GRATUIT AUJOURD’HUI',
         useCode: 'Utilisez le code :',
         inviteUrl: 'iseurope.org/invite',
@@ -57,7 +57,7 @@ function getEmailBannerText(language: LanguageKey) {
     case 'it':
       return {
         join: `UNISCITI A NOI A ISE ${EVENT_YEAR}`,
-        headline: 'QUANDO I MONDI SI UNISCONO',
+        headline: 'WHEN WORLDS UNITE',
         ticket: 'ASSICURA OGGI IL TUO BIGLIETTO GRATUITO',
         useCode: 'Usa il codice:',
         inviteUrl: 'iseurope.org/invite',
@@ -66,7 +66,7 @@ function getEmailBannerText(language: LanguageKey) {
     case 'ca':
       return {
         join: `UNEIX-TE A NOSALTRES A ISE ${EVENT_YEAR}`,
-        headline: 'QUAN ELS MONS S’UNEIXEN',
+        headline: 'WHEN WORLDS UNITE',
         ticket: 'ASSEGURA LA TEVA ENTRADA GRATUÏTA AVUI',
         useCode: 'Utilitza el codi:',
         inviteUrl: 'iseurope.org/invite',
@@ -75,7 +75,7 @@ function getEmailBannerText(language: LanguageKey) {
     case 'zh-CN':
       return {
         join: `欢迎参加 ISE ${EVENT_YEAR}`,
-        headline: '世界在此汇聚',
+        headline: 'WHEN WORLDS UNITE',
         ticket: '立即获取免费门票',
         useCode: '使用邀请码：',
         inviteUrl: 'iseurope.org/invite',
