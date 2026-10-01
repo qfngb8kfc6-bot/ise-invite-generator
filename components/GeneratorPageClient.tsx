@@ -528,7 +528,7 @@ export default function GeneratorPageClient({
       </div>
      </div>
 
-     <div className={isLightMode ? 'shrink-0 border-t border-white/70 bg-white/76 p-4 shadow-[0_-18px_40px_rgba(15,23,42,0.08)] backdrop-blur-xl' : 'shrink-0 border-t border-white/10 bg-white/[0.07] p-4 shadow-[0_-18px_48px_rgba(0,0,0,0.30)] backdrop-blur-xl'}>
+     <div className={isLightMode ? 'shrink-0 border-t border-white/70 bg-white/76 px-4 pt-4 pb-6 shadow-[0_-18px_40px_rgba(15,23,42,0.08)] backdrop-blur-xl' : 'shrink-0 border-t border-white/10 bg-white/[0.07] px-4 pt-4 pb-6 shadow-[0_-18px_48px_rgba(0,0,0,0.30)] backdrop-blur-xl'}>
       <button
        type="button"
        disabled={isExporting}
