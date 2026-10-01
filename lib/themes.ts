@@ -25,7 +25,7 @@ export const themes: Record<ThemeKey, ThemeConfig> = {
   },
 
   comms: {
-    label: 'Comms',
+    label: 'Unified Communications',
     backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Comms.jpg`,
   },
 
@@ -41,7 +41,7 @@ export const themes: Record<ThemeKey, ThemeConfig> = {
 
   lighting: {
     label: 'Lighting & Staging',
-    backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/ISE27 - Digital Invitation - Lighting & Staging.jpg`,
+    backgroundImage: `${OFFICIAL_BACKGROUND_BASE}/lighting-staging.jpg`,
   },
 
   unifiedCommunications: {

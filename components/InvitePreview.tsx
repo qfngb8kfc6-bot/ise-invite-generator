@@ -273,7 +273,7 @@ export default function InvitePreview({
               </p>
           </div>
 
-          <div className="flex min-h-[96px] w-[240px] items-center justify-center border border-[#050b36]/8 bg-white px-4">
+          <div className="flex min-h-[112px] w-[240px] items-center justify-center border border-[#050b36]/8 bg-white px-4">
             {logoUrl && failedLogoUrl !== logoUrl ? (
               <img
                 src={logoUrl}
