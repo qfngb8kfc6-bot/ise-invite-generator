@@ -118,20 +118,19 @@ export default function RequestInvitationPageClient({
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_42%)]" />
       </div>
 
-      <div className="relative mx-auto flex min-h-screen max-w-6xl items-center px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid w-full gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
-          <section className="rounded-[36px] border border-white/10 bg-white/[0.04] p-7 shadow-2xl backdrop-blur-2xl sm:p-9">
-            <div className="mb-6 inline-flex rounded-full border border-blue-400/25 bg-blue-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-blue-200">
-              {text.badge}
+      <div className="relative mx-auto flex min-h-screen max-w-5xl items-center px-4 py-12 sm:px-6 lg:px-8">
+        <div className="w-full space-y-6">
+
+          <section className="rounded-[32px] border border-white/10 bg-white/[0.04] px-7 py-6 text-center shadow-2xl backdrop-blur-2xl sm:px-9 sm:py-7">
+            <div className="flex flex-col items-center">
+              <div className="inline-flex rounded-full border border-blue-400/25 bg-blue-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-blue-200">
+                {text.badge}
+              </div>
+
+              <h1 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                {text.title}
+              </h1>
             </div>
-
-            <h1 className="max-w-xl text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-              {text.title}
-            </h1>
-
-            <p className="mt-5 max-w-xl text-base leading-8 text-white/62">
-              {text.description}
-            </p>
           </section>
 
           <section className="rounded-[36px] border border-white/10 bg-white/[0.06] p-5 shadow-2xl backdrop-blur-2xl sm:p-7">
@@ -144,7 +143,7 @@ export default function RequestInvitationPageClient({
                 {text.formTitle}
               </h2>
 
-              <p className="mt-2 text-sm leading-6 text-white/50">
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-white/50">
                 {text.formDescription}
               </p>
             </div>
@@ -154,6 +153,7 @@ export default function RequestInvitationPageClient({
               languages={languages}
             />
           </section>
+
         </div>
       </div>
     </main>

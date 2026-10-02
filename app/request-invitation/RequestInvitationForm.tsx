@@ -274,10 +274,14 @@ export default function RequestInvitationForm({
             name="language"
             required
             defaultValue="en"
-            className={inputClass}
+            className="w-full rounded-2xl border border-blue-300/30 bg-[#0b1f4d] px-4 py-4 text-white outline-none transition focus:border-blue-300 focus:ring-2 focus:ring-blue-400/20"
           >
             {languages.map((language) => (
-              <option key={language.key} value={language.key} className="text-black">
+              <option
+                key={language.key}
+                value={language.key}
+                className="bg-white text-slate-950"
+              >
                 {language.label}
               </option>
             ))}
