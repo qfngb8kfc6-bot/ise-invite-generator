@@ -40,7 +40,7 @@ const requestFormCopy: Record<
   }
 > = {
   en: {
-    companyName: 'Company name',
+    companyName: 'Organisation name',
     companyPlaceholder: 'Company name as it should appear',
     companyHelp: '{text.companyHelp}',
     contactName: 'Contact name',

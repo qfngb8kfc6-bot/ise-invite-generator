@@ -33,7 +33,7 @@ const copy: Record<
     formLabel: 'Request form',
     formTitle: 'Submit company details',
     formDescription:
-      'Please use the company details exactly as you would like them to appear. Theme and language can still be changed later inside the generator.',
+      'Use your unique invitation code to invite as many colleagues and guests as you like to register for ISE 2027 for free, at no cost to you. Build your personalised invites below.',
   },
 
   es: {
@@ -121,29 +121,13 @@ export default function RequestInvitationPageClient({
       <div className="relative mx-auto flex min-h-[calc(100vh-80px)] max-w-5xl items-start px-4 pt-2 pb-4 sm:px-6 lg:px-8">
         <div className="w-full space-y-4">
 
-          <section className="rounded-[28px] border border-white/10 bg-white/[0.04] px-7 py-4 text-center shadow-2xl backdrop-blur-2xl sm:px-9 sm:py-5">
-            <div className="flex flex-col items-center">
-              <div className="inline-flex rounded-full border border-blue-400/25 bg-blue-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-blue-200">
-                {text.badge}
-              </div>
-
-              <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-[34px]">
-                {text.title}
-              </h1>
-            </div>
-          </section>
-
           <section className="rounded-[30px] border border-white/10 bg-white/[0.06] p-4 shadow-2xl backdrop-blur-2xl sm:p-5">
             <div className="mb-4 rounded-[24px] border border-white/10 bg-black/20 px-5 py-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-200">
-                {text.formLabel}
-              </p>
+              <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-[30px]">
+                {text.title}
+              </h1>
 
-              <h2 className="mt-2 text-xl font-semibold tracking-tight text-white">
-                {text.formTitle}
-              </h2>
-
-              <p className="mt-1.5 max-w-3xl text-sm leading-5 text-white/50">
+              <p className="mt-2 max-w-4xl text-sm leading-5 text-white">
                 {text.formDescription}
               </p>
             </div>
