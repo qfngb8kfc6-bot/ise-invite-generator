@@ -118,7 +118,7 @@ function getCardCopy(language: LanguageKey, eventYear: string) {
         bodyOne: 'The world-renowned annual tech show is back.',
         bodyTwo: 'The world’s latest innovations.',
         bodyThree: 'The world’s greatest innovators.',
-        bodyFour: `ISE ${eventYear} is set to bring it all together for its best edition yet.\nYou’ll find:`,
+        bodyFour: `ISE ${eventYear} is set to bring it all together for its best edition yet.\n\nYou’ll find:`,
         bullets: ['Bright start-ups and bold showstoppers', 'Creative content makers and expert integrators', 'Next-gen classrooms and next-level concert halls', 'and a whole lot more in between'],
         closingOne: 'So expect every vertical from every horizon. Nothing but everything.',
         closingTwo: 'Because a world of opportunity awaits…',
