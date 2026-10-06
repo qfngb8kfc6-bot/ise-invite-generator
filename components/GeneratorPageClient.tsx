@@ -292,8 +292,8 @@ export default function GeneratorPageClient({
  }
 
  const pageClassName = isLightMode
-  ? 'h-[calc(100vh-64px)] overflow-hidden bg-transparent text-slate-950'
-  : 'h-[calc(100vh-64px)] overflow-hidden bg-transparent text-white'
+  ? 'h-[calc(100vh-80px)] overflow-hidden bg-transparent text-slate-950'
+  : 'h-[calc(100vh-80px)] overflow-hidden bg-transparent text-white'
 
  const sidebarClassName = isLightMode
   ? 'relative flex h-full min-h-0 flex-col border-r border-white/60 bg-white/72 shadow-[18px_0_70px_rgba(15,23,42,0.10)] backdrop-blur-2xl '
@@ -574,6 +574,7 @@ export default function GeneratorPageClient({
       registrationUrl={isSessionLoading ? '' : qrTrackingUrl}
       theme={theme}
       language={cardLanguage}
+      mode={mode}
      />
     </div>
 
@@ -586,6 +587,7 @@ export default function GeneratorPageClient({
       registrationUrl={isSessionLoading ? '' : qrTrackingUrl}
       theme={theme}
       language={cardLanguage}
+      mode={mode}
      />
     </div>
     <div ref={linkedinExportRef}>
@@ -597,6 +599,7 @@ export default function GeneratorPageClient({
       registrationUrl={isSessionLoading ? '' : qrTrackingUrl}
       theme={theme}
       language={cardLanguage}
+      mode={mode}
      />
     </div>
    </div>

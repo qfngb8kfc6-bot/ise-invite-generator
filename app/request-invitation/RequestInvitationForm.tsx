@@ -14,7 +14,7 @@ type RequestInvitationFormProps = {
 }
 
 const inputClass =
-  'w-full rounded-2xl border border-white/10 bg-black/35 px-4 py-4 text-white outline-none transition placeholder:text-white/28 focus:border-blue-400 focus:bg-black/45'
+  'w-full rounded-2xl border border-white/10 bg-black/35 px-4 py-3 text-white outline-none transition placeholder:text-white/28 focus:border-blue-400 focus:bg-black/45'
 
 const labelClass = 'mb-2 block text-sm font-semibold text-white/75'
 
@@ -202,9 +202,9 @@ export default function RequestInvitationForm({
       action="/api/request-invitation"
       method="post"
       encType="multipart/form-data"
-      className="space-y-5"
+      className="space-y-4"
     >
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
           <label className={labelClass}>{text.companyName}</label>
           <input
@@ -248,7 +248,7 @@ export default function RequestInvitationForm({
         </div>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className={labelClass}>{text.sectorImage}</label>
           <select
@@ -274,7 +274,7 @@ export default function RequestInvitationForm({
             name="language"
             required
             defaultValue="en"
-            className="w-full rounded-2xl border border-blue-300/30 bg-[#0b1f4d] px-4 py-4 text-white outline-none transition focus:border-blue-300 focus:ring-2 focus:ring-blue-400/20"
+            className="w-full rounded-2xl border border-blue-300/30 bg-[#0b1f4d] px-4 py-3 text-white outline-none transition focus:border-blue-300 focus:ring-2 focus:ring-blue-400/20"
           >
             {languages.map((language) => (
               <option
@@ -292,16 +292,16 @@ export default function RequestInvitationForm({
         </div>
       </div>
 
-      <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5">
+      <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3.5">
         <p className="text-sm font-semibold text-white">{text.beforeSubmitting}</p>
-        <p className="mt-2 text-sm leading-6 text-white/48">
+        <p className="mt-1 text-sm leading-5 text-white/48">
           Please check that the details above are correct. Changes can be made in the next step.
         </p>
       </div>
 
       <button
         type="submit"
-        className="w-full rounded-2xl bg-blue-600 px-5 py-4 text-base font-semibold text-white shadow-lg shadow-blue-950/30 transition hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300"
+        className="w-full rounded-2xl bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-lg shadow-blue-950/30 transition hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300"
       >
         Submit invitation request
       </button>
