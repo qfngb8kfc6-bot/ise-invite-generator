@@ -259,8 +259,51 @@ export default function GeneratorPageClient({
   loadSession()
  }, [initialToken])
 
+ async function trackExportAnalytics(
+  eventType: 'export_clicked' | 'export_succeeded' | 'export_failed',
+  type: 'pdf' | 'zip' | ExportFormatKey
+ ) {
+  if (!exhibitorId || !companyName) return
+
+  const formatMap: Record<'pdf' | 'zip' | ExportFormatKey, string> = {
+   linkedin: 'png-linkedin',
+   square: 'png-square',
+   email: 'png-email',
+   print: 'png-print',
+   pdf: 'pdf',
+   zip: 'zip',
+  }
+
+  try {
+   await fetch('/api/analytics/events', {
+    method: 'POST',
+    headers: {
+     'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+     exhibitorId,
+     companyName,
+     eventType,
+     format: formatMap[type],
+     metadata: {
+      flow: mode,
+     },
+    }),
+   })
+  } catch (error) {
+   console.warn('Export analytics tracking failed:', error)
+  }
+ }
+
  async function runExport(type: 'pdf' | 'zip' | ExportFormatKey) {
-  const exportNode = type === 'email' ? emailBannerExportRef.current : type === 'square' ? exportPreviewRef.current : type === 'linkedin' ? linkedinExportRef.current : exportPreviewRef.current
+  const exportNode =
+   type === 'email'
+    ? emailBannerExportRef.current
+    : type === 'square'
+      ? exportPreviewRef.current
+      : type === 'linkedin'
+        ? linkedinExportRef.current
+        : exportPreviewRef.current
 
   if (!exportNode) {
    setExportError('Preview element not found.')
@@ -273,18 +316,25 @@ export default function GeneratorPageClient({
 
    const baseName = makeExportBaseName(companyName, standNumber)
 
+   await trackExportAnalytics('export_clicked', type)
+
    if (type === 'pdf') {
     await exportPdf(exportNode, baseName)
-    return
+   } else if (type === 'zip') {
+    await exportZipPack(
+     exportPreviewRef.current || exportNode,
+     baseName,
+     emailBannerExportRef.current || undefined,
+     exportPreviewRef.current || undefined,
+     linkedinExportRef.current || undefined
+    )
+   } else {
+    await exportPng(exportNode, type, baseName)
    }
 
-   if (type === 'zip') {
-    await exportZipPack(exportPreviewRef.current || exportNode, baseName, emailBannerExportRef.current || undefined, exportPreviewRef.current || undefined, linkedinExportRef.current || undefined)
-    return
-   }
-
-   await exportPng(exportNode, type, baseName)
+   await trackExportAnalytics('export_succeeded', type)
   } catch (error) {
+   await trackExportAnalytics('export_failed', type)
    setExportError(error instanceof Error ? error.message : 'Export failed.')
   } finally {
    setIsExporting(false)
