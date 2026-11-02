@@ -36,16 +36,20 @@ export async function GET(
       )
     }
 
-    await logAnalyticsEvent({
-      exhibitorId: exhibitor.id,
-      companyName: exhibitor.companyName,
-      eventType: 'qr_scanned',
-      metadata: {
-        source: 'qr_redirect',
-        userAgent: request.headers.get('user-agent') || null,
-        referer: request.headers.get('referer') || null,
-      },
-    })
+    try {
+      await logAnalyticsEvent({
+        exhibitorId: exhibitor.id,
+        companyName: exhibitor.companyName,
+        eventType: 'qr_scanned',
+        metadata: {
+          source: 'qr_redirect',
+          userAgent: request.headers.get('user-agent') || null,
+          referer: request.headers.get('referer') || null,
+        },
+      })
+    } catch (error) {
+      console.error('[QR ANALYTICS WARNING] Failed to log QR scan', error)
+    }
 
     return NextResponse.redirect(exhibitor.registrationUrl, {
       headers: {

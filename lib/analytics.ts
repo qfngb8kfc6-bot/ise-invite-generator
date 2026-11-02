@@ -16,7 +16,7 @@ import {
 
 const DATA_DIR = path.join(process.cwd(), '.data')
 const DATA_FILE = path.join(DATA_DIR, 'analytics-events.jsonl')
-const ANALYTICS_TIMEOUT_MS = 3000
+const ANALYTICS_TIMEOUT_MS = 4000
 
 declare global {
   // eslint-disable-next-line no-var
@@ -697,20 +697,40 @@ export async function logAnalyticsEvent(
   const isProduction = environment === 'production'
 
   if (isAnalyticsDbEnabled()) {
-    try {
-      await logAnalyticsEventToDb(event)
-      return event
-    } catch (error) {
-      if (isProduction) {
-        console.error('[ANALYTICS ERROR] Production database write failed.', error)
-        throw error
-      }
+    let lastError: unknown = null
 
-      logAnalyticsWarning(
-        'Database write failed. Falling back to local analytics storage.',
-        error
-      )
+    for (let attempt = 1; attempt <= 2; attempt += 1) {
+      try {
+        await logAnalyticsEventToDb(event)
+        return event
+      } catch (error) {
+        lastError = error
+
+        console.error(
+          `[ANALYTICS ERROR] Database write attempt ${attempt}/2 failed.`,
+          error
+        )
+
+        if (attempt < 2) {
+          await new Promise((resolve) => setTimeout(resolve, 400))
+        }
+      }
     }
+
+    if (isProduction) {
+      console.error(
+        '[ANALYTICS ERROR] Production database write failed after 2 attempts.',
+        lastError
+      )
+      throw lastError instanceof Error
+        ? lastError
+        : new Error('Analytics database write failed')
+    }
+
+    logAnalyticsWarning(
+      'Database write failed after 2 attempts. Falling back to local analytics storage.',
+      lastError
+    )
   } else if (isProduction) {
     throw new Error(
       'ANALYTICS_DATABASE_URL is required in production. Refusing to use local analytics fallback.'
@@ -906,7 +926,7 @@ export async function getAnalyticsSummary(options?: {
         break
     }
 
-    if (event.format) {
+    if (event.format && event.eventType === 'export_succeeded') {
       increment(summary.formats, event.format)
       increment(formatUsage, event.format)
     }

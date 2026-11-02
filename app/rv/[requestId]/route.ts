@@ -44,18 +44,22 @@ export async function GET(
       invitationRequest.assignedInvitationCode
     )
 
-    await logAnalyticsEvent({
-      exhibitorId: `secondary:${invitationRequest.requestId}`,
-      companyName: invitationRequest.companyName,
-      eventType: 'qr_scanned',
-      metadata: {
-        flow: 'secondary',
-        source: 'visitor_qr_redirect',
-        invitationCode: invitationRequest.assignedInvitationCode,
-        userAgent: request.headers.get('user-agent') || null,
-        referer: request.headers.get('referer') || null,
-      },
-    })
+    try {
+      await logAnalyticsEvent({
+        exhibitorId: `secondary:${invitationRequest.requestId}`,
+        companyName: invitationRequest.companyName,
+        eventType: 'qr_scanned',
+        metadata: {
+          flow: 'secondary',
+          source: 'visitor_qr_redirect',
+          invitationCode: invitationRequest.assignedInvitationCode,
+          userAgent: request.headers.get('user-agent') || null,
+          referer: request.headers.get('referer') || null,
+        },
+      })
+    } catch (error) {
+      console.error('[VISITOR QR ANALYTICS WARNING] Failed to log visitor QR scan', error)
+    }
 
     return NextResponse.redirect(registrationUrl, {
       headers: {

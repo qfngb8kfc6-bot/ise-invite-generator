@@ -275,7 +275,7 @@ export default function GeneratorPageClient({
   }
 
   try {
-   await fetch('/api/analytics/events', {
+   const response = await fetch('/api/analytics/events', {
     method: 'POST',
     headers: {
      'Content-Type': 'application/json',
@@ -290,8 +290,20 @@ export default function GeneratorPageClient({
      },
     }),
    })
+
+   if (!response.ok) {
+    const result = await response.json().catch(() => null)
+
+    throw new Error(
+     result?.error ||
+      `Analytics request failed with HTTP ${response.status}`
+    )
+   }
   } catch (error) {
-   console.warn('Export analytics tracking failed:', error)
+   console.error(
+    `Export analytics tracking failed for ${eventType}:`,
+    error
+   )
   }
  }
 
@@ -316,7 +328,7 @@ export default function GeneratorPageClient({
 
    const baseName = makeExportBaseName(companyName, standNumber)
 
-   await trackExportAnalytics('export_clicked', type)
+   void trackExportAnalytics('export_clicked', type)
 
    if (type === 'pdf') {
     await exportPdf(exportNode, baseName)
