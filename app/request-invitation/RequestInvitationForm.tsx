@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { useSiteLanguage } from '@/components/LanguageSwitcher'
 import type { LanguageKey } from '@/lib/types'
 
@@ -196,6 +197,13 @@ export default function RequestInvitationForm({
 }: RequestInvitationFormProps) {
   const [language] = useSiteLanguage()
   const text = requestFormCopy[language] ?? requestFormCopy.en
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  useEffect(() => {
+    const handlePageShow = () => setIsSubmitting(false)
+    window.addEventListener('pageshow', handlePageShow)
+    return () => window.removeEventListener('pageshow', handlePageShow)
+  }, [])
 
   return (
     <form
@@ -203,6 +211,13 @@ export default function RequestInvitationForm({
       method="post"
       encType="multipart/form-data"
       className="space-y-4"
+      onSubmit={(event) => {
+        if (isSubmitting) {
+          event.preventDefault()
+          return
+        }
+        setIsSubmitting(true)
+      }}
     >
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
@@ -301,9 +316,11 @@ export default function RequestInvitationForm({
 
       <button
         type="submit"
-        className="w-full rounded-2xl bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-lg shadow-blue-950/30 transition hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300"
+        disabled={isSubmitting}
+        aria-busy={isSubmitting}
+        className="w-full rounded-2xl bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-lg shadow-blue-950/30 transition hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:cursor-wait disabled:opacity-70 disabled:hover:bg-blue-600"
       >
-        Submit invitation request
+        {isSubmitting ? 'Submitting…' : 'Submit invitation request'}
       </button>
 
       <p className="text-center text-xs leading-5 text-white/35">

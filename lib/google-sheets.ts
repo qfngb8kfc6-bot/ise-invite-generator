@@ -365,7 +365,25 @@ async function assignNextAvailableCode(
   }
 }
 
-export async function appendSecondaryInvitationRequest(
+// Code allocation reads the next free code and then appends the row, so two
+// overlapping requests can pick the same code. This queue makes allocation run
+// one request at a time within a single Node process. Running several server
+// instances would need a shared lock (e.g. a database or Redis) instead.
+let codeAllocationQueue: Promise<unknown> = Promise.resolve()
+
+function runExclusively<T>(task: () => Promise<T>): Promise<T> {
+  const result = codeAllocationQueue.then(task, task)
+  codeAllocationQueue = result.catch(() => undefined)
+  return result
+}
+
+export function appendSecondaryInvitationRequest(
+  input: NewSecondaryInvitationRequestInput
+) {
+  return runExclusively(() => appendSecondaryInvitationRequestUnlocked(input))
+}
+
+async function appendSecondaryInvitationRequestUnlocked(
   input: NewSecondaryInvitationRequestInput
 ) {
   const { spreadsheetId, requestsSheet } = getSheetsConfig()
