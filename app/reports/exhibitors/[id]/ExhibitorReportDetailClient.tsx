@@ -95,6 +95,7 @@ type Summary = {
 const detailText: Record<LanguageKey, {
   totalEvents: string
   linksGenerated: string
+  requestsSubmitted: string
   generatorOpens: string
   exportsSucceeded: string
   exportsFailed: string
@@ -113,6 +114,7 @@ const detailText: Record<LanguageKey, {
   en: {
     totalEvents: 'Total Events',
     linksGenerated: 'Links Generated',
+    requestsSubmitted: 'Requests Submitted',
     generatorOpens: 'Generator Opens',
     exportsSucceeded: 'Exports Succeeded',
     exportsFailed: 'Exports Failed',
@@ -131,6 +133,7 @@ const detailText: Record<LanguageKey, {
   es: {
     totalEvents: 'Eventos totales',
     linksGenerated: 'Enlaces generados',
+    requestsSubmitted: 'Solicitudes enviadas',
     generatorOpens: 'Aperturas del generador',
     exportsSucceeded: 'Exportaciones correctas',
     exportsFailed: 'Exportaciones fallidas',
@@ -149,6 +152,7 @@ const detailText: Record<LanguageKey, {
   de: {
     totalEvents: 'Ereignisse gesamt',
     linksGenerated: 'Links erstellt',
+    requestsSubmitted: 'Anfragen gesendet',
     generatorOpens: 'Generator-Aufrufe',
     exportsSucceeded: 'Exporte erfolgreich',
     exportsFailed: 'Exporte fehlgeschlagen',
@@ -167,6 +171,7 @@ const detailText: Record<LanguageKey, {
   fr: {
     totalEvents: 'Événements totaux',
     linksGenerated: 'Liens générés',
+    requestsSubmitted: 'Demandes envoyées',
     generatorOpens: 'Ouvertures du générateur',
     exportsSucceeded: 'Exports réussis',
     exportsFailed: 'Exports échoués',
@@ -185,6 +190,7 @@ const detailText: Record<LanguageKey, {
   it: {
     totalEvents: 'Eventi totali',
     linksGenerated: 'Link generati',
+    requestsSubmitted: 'Richieste inviate',
     generatorOpens: 'Aperture del generatore',
     exportsSucceeded: 'Esportazioni riuscite',
     exportsFailed: 'Esportazioni fallite',
@@ -203,6 +209,7 @@ const detailText: Record<LanguageKey, {
   ca: {
     totalEvents: 'Eventos totales',
     linksGenerated: 'Enlaces generados',
+    requestsSubmitted: 'Sol·licituds enviades',
     generatorOpens: 'Aperturas del generador',
     exportsSucceeded: 'Exportaciones correctas',
     exportsFailed: 'Exportaciones fallidas',
@@ -222,6 +229,7 @@ const detailText: Record<LanguageKey, {
   'zh-CN': {
     totalEvents: '总事件',
     linksGenerated: '已生成链接',
+    requestsSubmitted: '已提交申请',
     generatorOpens: '生成器打开次数',
     exportsSucceeded: '导出成功',
     exportsFailed: '导出失败',
@@ -243,6 +251,30 @@ type Props = {
   exhibitor: ExhibitorSummary
   summary: Summary
   currentRange: string
+  isVisitor: boolean
+  returnFlow: 'all' | 'primary' | 'secondary'
+}
+
+function getDetailCopy(isVisitor: boolean) {
+  return isVisitor
+    ? {
+        noun: 'visitor',
+        badge: 'Visitor detail',
+        subtitle: 'Detailed analytics for one visitor request.',
+        idLabel: 'Request ID',
+        nameLabel: 'Organisation',
+        summaryTitle: 'Visitor summary',
+        neverExportedLabel: 'Submitted request but never exported',
+      }
+    : {
+        noun: 'exhibitor',
+        badge: 'Exhibitor detail',
+        subtitle: 'Detailed analytics for one exhibitor.',
+        idLabel: 'Exhibitor ID',
+        nameLabel: 'Company name',
+        summaryTitle: 'Exhibitor summary',
+        neverExportedLabel: 'Generated link but never exported',
+      }
 }
 
 const RANGE_OPTIONS = [
@@ -320,6 +352,7 @@ function buildDetailHref(
     range?: string
     startDate?: string | null
     endDate?: string | null
+    flow?: string | null
   }
 ) {
   const params = new URLSearchParams()
@@ -337,6 +370,11 @@ function buildDetailHref(
 
   if (!startDate && !endDate && args?.range && args.range !== 'all') {
     params.set('range', args.range)
+  }
+
+  const flow = args?.flow?.trim()
+  if (flow && flow !== 'primary') {
+    params.set('flow', flow)
   }
 
   const query = params.toString()
@@ -351,6 +389,7 @@ function buildBackToReportsHref(
     range?: string
     startDate?: string | null
     endDate?: string | null
+    flow?: string | null
   }
 ) {
   const params = new URLSearchParams()
@@ -368,6 +407,11 @@ function buildBackToReportsHref(
 
   if (!startDate && !endDate && args?.range && args.range !== 'all') {
     params.set('range', args.range)
+  }
+
+  const flow = args?.flow?.trim()
+  if (flow && flow !== 'primary') {
+    params.set('flow', flow)
   }
 
   params.set('exhibitorId', exhibitorId)
@@ -381,6 +425,7 @@ function getCsvHref(
     range?: string
     startDate?: string | null
     endDate?: string | null
+    flow?: string | null
   }
 ) {
   const params = new URLSearchParams()
@@ -398,6 +443,11 @@ function getCsvHref(
 
   if (!startDate && !endDate && args?.range && args.range !== 'all') {
     params.set('range', args.range)
+  }
+
+  const flow = args?.flow?.trim()
+  if (flow && flow !== 'primary') {
+    params.set('flow', flow)
   }
 
   params.set('exhibitorId', exhibitorId)
@@ -411,6 +461,7 @@ function getXlsxHref(
     range?: string
     startDate?: string | null
     endDate?: string | null
+    flow?: string | null
   }
 ) {
   const params = new URLSearchParams()
@@ -428,6 +479,11 @@ function getXlsxHref(
 
   if (!startDate && !endDate && args?.range && args.range !== 'all') {
     params.set('range', args.range)
+  }
+
+  const flow = args?.flow?.trim()
+  if (flow && flow !== 'primary') {
+    params.set('flow', flow)
   }
 
   params.set('exhibitorId', exhibitorId)
@@ -579,11 +635,15 @@ function EmptyRangeState({
   currentRange,
   appliedStartDate,
   appliedEndDate,
+  flow,
+  noun,
 }: {
   exhibitorId: string
   currentRange: string
   appliedStartDate: string | null
   appliedEndDate: string | null
+  flow: string
+  noun: string
 }) {
   return (
     <section className="rounded-3xl border border-amber-500/20 bg-amber-500/10 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.25)]">
@@ -591,13 +651,13 @@ function EmptyRangeState({
         No activity in this date range
       </h2>
       <p className="mt-2 text-sm text-amber-200">
-        This exhibitor has no analytics events for the currently selected period.
+        This {noun} has no analytics events for the currently selected period.
         Try expanding the date range to see more activity.
       </p>
 
       <div className="mt-4 flex flex-wrap gap-2">
         <Link
-          href={buildDetailHref(exhibitorId, { range: '30d' })}
+          href={buildDetailHref(exhibitorId, { range: '30d', flow })}
           className={`rounded-2xl border px-4 py-2 text-sm font-medium transition ${
             currentRange === '30d' && !appliedStartDate && !appliedEndDate
               ? 'border-white bg-white text-black'
@@ -608,7 +668,7 @@ function EmptyRangeState({
         </Link>
 
         <Link
-          href={buildDetailHref(exhibitorId, { range: '90d' })}
+          href={buildDetailHref(exhibitorId, { range: '90d', flow })}
           className={`rounded-2xl border px-4 py-2 text-sm font-medium transition ${
             currentRange === '90d' && !appliedStartDate && !appliedEndDate
               ? 'border-white bg-white text-black'
@@ -619,7 +679,7 @@ function EmptyRangeState({
         </Link>
 
         <Link
-          href={buildDetailHref(exhibitorId, { range: 'all' })}
+          href={buildDetailHref(exhibitorId, { range: 'all', flow })}
           className={`rounded-2xl border px-4 py-2 text-sm font-medium transition ${
             currentRange === 'all' && !appliedStartDate && !appliedEndDate
               ? 'border-white bg-white text-black'
@@ -637,9 +697,13 @@ export default function ExhibitorReportDetailClient({
   exhibitor,
   summary,
   currentRange,
+  isVisitor,
+  returnFlow,
 }: Props) {
   const [language] = useSiteLanguage()
   const text = detailText[language] ?? detailText.en
+  const copy = getDetailCopy(isVisitor)
+  const dataFlow = isVisitor ? 'secondary' : 'primary'
   const [chartsReady, setChartsReady] = useState(false)
 
   useEffect(() => {
@@ -687,6 +751,7 @@ export default function ExhibitorReportDetailClient({
                     range: currentRange,
                     startDate: summary.appliedStartDate,
                     endDate: summary.appliedEndDate,
+                    flow: returnFlow,
                   })}
                   className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-neutral-300 transition hover:bg-white/10"
                 >
@@ -695,7 +760,7 @@ export default function ExhibitorReportDetailClient({
               </div>
 
               <div className="mt-4 inline-flex rounded-full border border-blue-400/20 bg-blue-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-300">
-                Exhibitor detail
+                {copy.badge}
               </div>
 
               <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
@@ -703,12 +768,12 @@ export default function ExhibitorReportDetailClient({
               </h1>
 
               <p className="mt-2 text-sm text-neutral-400">
-                Detailed analytics for one exhibitor.
+                {copy.subtitle}
               </p>
 
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-neutral-300">
-                  Exhibitor ID: {exhibitor.exhibitorId}
+                  {copy.idLabel}: {exhibitor.exhibitorId}
                 </span>
                 <span
                   className={`rounded-full px-3 py-1 text-xs font-medium ${activityStatus.className}`}
@@ -738,7 +803,10 @@ export default function ExhibitorReportDetailClient({
                 return (
                   <Link
                     key={option.value}
-                    href={buildDetailHref(exhibitor.exhibitorId, { range: option.value })}
+                    href={buildDetailHref(exhibitor.exhibitorId, {
+                      range: option.value,
+                      flow: returnFlow,
+                    })}
                     className={`rounded-2xl border px-4 py-2 text-sm font-medium transition ${
                       isActive
                         ? 'border-white bg-white text-black'
@@ -755,6 +823,7 @@ export default function ExhibitorReportDetailClient({
                   range: currentRange,
                   startDate: summary.appliedStartDate,
                   endDate: summary.appliedEndDate,
+                  flow: dataFlow,
                 })}
                 className="rounded-2xl border border-emerald-600 bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-500"
               >
@@ -766,6 +835,7 @@ export default function ExhibitorReportDetailClient({
                   range: currentRange,
                   startDate: summary.appliedStartDate,
                   endDate: summary.appliedEndDate,
+                  flow: dataFlow,
                 })}
                 className="rounded-2xl border border-blue-600 bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-500"
               >
@@ -815,6 +885,9 @@ export default function ExhibitorReportDetailClient({
 
             <div className="flex gap-2">
               <input type="hidden" name="range" value={currentRange} />
+              {returnFlow !== 'primary' ? (
+                <input type="hidden" name="flow" value={returnFlow} />
+              ) : null}
               <button
                 type="submit"
                 className="rounded-2xl border border-white bg-white px-5 py-3 text-sm font-medium text-black transition hover:bg-neutral-200"
@@ -824,7 +897,10 @@ export default function ExhibitorReportDetailClient({
 
               {summary.appliedStartDate || summary.appliedEndDate ? (
                 <Link
-                  href={buildDetailHref(exhibitor.exhibitorId, { range: currentRange })}
+                  href={buildDetailHref(exhibitor.exhibitorId, {
+                    range: currentRange,
+                    flow: returnFlow,
+                  })}
                   className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-neutral-300 transition hover:bg-white/10"
                 >
                   Clear dates
@@ -840,12 +916,17 @@ export default function ExhibitorReportDetailClient({
             currentRange={currentRange}
             appliedStartDate={summary.appliedStartDate}
             appliedEndDate={summary.appliedEndDate}
+            flow={returnFlow}
+            noun={copy.noun}
           />
         ) : null}
 
         <section className="grid gap-4 md:grid-cols-3 xl:grid-cols-7">
           <KpiCard label={text.totalEvents} value={exhibitor.totalEvents} />
-          <KpiCard label={text.linksGenerated} value={exhibitor.linkGeneratedCount} />
+          <KpiCard
+            label={isVisitor ? text.requestsSubmitted : text.linksGenerated}
+            value={exhibitor.linkGeneratedCount}
+          />
           <KpiCard label={text.generatorOpens} value={exhibitor.generatorOpenedCount} tone="blue" />
           <KpiCard label="QR Scans" value={exhibitor.qrScannedCount} tone="blue" />
           <KpiCard label={text.exportsSucceeded} value={exhibitor.exportSucceededCount} tone="green" />
@@ -857,7 +938,9 @@ export default function ExhibitorReportDetailClient({
           />
         </section>
 
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <section
+          className={`grid gap-4 md:grid-cols-2 ${isVisitor ? 'xl:grid-cols-3' : 'xl:grid-cols-4'}`}
+        >
           <InsightCard
             title="Conversion"
             value={percentage(
@@ -875,12 +958,14 @@ export default function ExhibitorReportDetailClient({
             tone="blue"
           />
 
-          <InsightCard
-            title={text.sessionVerified}
-            value={String(exhibitor.sessionVerifiedCount)}
-            subtitle="Verified sessions recorded"
-            tone="amber"
-          />
+          {!isVisitor ? (
+            <InsightCard
+              title={text.sessionVerified}
+              value={String(exhibitor.sessionVerifiedCount)}
+              subtitle="Verified sessions recorded"
+              tone="amber"
+            />
+          ) : null}
 
           <InsightCard
             title={text.needsReview}
@@ -901,8 +986,8 @@ export default function ExhibitorReportDetailClient({
         <section className="grid gap-6 xl:grid-cols-2">
           <ChartCard
             title="Funnel analytics"
-            description="Step-by-step progression for this exhibitor."
-            emptyMessage="No funnel activity recorded for this exhibitor."
+            description={`Step-by-step progression for this ${copy.noun}.`}
+            emptyMessage={`No funnel activity recorded for this ${copy.noun}.`}
             hasData={!funnelRows.every((item) => item.count === 0)}
             chartsReady={chartsReady}
           >
@@ -965,30 +1050,32 @@ export default function ExhibitorReportDetailClient({
 
         <section className="grid gap-6 xl:grid-cols-2">
           <div className="rounded-3xl border border-white/12 bg-black/54 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
-            <h2 className="text-xl font-semibold text-white">Exhibitor summary</h2>
+            <h2 className="text-xl font-semibold text-white">{copy.summaryTitle}</h2>
             <p className="mt-1 text-sm text-neutral-400">
-              Core engagement and status for this exhibitor.
+              Core engagement and status for this {copy.noun}.
             </p>
 
             <div className="mt-4 space-y-3 text-sm text-neutral-300">
               <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
-                <span>Company name</span>
+                <span>{copy.nameLabel}</span>
                 <span className="font-medium text-white">{exhibitor.companyName}</span>
               </div>
               <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
-                <span>Exhibitor ID</span>
+                <span>{copy.idLabel}</span>
                 <span className="font-medium text-white">{exhibitor.exhibitorId}</span>
               </div>
-              <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
-                <span>{text.sessionVerified}</span>
-                <span className="font-medium text-white">{exhibitor.sessionVerifiedCount}</span>
-              </div>
+              {!isVisitor ? (
+                <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                  <span>{text.sessionVerified}</span>
+                  <span className="font-medium text-white">{exhibitor.sessionVerifiedCount}</span>
+                </div>
+              ) : null}
               <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
                 <span>Export clicked</span>
                 <span className="font-medium text-white">{exhibitor.exportClickedCount}</span>
               </div>
               <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
-                <span>Generated link but never exported</span>
+                <span>{copy.neverExportedLabel}</span>
                 <span className="font-medium text-white">
                   {exhibitor.generatedLinkButNeverExported ? 'Yes' : 'No'}
                 </span>
@@ -1002,8 +1089,8 @@ export default function ExhibitorReportDetailClient({
 
           <ChartCard
             title="Export format usage"
-            description="Formats used by this exhibitor in the selected range."
-            emptyMessage="No export data to chart for this exhibitor."
+            description={`Formats used by this ${copy.noun} in the selected range.`}
+            emptyMessage={`No export data to chart for this ${copy.noun}.`}
             hasData={formatUsageChartData.length > 0}
             chartsReady={chartsReady}
           >
@@ -1094,7 +1181,7 @@ export default function ExhibitorReportDetailClient({
 
           <ChartCard
             title="Export failures over time"
-            description="Failed exports by day for this exhibitor."
+            description={`Failed exports by day for this ${copy.noun}.`}
             emptyMessage="Select a date range to view daily charts."
             hasData={dailyChartData.length > 0}
             chartsReady={chartsReady}
@@ -1137,7 +1224,7 @@ export default function ExhibitorReportDetailClient({
         <section className="rounded-3xl border border-white/12 bg-black/54 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
           <h2 className="text-xl font-semibold text-white">Recent events</h2>
           <p className="mt-1 text-sm text-neutral-400">
-            Most recent analytics events for this exhibitor.
+            Most recent analytics events for this {copy.noun}.
           </p>
 
           <div className="mt-4 overflow-x-auto">
@@ -1154,7 +1241,7 @@ export default function ExhibitorReportDetailClient({
                 {summary.recentEvents.length === 0 ? (
                   <tr>
                     <td className="py-4 text-neutral-500" colSpan={4}>
-                      No events recorded for this exhibitor.
+                      No events recorded for this {copy.noun}.
                     </td>
                   </tr>
                 ) : (

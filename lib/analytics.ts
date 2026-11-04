@@ -258,6 +258,20 @@ function getEventFlow(event: AnalyticsEvent): 'primary' | 'secondary' {
   return 'primary'
 }
 
+// Older visitor export events were logged with the bare request ID ("REQ-…")
+// while other visitor events use "secondary:REQ-…". Normalise in memory so each
+// visitor is grouped as one row. Stored events are never modified.
+function normalizeEventExhibitorId(event: AnalyticsEvent): AnalyticsEvent {
+  if (
+    getEventFlow(event) !== 'secondary' ||
+    event.exhibitorId.startsWith('secondary:')
+  ) {
+    return event
+  }
+
+  return { ...event, exhibitorId: `secondary:${event.exhibitorId}` }
+}
+
 function filterEventsByFlow(
   events: AnalyticsEvent[],
   flow?: 'all' | 'primary' | 'secondary'
@@ -363,7 +377,12 @@ function percentage(numerator: number, denominator: number): string {
   return `${safePercentage}%`
 }
 
-function buildFunnelSummary(events: AnalyticsEvent[]): FunnelSummary {
+function buildFunnelSummary(
+  events: AnalyticsEvent[],
+  flow?: 'all' | 'primary' | 'secondary'
+): FunnelSummary {
+  const isVisitorFlow = flow === 'secondary'
+
   const counts = {
     link_generated: 0,
     generator_opened: 0,
@@ -398,18 +417,26 @@ function buildFunnelSummary(events: AnalyticsEvent[]): FunnelSummary {
 
   const starts = counts.link_generated
 
-  const rawSteps: Array<{
+  const allSteps: Array<{
     key: FunnelStep['key']
     label: string
     count: number
   }> = [
-    { key: 'link_generated', label: 'Link generated', count: counts.link_generated },
+    {
+      key: 'link_generated',
+      label: isVisitorFlow ? 'Request submitted' : 'Link generated',
+      count: counts.link_generated,
+    },
     { key: 'generator_opened', label: 'Generator opened', count: counts.generator_opened },
     { key: 'session_verified', label: 'Session verified', count: counts.session_verified },
     { key: 'export_clicked', label: 'Export clicked', count: counts.export_clicked },
     { key: 'export_succeeded', label: 'Export succeeded', count: counts.export_succeeded },
     { key: 'export_failed', label: 'Export failed', count: counts.export_failed },
   ]
+
+  const rawSteps = isVisitorFlow
+    ? allSteps.filter((step) => step.key !== 'session_verified')
+    : allSteps
 
   const steps: FunnelStep[] = rawSteps.map((step, index) => {
     const previous = index === 0 ? step.count : rawSteps[index - 1].count
@@ -435,6 +462,7 @@ function buildInsights(args: {
   totalExportsFailed: number
   totalExportsSucceeded: number
   totalGeneratorOpens: number
+  audience?: 'exhibitors' | 'visitors'
 }): AnalyticsInsight[] {
   const {
     exhibitorSummaries,
@@ -443,6 +471,10 @@ function buildInsights(args: {
     totalExportsSucceeded,
     totalGeneratorOpens,
   } = args
+
+  const isVisitorView = args.audience === 'visitors'
+  const one = isVisitorView ? 'visitor' : 'exhibitor'
+  const many = isVisitorView ? 'visitors' : 'exhibitors'
 
   const activeExhibitors = exhibitorSummaries.filter(
     (item) => item.totalEvents > 0
@@ -518,7 +550,7 @@ function buildInsights(args: {
           ? `${totalExportsSucceeded} successful exports from ${totalGeneratorOpens} opens. Conversion is strong for the selected view.`
           : conversionRate >= 20
           ? `${totalExportsSucceeded} successful exports from ${totalGeneratorOpens} opens. Conversion is usable but can be improved.`
-          : `${totalExportsSucceeded} successful exports from ${totalGeneratorOpens} opens. Prioritise exhibitors who opened but did not export.`,
+          : `${totalExportsSucceeded} successful exports from ${totalGeneratorOpens} opens. Prioritise ${many} who opened but did not export.`,
       tone: conversionRate >= 50 ? 'green' : conversionRate >= 20 ? 'amber' : 'red',
     },
     {
@@ -527,8 +559,8 @@ function buildInsights(args: {
       value: String(needsAttention.length),
       description:
         needsAttention.length > 0
-          ? `${needsAttention.length} exhibitors show engagement but have no successful export yet.`
-          : 'No engaged exhibitors are currently blocked without a successful export.',
+          ? `${needsAttention.length} ${many} show engagement but have no successful export yet.`
+          : `No engaged ${many} are currently blocked without a successful export.`,
       tone: needsAttention.length > 0 ? 'red' : 'green',
     },
     {
@@ -538,7 +570,7 @@ function buildInsights(args: {
       description:
         highIntentNoExport.length > 0
           ? `${highIntentNoExport[0].companyName} has ${highIntentNoExport[0].generatorOpenedCount} opens and no export. Follow up first.`
-          : 'No repeat-opening exhibitors are stuck without an export.',
+          : `No repeat-opening ${many} are stuck without an export.`,
       tone: highIntentNoExport.length > 0 ? 'red' : 'green',
     },
     {
@@ -546,8 +578,8 @@ function buildInsights(args: {
       title: 'Top performer',
       value: topPerformer ? topPerformer.companyName : '—',
       description: topPerformer
-        ? `${topPerformer.exportSucceededCount} exports from ${topPerformer.generatorOpenedCount} opens. Use this exhibitor as the success benchmark.`
-        : 'No active exhibitor conversion data yet.',
+        ? `${topPerformer.exportSucceededCount} exports from ${topPerformer.generatorOpenedCount} opens. Use this ${one} as the success benchmark.`
+        : `No active ${one} conversion data yet.`,
       tone: 'blue',
     },
     {
@@ -556,8 +588,8 @@ function buildInsights(args: {
       value: `${exportCoverage}%`,
       description:
         activeExhibitors.length > 0
-          ? `${exhibitorSummaries.filter((item) => item.exportSucceededCount > 0).length} of ${activeExhibitors.length} active exhibitors have completed at least one export.`
-          : 'No active exhibitors are available in this report view.',
+          ? `${exhibitorSummaries.filter((item) => item.exportSucceededCount > 0).length} of ${activeExhibitors.length} active ${many} have completed at least one export.`
+          : `No active ${many} are available in this report view.`,
       tone: exportCoverage >= 60 ? 'green' : exportCoverage >= 25 ? 'amber' : 'red',
     },
     {
@@ -584,7 +616,7 @@ function buildInsights(args: {
       title: 'Priority follow-up',
       value: mostActiveWithoutExport ? mostActiveWithoutExport.companyName : '—',
       description: mostActiveWithoutExport
-        ? `${mostActiveWithoutExport.companyName} generated ${mostActiveWithoutExport.linkGeneratedCount} links and opened ${mostActiveWithoutExport.generatorOpenedCount} sessions but has no successful export.`
+        ? `${mostActiveWithoutExport.companyName} ${isVisitorView ? 'submitted' : 'generated'} ${mostActiveWithoutExport.linkGeneratedCount} ${isVisitorView ? 'requests' : 'links'} and opened ${mostActiveWithoutExport.generatorOpenedCount} sessions but has no successful export.`
         : 'No obvious priority follow-up is needed in this report view.',
       tone: mostActiveWithoutExport ? 'red' : 'green',
     },
@@ -816,7 +848,7 @@ export async function getAnalyticsSummary(options?: {
     insights: AnalyticsInsight[]
   }
 > {
-  const allEvents = await readAnalyticsEvents()
+  const allEvents = (await readAnalyticsEvents()).map(normalizeEventExhibitorId)
 
   const eventsInRange = filterEventsByRange(allEvents, {
     rangeDays: options?.rangeDays,
@@ -992,13 +1024,14 @@ export async function getAnalyticsSummary(options?: {
     appliedEndDate,
     totalGeneratorOpens,
     conversionRate,
-    funnel: buildFunnelSummary(events),
+    funnel: buildFunnelSummary(events, options?.flow),
     insights: buildInsights({
       exhibitorSummaries,
       formatUsage,
       totalExportsFailed,
       totalExportsSucceeded,
       totalGeneratorOpens,
+      audience: options?.flow === 'secondary' ? 'visitors' : 'exhibitors',
     }),
   }
 }

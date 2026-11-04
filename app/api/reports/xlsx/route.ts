@@ -59,25 +59,25 @@ function hasCustomDateRange(startDate?: string | null, endDate?: string | null):
 
 function getFlowFilter(flow?: string | null): 'all' | 'primary' | 'secondary' {
   switch (flow) {
-    case 'primary':
-      return 'primary'
+    case 'all':
+      return 'all'
     case 'secondary':
       return 'secondary'
-    case 'all':
+    case 'primary':
     default:
-      return 'all'
+      return 'primary'
   }
 }
 
 function formatFlowLabel(flow: 'all' | 'primary' | 'secondary'): string {
   switch (flow) {
     case 'primary':
-      return 'primary'
+      return 'Exhibitors'
     case 'secondary':
-      return 'secondary'
+      return 'Visitors'
     case 'all':
     default:
-      return 'all'
+      return 'All'
   }
 }
 
@@ -493,7 +493,7 @@ export async function GET(request: NextRequest) {
         ? `-${startDate || 'open'}-to-${endDate || 'open'}`
         : ''
 
-    const flowSuffix = flow === 'all' ? '' : `-${formatFlowLabel(flow)}`
+    const flowSuffix = flow === 'all' ? '' : `-${formatFlowLabel(flow).toLowerCase()}`
     const fileName = `exhibitor-report-${formatRangeLabel(range)}${customSuffix}${flowSuffix}.xlsx`
 
     return new NextResponse(new Uint8Array(workbook), {

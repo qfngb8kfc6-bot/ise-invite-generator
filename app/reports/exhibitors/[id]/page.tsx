@@ -12,6 +12,7 @@ type Props = {
     range?: string
     startDate?: string
     endDate?: string
+    flow?: string
   }>
 }
 
@@ -32,12 +33,34 @@ function hasCustomDateRange(startDate?: string, endDate?: string): boolean {
   return Boolean(startDate?.trim() || endDate?.trim())
 }
 
+function decodeId(value: string): string {
+  try {
+    return decodeURIComponent(value)
+  } catch {
+    return value
+  }
+}
+
+function getReturnFlow(
+  flow: string | undefined,
+  fallback: 'primary' | 'secondary'
+): 'all' | 'primary' | 'secondary' {
+  switch (flow) {
+    case 'all':
+    case 'primary':
+    case 'secondary':
+      return flow
+    default:
+      return fallback
+  }
+}
+
 export default async function ExhibitorReportDetailPage(props: Props) {
   try {
     const params = await props.params
     const searchParams = props.searchParams ? await props.searchParams : {}
 
-    const exhibitorId = params?.id?.trim()
+    const exhibitorId = params?.id ? decodeId(params.id).trim() : undefined
     const range = searchParams?.range ?? 'all'
     const startDate = searchParams?.startDate?.trim() || undefined
     const endDate = searchParams?.endDate?.trim() || undefined
@@ -45,6 +68,10 @@ export default async function ExhibitorReportDetailPage(props: Props) {
     if (!exhibitorId) {
       throw new Error('Missing exhibitor id')
     }
+
+    const isVisitor = exhibitorId.startsWith('secondary:')
+    const dataFlow = isVisitor ? 'secondary' : 'primary'
+    const returnFlow = getReturnFlow(searchParams?.flow, dataFlow)
 
     const rangeDays = hasCustomDateRange(startDate, endDate)
       ? undefined
@@ -55,6 +82,7 @@ export default async function ExhibitorReportDetailPage(props: Props) {
       exhibitorId,
       startDate,
       endDate,
+      flow: dataFlow,
     })
 
     const exhibitor = summary.exhibitorSummaries.find(
@@ -70,6 +98,8 @@ export default async function ExhibitorReportDetailPage(props: Props) {
         exhibitor={exhibitor}
         summary={summary}
         currentRange={range}
+        isVisitor={isVisitor}
+        returnFlow={returnFlow}
       />
     )
   } catch (error) {

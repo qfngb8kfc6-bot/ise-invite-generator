@@ -301,9 +301,9 @@ const enReportsText: ReportsText = {
   exhibitor: 'Exhibitor',
   dates: 'Dates',
   flow: 'Flow',
-  allFlows: 'All activity',
-  primaryGenerator: 'Primary exhibitors',
-  secondaryGenerator: 'Visitor requests',
+  allFlows: 'All',
+  primaryGenerator: 'Exhibitors',
+  secondaryGenerator: 'Visitors',
   customDateRange: 'Custom date range',
   allTime: 'All time',
   open: 'Open',
@@ -464,6 +464,9 @@ const reportsText: Record<LanguageKey, ReportsText> = {
     search: 'Buscar',
     exhibitor: 'Expositor',
     dates: 'Fechas',
+    allFlows: 'Todo',
+    primaryGenerator: 'Expositores',
+    secondaryGenerator: 'Visitantes',
     customDateRange: 'Rango de fechas personalizado',
     allTime: 'Todo el tiempo',
     downloadCsv: 'Descargar CSV',
@@ -507,6 +510,9 @@ const reportsText: Record<LanguageKey, ReportsText> = {
     search: 'Suche',
     exhibitor: 'Aussteller',
     dates: 'Daten',
+    allFlows: 'Alle',
+    primaryGenerator: 'Aussteller',
+    secondaryGenerator: 'Besucher',
     customDateRange: 'Benutzerdefinierter Zeitraum',
     allTime: 'Gesamtzeitraum',
     downloadCsv: 'CSV herunterladen',
@@ -550,6 +556,9 @@ const reportsText: Record<LanguageKey, ReportsText> = {
     search: 'Recherche',
     exhibitor: 'Exposant',
     dates: 'Dates',
+    allFlows: 'Tout',
+    primaryGenerator: 'Exposants',
+    secondaryGenerator: 'Visiteurs',
     customDateRange: 'Plage de dates personnalisée',
     allTime: 'Tout',
     downloadCsv: 'Télécharger CSV',
@@ -593,6 +602,9 @@ const reportsText: Record<LanguageKey, ReportsText> = {
     search: 'Cerca',
     exhibitor: 'Espositore',
     dates: 'Date',
+    allFlows: 'Tutti',
+    primaryGenerator: 'Espositori',
+    secondaryGenerator: 'Visitatori',
     customDateRange: 'Intervallo date personalizzato',
     allTime: 'Tutto il periodo',
     downloadCsv: 'Scarica CSV',
@@ -636,6 +648,9 @@ const reportsText: Record<LanguageKey, ReportsText> = {
     search: 'Cercar',
     exhibitor: 'Expositor',
     dates: 'Fechas',
+    allFlows: 'Tot',
+    primaryGenerator: 'Expositors',
+    secondaryGenerator: 'Visitants',
     customDateRange: 'Rango de fechas personalizado',
     allTime: 'Todo el tiempo',
     downloadCsv: 'Descargar CSV',
@@ -680,6 +695,9 @@ const reportsText: Record<LanguageKey, ReportsText> = {
     search: '搜索',
     exhibitor: '参展商',
     dates: '日期',
+    allFlows: '全部',
+    primaryGenerator: '参展商',
+    secondaryGenerator: '访客',
     customDateRange: '自定义日期范围',
     allTime: '全部时间',
     downloadCsv: '下载 CSV',
@@ -718,6 +736,111 @@ const reportsText: Record<LanguageKey, ReportsText> = {
   },
 }
 
+// Visitor (secondary flow) wording. Applied on top of the language's base text
+// when the Visitors view is selected. Keys that are English-only in a base
+// language stay English here too.
+const enVisitorReportsText: Partial<ReportsText> = {
+  exhibitor: 'Visitor',
+  searchExhibitors: 'Search visitors',
+  searchExhibitorsDescription:
+    'Find one visitor organisation quickly, filter the whole report, or jump into a detail view.',
+  companyNameOrExhibitorId: 'Organisation name or request ID',
+  selectOneExhibitor: 'Select one visitor',
+  selectOneExhibitorPlaceholder: 'Start typing organisation name or request ID',
+  applyExhibitor: 'Apply visitor',
+  matchingAvailableExhibitors: 'Matching available visitors',
+  exhibitorsSeen: 'Visitor organisations',
+  uniqueExhibitors: 'Unique visitor requests',
+  needsAttentionDescription: 'Engaged visitors with no successful exports.',
+  zeroConversionDescription: 'Visitors currently at 0% open-to-export conversion.',
+  noExhibitorDataYet: 'No visitor data yet.',
+  topExhibitorsByActivity: 'Top visitors by activity',
+  topExhibitorsByActivityDescription:
+    'Summary-only chart. Limited to the top visitors to keep the view readable.',
+  noExhibitorActivityToChart: 'No visitor activity to chart.',
+  exhibitorsWithEngagementNoExports:
+    'Visitors with engagement but no successful exports.',
+  company: 'Organisation',
+  exhibitorId: 'Request ID',
+  links: 'Requests',
+  generatedLinksButNoSuccessfulExports: 'Submitted a request but no successful exports',
+  exhibitorExplorer: 'Visitor explorer',
+  allExhibitors: 'All visitors',
+  noExhibitorsMatch: 'No visitors match your current filters.',
+  analyticsEngineDescription:
+    'Real-time visitor request, generator and export activity monitoring for ISE 2027.',
+  exhibitors: 'Visitors',
+  activeExhibitors: 'Active Visitors',
+  exhibitorsWithEngagement: 'Visitors with engagement',
+  exhibitorsWithNoExports: 'Visitors with no exports',
+  iseReportsTitle: 'ISE 2027 Visitor Reports',
+  topPerformerLeaderboardDescription:
+    'Visitors ranked by open-to-export conversion, then successful exports.',
+}
+
+const visitorReportsText: Partial<Record<LanguageKey, Partial<ReportsText>>> = {
+  es: {
+    exhibitor: 'Visitante',
+    searchExhibitors: 'Buscar visitantes',
+    exhibitorsSeen: 'Organizaciones visitantes',
+    company: 'Organización',
+    exhibitorId: 'ID de solicitud',
+    links: 'Solicitudes',
+    exhibitorExplorer: 'Explorador de visitantes',
+    allExhibitors: 'Todos los visitantes',
+  },
+  de: {
+    exhibitor: 'Besucher',
+    searchExhibitors: 'Besucher suchen',
+    exhibitorsSeen: 'Besucherorganisationen',
+    company: 'Organisation',
+    exhibitorId: 'Anfrage-ID',
+    links: 'Anfragen',
+    exhibitorExplorer: 'Besucher-Explorer',
+    allExhibitors: 'Alle Besucher',
+  },
+  fr: {
+    exhibitor: 'Visiteur',
+    searchExhibitors: 'Rechercher des visiteurs',
+    exhibitorsSeen: 'Organisations visiteuses',
+    company: 'Organisation',
+    exhibitorId: 'ID de demande',
+    links: 'Demandes',
+    exhibitorExplorer: 'Explorateur visiteurs',
+    allExhibitors: 'Tous les visiteurs',
+  },
+  it: {
+    exhibitor: 'Visitatore',
+    searchExhibitors: 'Cerca visitatori',
+    exhibitorsSeen: 'Organizzazioni visitatrici',
+    company: 'Organizzazione',
+    exhibitorId: 'ID richiesta',
+    links: 'Richieste',
+    exhibitorExplorer: 'Esploratore visitatori',
+    allExhibitors: 'Tutti i visitatori',
+  },
+  ca: {
+    exhibitor: 'Visitant',
+    searchExhibitors: 'Cercar visitants',
+    exhibitorsSeen: 'Organitzacions visitants',
+    company: 'Organització',
+    exhibitorId: 'ID de sol·licitud',
+    links: 'Sol·licituds',
+    exhibitorExplorer: 'Explorador de visitants',
+    allExhibitors: 'Tots els visitants',
+  },
+  'zh-CN': {
+    exhibitor: '访客',
+    searchExhibitors: '搜索访客',
+    exhibitorsSeen: '访客机构',
+    company: '机构',
+    exhibitorId: '申请 ID',
+    links: '申请',
+    exhibitorExplorer: '访客浏览器',
+    allExhibitors: '所有访客',
+  },
+}
+
 const RANGE_OPTIONS = [
   { labelKey: 'last7', value: '7d' },
   { labelKey: 'last30', value: '30d' },
@@ -726,9 +849,9 @@ const RANGE_OPTIONS = [
 ] as const
 
 const FLOW_OPTIONS = [
-  { labelKey: 'allFlows', value: 'all' },
   { labelKey: 'primaryGenerator', value: 'primary' },
   { labelKey: 'secondaryGenerator', value: 'secondary' },
+  { labelKey: 'allFlows', value: 'all' },
 ] as const
 
 const PAGE_SIZE_OPTIONS = [25, 50, 100, 250] as const
@@ -860,7 +983,7 @@ function buildReportsHref(args: {
   if (args.exhibitorId) params.set('exhibitorId', args.exhibitorId)
 
   const flow = args.flow?.trim()
-  if (flow && flow !== 'all') params.set('flow', flow)
+  if (flow && flow !== 'primary') params.set('flow', flow)
 
   const searchQuery = args.q?.trim()
   if (searchQuery) params.set('q', searchQuery)
@@ -875,6 +998,7 @@ function buildExhibitorDetailHref(
     range?: string
     startDate?: string | null
     endDate?: string | null
+    flow?: string | null
   }
 ) {
   const params = new URLSearchParams()
@@ -888,6 +1012,9 @@ function buildExhibitorDetailHref(
   if (!startDate && !endDate && args?.range && args.range !== 'all') {
     params.set('range', args.range)
   }
+
+  const flow = args?.flow?.trim()
+  if (flow && flow !== 'primary') params.set('flow', flow)
 
   const query = params.toString()
   return query
@@ -918,7 +1045,7 @@ function getCsvHref(
   if (exhibitorId) params.set('exhibitorId', exhibitorId)
 
   const flowFilter = flow?.trim()
-  if (flowFilter && flowFilter !== 'all') params.set('flow', flowFilter)
+  if (flowFilter && flowFilter !== 'primary') params.set('flow', flowFilter)
 
   const searchQuery = q?.trim()
   if (searchQuery) params.set('q', searchQuery)
@@ -950,7 +1077,7 @@ function getXlsxHref(
   if (exhibitorId) params.set('exhibitorId', exhibitorId)
 
   const flowFilter = flow?.trim()
-  if (flowFilter && flowFilter !== 'all') params.set('flow', flowFilter)
+  if (flowFilter && flowFilter !== 'primary') params.set('flow', flowFilter)
 
   const searchQuery = q?.trim()
   if (searchQuery) params.set('q', searchQuery)
@@ -1451,7 +1578,15 @@ export default function ReportsClient({
   currentFlow,
 }: Props) {
   const [language] = useSiteLanguage()
-  const text = reportsText[language] ?? reportsText.en
+  const baseText = reportsText[language] ?? reportsText.en
+  const text: ReportsText =
+    currentFlow === 'secondary'
+      ? {
+          ...baseText,
+          ...enVisitorReportsText,
+          ...visitorReportsText[language],
+        }
+      : baseText
 
   const [search, setSearch] = useState(currentSearchQuery)
   const [chartsReady, setChartsReady] = useState(false)
@@ -1720,6 +1855,36 @@ export default function ReportsClient({
     <main className="fade-in-up min-h-screen px-3 py-4 text-white sm:px-6 sm:py-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-6 sm:space-y-10">
 
+        <nav
+          aria-label={text.flow}
+          className="flex w-full rounded-2xl border border-white/20 bg-black/70 p-1 shadow-[0_18px_60px_rgba(0,0,0,0.45)] ring-1 ring-white/10 sm:w-fit"
+        >
+          {FLOW_OPTIONS.map((option) => {
+            const isActive = currentFlow === option.value
+
+            return (
+              <Link
+                key={option.value}
+                href={buildReportsHref({
+                  range: currentRange,
+                  q: currentSearchQuery,
+                  startDate: summary.appliedStartDate,
+                  endDate: summary.appliedEndDate,
+                  flow: option.value,
+                })}
+                aria-current={isActive ? 'page' : undefined}
+                className={`flex-1 rounded-xl px-5 py-2.5 text-center text-sm font-semibold transition sm:flex-none sm:px-8 ${
+                  isActive
+                    ? 'bg-white text-black shadow-lg'
+                    : 'text-neutral-300 hover:bg-white/10 hover:text-white'
+                }`}
+              >
+                {text[option.labelKey]}
+              </Link>
+            )
+          })}
+        </nav>
+
         <div className="relative overflow-hidden rounded-3xl border border-emerald-400/25 bg-black/52 px-5 py-4 shadow-[0_18px_70px_rgba(0,0,0,0.32)]">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_left,rgba(16,185,129,0.18),transparent_35%)]" />
 
@@ -1872,23 +2037,6 @@ export default function ReportsClient({
             </div>
 
             <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap xl:justify-end">
-              {FLOW_OPTIONS.map((option) => (
-                <ToolbarPill
-                  key={option.value}
-                  active={currentFlow === option.value}
-                  href={buildReportsHref({
-                    range: currentRange,
-                    exhibitorId: currentExhibitorId,
-                    q: currentSearchQuery,
-                    startDate: summary.appliedStartDate,
-                    endDate: summary.appliedEndDate,
-                    flow: option.value,
-                  })}
-                >
-                  {text[option.labelKey]}
-                </ToolbarPill>
-              ))}
-
               {RANGE_OPTIONS.map((option) => {
                 const isActive =
                   !summary.appliedStartDate &&
@@ -1956,10 +2104,9 @@ export default function ReportsClient({
             {(summary.appliedSearchQuery ||
               summary.appliedExhibitorId ||
               summary.appliedStartDate ||
-              summary.appliedEndDate ||
-              currentFlow !== 'all') ? (
+              summary.appliedEndDate) ? (
               <Link
-                href="/reports"
+                href={buildReportsHref({ flow: currentFlow })}
                 className="inline-flex w-fit rounded-2xl border border-white/20 bg-black/50 px-4 py-2 text-sm font-medium text-neutral-300 transition hover:bg-[#020617]/98"
               >
                 {text.clearAllFilters}
@@ -2014,7 +2161,7 @@ export default function ReportsClient({
 
             <div>
               <input type="hidden" name="range" value={currentRange} />
-              {currentFlow !== 'all' ? (
+              {currentFlow !== 'primary' ? (
                 <input type="hidden" name="flow" value={currentFlow} />
               ) : null}
               {currentExhibitorId ? (
@@ -2297,6 +2444,7 @@ export default function ReportsClient({
                   range: currentRange,
                   startDate: summary.appliedStartDate,
                   endDate: summary.appliedEndDate,
+                  flow: currentFlow,
                 })}
                 className="rounded-3xl border border-white/22 bg-[#020617]/97 p-5 shadow-[0_28px_110px_rgba(0,0,0,0.78)] ring-1 ring-white/8 transition hover:bg-[#020617]/95"
               >
@@ -2582,6 +2730,7 @@ export default function ReportsClient({
                                 range: currentRange,
                                 startDate: summary.appliedStartDate,
                                 endDate: summary.appliedEndDate,
+                                flow: currentFlow,
                               })}
                               className="inline-flex items-center rounded-xl border border-white/20 bg-black/50 px-3 py-2 text-xs font-medium text-neutral-200 transition hover:bg-[#020617]/98"
                             >
@@ -2763,6 +2912,7 @@ export default function ReportsClient({
                                   range: currentRange,
                                   startDate: summary.appliedStartDate,
                                   endDate: summary.appliedEndDate,
+                                  flow: currentFlow,
                                 })}
                                 className="font-medium text-white underline-offset-4 hover:underline"
                               >
@@ -2796,6 +2946,7 @@ export default function ReportsClient({
                                   range: currentRange,
                                   startDate: summary.appliedStartDate,
                                   endDate: summary.appliedEndDate,
+                                  flow: currentFlow,
                                 })}
                                 className="inline-flex min-w-[110px] items-center justify-center rounded-xl border border-white/20 bg-black/50 px-3 py-2 text-sm font-medium text-neutral-200 transition hover:bg-[#020617]/98"
                               >
@@ -2903,6 +3054,7 @@ export default function ReportsClient({
                                 range: currentRange,
                                 startDate: summary.appliedStartDate,
                                 endDate: summary.appliedEndDate,
+                                flow: currentFlow,
                               })}
                               className="text-white underline-offset-4 hover:underline"
                             >

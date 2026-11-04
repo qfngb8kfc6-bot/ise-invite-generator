@@ -45,6 +45,10 @@ type DisplayMode = 'dark' | 'light'
 const CARD_LANGUAGE_STORAGE_KEY = 'ise-card-language'
 const DISPLAY_MODE_STORAGE_KEY = 'ise-generator-display-mode'
 
+function toSecondaryAnalyticsId(id: string) {
+ return id.startsWith('secondary:') ? id : `secondary:${id}`
+}
+
 export default function GeneratorPageClient({
  initialToken,
  initialData,
@@ -259,6 +263,40 @@ export default function GeneratorPageClient({
   loadSession()
  }, [initialToken])
 
+ const hasTrackedSecondaryOpenRef = useRef(false)
+
+ useEffect(() => {
+  // Exhibitor opens are logged by /api/session; visitor opens are logged here.
+  if (mode !== 'secondary' || hasTrackedSecondaryOpenRef.current) return
+  if (!exhibitorId || !companyName) return
+
+  hasTrackedSecondaryOpenRef.current = true
+
+  fetch('/api/analytics/events', {
+   method: 'POST',
+   headers: {
+    'Content-Type': 'application/json',
+   },
+   body: JSON.stringify({
+    exhibitorId: toSecondaryAnalyticsId(exhibitorId),
+    companyName,
+    eventType: 'generator_opened',
+    metadata: {
+     flow: 'secondary',
+     requestId: exhibitorId.replace(/^secondary:/, ''),
+    },
+   }),
+  })
+   .then((response) => {
+    if (!response.ok) {
+     throw new Error(`Analytics request failed with HTTP ${response.status}`)
+    }
+   })
+   .catch((error) => {
+    console.error('Generator open analytics tracking failed:', error)
+   })
+ }, [mode, exhibitorId, companyName])
+
  async function trackExportAnalytics(
   eventType: 'export_clicked' | 'export_succeeded' | 'export_failed',
   type: 'pdf' | 'zip' | ExportFormatKey
@@ -281,7 +319,8 @@ export default function GeneratorPageClient({
      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-     exhibitorId,
+     exhibitorId:
+      mode === 'secondary' ? toSecondaryAnalyticsId(exhibitorId) : exhibitorId,
      companyName,
      eventType,
      format: formatMap[type],

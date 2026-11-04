@@ -39,13 +39,13 @@ function hasCustomDateRange(startDate?: string, endDate?: string): boolean {
 
 function getFlowFilter(flow?: string): 'all' | 'primary' | 'secondary' {
   switch (flow) {
-    case 'primary':
-      return 'primary'
+    case 'all':
+      return 'all'
     case 'secondary':
       return 'secondary'
-    case 'all':
+    case 'primary':
     default:
-      return 'all'
+      return 'primary'
   }
 }
 
