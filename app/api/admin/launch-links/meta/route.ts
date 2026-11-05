@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
+import { requireAdminApi } from '@/lib/admin-guard'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -11,7 +12,10 @@ function getBooleanEnv(name: string, fallback = false): boolean {
   return value === 'true' || value === '1' || value === 'yes'
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const unauthorized = await requireAdminApi(request)
+  if (unauthorized) return unauthorized
+
   const exhibitorDataSource =
     process.env.EXHIBITOR_DATA_SOURCE?.trim() === 'mys' ? 'mys' : 'mock'
 

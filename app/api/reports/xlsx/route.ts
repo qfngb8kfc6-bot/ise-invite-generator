@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import {
-  ADMIN_COOKIE_NAME,
-  verifyAdminSessionCookieValue,
-} from '@/lib/admin-auth'
+import { requireAdminApi } from '@/lib/admin-guard'
 import { getAnalyticsSummary } from '@/lib/analytics'
 
 export const runtime = 'nodejs'
@@ -365,21 +362,8 @@ function createWorkbook(sheets: WorksheetData[]): Buffer {
 
 export async function GET(request: NextRequest) {
   try {
-    const isAdmin = await verifyAdminSessionCookieValue(
-      request.cookies.get(ADMIN_COOKIE_NAME)?.value
-    )
-
-    if (!isAdmin) {
-      return NextResponse.json(
-        { ok: false, error: 'Admin authentication required.' },
-        {
-          status: 401,
-          headers: {
-            'Cache-Control': 'no-store',
-          },
-        }
-      )
-    }
+    const unauthorized = await requireAdminApi(request)
+    if (unauthorized) return unauthorized
 
     const range = request.nextUrl.searchParams.get('range')
     const exhibitorId = request.nextUrl.searchParams.get('exhibitorId')

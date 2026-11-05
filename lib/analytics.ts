@@ -679,7 +679,7 @@ async function readAnalyticsEventsFromDb(): Promise<AnalyticsEvent[]> {
       format: AnalyticsEvent['format']
       timestamp: string | Date
       environment: AnalyticsEnvironment
-      metadata: Record<string, string | number | boolean | null> | null
+      metadata: unknown
     }[]>`
       select
         id,
@@ -707,8 +707,35 @@ async function readAnalyticsEventsFromDb(): Promise<AnalyticsEvent[]> {
         ? row.timestamp.toISOString()
         : new Date(row.timestamp).toISOString(),
     environment: row.environment,
-    metadata: row.metadata ?? {},
+    metadata: parseStoredMetadata(row.metadata),
   }))
+}
+
+type StoredMetadata = Record<string, string | number | boolean | null>
+
+/**
+ * Reads the jsonb metadata column. With the pg driver, JSON.stringify(...)::jsonb
+ * stores a real JSON object, which comes back as an object. This also accepts a
+ * row whose metadata is a JSON-encoded string (e.g. written by another client
+ * or driver), so metadata.flow is still read. Anything unreadable becomes {}.
+ * Read-only: stored rows are never rewritten.
+ */
+function parseStoredMetadata(value: unknown): StoredMetadata {
+  let parsed = value
+
+  if (typeof parsed === 'string') {
+    try {
+      parsed = JSON.parse(parsed)
+    } catch {
+      return {}
+    }
+  }
+
+  if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+    return parsed as StoredMetadata
+  }
+
+  return {}
 }
 
 async function persistAnalyticsFallback(event: AnalyticsEvent): Promise<void> {

@@ -63,14 +63,18 @@ function base64UrlDecodeText(input: string) {
   return textDecoder.decode(base64UrlToBytes(input))
 }
 
-async function hmacSha256(message: string, secret: string) {
-  const key = await crypto.subtle.importKey(
+async function getHmacKey(secret: string, usage: 'sign' | 'verify') {
+  return crypto.subtle.importKey(
     'raw',
     textEncoder.encode(secret),
     { name: 'HMAC', hash: 'SHA-256' },
     false,
-    ['sign']
+    [usage]
   )
+}
+
+async function hmacSha256(message: string, secret: string) {
+  const key = await getHmacKey(secret, 'sign')
 
   const signature = await crypto.subtle.sign(
     'HMAC',
@@ -79,6 +83,90 @@ async function hmacSha256(message: string, secret: string) {
   )
 
   return bytesToBase64Url(new Uint8Array(signature))
+}
+
+/**
+ * Constant-time signature check: crypto.subtle.verify compares the HMAC
+ * without leaking how many leading bytes matched (a plain !== can).
+ */
+async function verifyHmacSha256(message: string, signature: string, secret: string) {
+  let signatureBytes: Uint8Array
+
+  try {
+    signatureBytes = base64UrlToBytes(signature)
+  } catch {
+    return false
+  }
+
+  const key = await getHmacKey(secret, 'verify')
+
+  return crypto.subtle.verify(
+    'HMAC',
+    key,
+    signatureBytes as BufferSource,
+    textEncoder.encode(message)
+  )
+}
+
+/**
+ * Constant-time string comparison for credentials. Both sides are hashed
+ * first so the comparison length is fixed (no length leak either).
+ */
+async function constantTimeEqual(a: string, b: string) {
+  const [hashA, hashB] = await Promise.all([
+    crypto.subtle.digest('SHA-256', textEncoder.encode(a)),
+    crypto.subtle.digest('SHA-256', textEncoder.encode(b)),
+  ])
+  const bytesA = new Uint8Array(hashA)
+  const bytesB = new Uint8Array(hashB)
+  let diff = 0
+
+  for (let index = 0; index < bytesA.length; index += 1) {
+    diff |= bytesA[index] ^ bytesB[index]
+  }
+
+  return diff === 0
+}
+
+/** Checks a login attempt against the configured admin username/password. */
+export async function checkAdminCredentials(username: string, password: string) {
+  const expectedUsername = getAdminUsername()
+  const expectedPassword = getAdminPassword()
+
+  if (!expectedUsername || !expectedPassword) {
+    return false
+  }
+
+  // Evaluate both, always, so timing doesn't reveal which one was wrong.
+  const [usernameOk, passwordOk] = await Promise.all([
+    constantTimeEqual(username, expectedUsername),
+    constantTimeEqual(password, expectedPassword),
+  ])
+
+  return usernameOk && passwordOk
+}
+
+/**
+ * Where to send someone after signing in. Only same-site admin paths are
+ * allowed (/reports, /admin, /tools); anything else, including absolute
+ * URLs, protocol-relative "//evil.com" and backslash tricks, falls back to
+ * /reports. Prevents ?redirect= being used as an open redirect.
+ */
+export function safeRedirectTarget(value: string | null | undefined): string {
+  const fallback = '/reports'
+
+  if (!value) return fallback
+
+  const trimmed = value.trim()
+
+  if (!trimmed.startsWith('/') || trimmed.startsWith('//') || trimmed.includes('\\')) {
+    return fallback
+  }
+
+  if (!/^\/(reports|admin|tools)(\/|\?|$)/.test(trimmed)) return fallback
+  if (trimmed.startsWith('/admin/login')) return fallback
+
+  return trimmed
 }
 
 export function getAdminCredentials() {
@@ -116,15 +204,14 @@ export async function verifyAdminSessionCookieValue(value?: string) {
     return false
   }
 
-  const [payload, signature] = value.split('.')
+  const parts = value.split('.')
+  const [payload, signature] = parts
 
-  if (!payload || !signature) {
+  if (parts.length !== 2 || !payload || !signature) {
     return false
   }
 
-  const expectedSignature = await hmacSha256(payload, secret)
-
-  if (signature !== expectedSignature) {
+  if (!(await verifyHmacSha256(payload, signature, secret))) {
     return false
   }
 
