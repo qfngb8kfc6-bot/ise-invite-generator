@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import ExcelJS from 'exceljs'
+import { requireAdminApi } from '@/lib/admin-guard'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -13,7 +14,9 @@ type LaunchExhibitor = {
 type SignLaunchFn = (exhibitorId: string) => string
 
 function escapeCsv(value: string): string {
-  const normalized = value.replace(/"/g, '""')
+  // Leading = + - @ tab/CR would run as a spreadsheet formula; show as text.
+  const text = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value
+  const normalized = text.replace(/"/g, '""')
   return `"${normalized}"`
 }
 
@@ -126,6 +129,9 @@ async function buildXlsxBlob(
 }
 
 export async function GET(request: NextRequest) {
+  const unauthorized = await requireAdminApi(request)
+  if (unauthorized) return unauthorized
+
   try {
     const [{ signLaunch }, { getAllExhibitors }] = await Promise.all([
       import('@/lib/launch-signature'),

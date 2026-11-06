@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import {
-  ADMIN_COOKIE_NAME,
-  verifyAdminSessionCookieValue,
-} from '@/lib/admin-auth'
+import { requireAdminApi } from '@/lib/admin-guard'
 import { getAnalyticsSummary } from '@/lib/analytics'
 
 export const runtime = 'nodejs'
@@ -39,16 +36,26 @@ function percentage(numerator: number, denominator: number): string {
   return `${Math.round((numerator / denominator) * 100)}%`
 }
 
+/**
+ * Formats one CSV cell.
+ *
+ * Company names come from the public request form, so a cell can start with
+ * =, +, -, @, tab or CR. Excel/Sheets would run that as a formula (e.g.
+ * =HYPERLINK(...)), so such cells get a leading apostrophe and are shown
+ * as text. Numbers are written as-is: they're ours, and a negative number
+ * isn't a formula.
+ */
 function escapeCsv(value: unknown): string {
   if (value === null || value === undefined) return ''
+  if (typeof value === 'number') return String(value)
 
-  const stringValue = String(value)
+  let stringValue = String(value)
 
-  if (
-    stringValue.includes(',') ||
-    stringValue.includes('"') ||
-    stringValue.includes('\n')
-  ) {
+  if (/^[=+\-@\t\r]/.test(stringValue)) {
+    stringValue = `'${stringValue}`
+  }
+
+  if (/[",\n\r]/.test(stringValue)) {
     return `"${stringValue.replace(/"/g, '""')}"`
   }
 
@@ -85,21 +92,8 @@ function formatFlowLabel(flow: 'all' | 'primary' | 'secondary'): string {
 
 export async function GET(request: NextRequest) {
   try {
-    const isAdmin = await verifyAdminSessionCookieValue(
-      request.cookies.get(ADMIN_COOKIE_NAME)?.value
-    )
-
-    if (!isAdmin) {
-      return NextResponse.json(
-        { ok: false, error: 'Admin authentication required.' },
-        {
-          status: 401,
-          headers: {
-            'Cache-Control': 'no-store',
-          },
-        }
-      )
-    }
+    const unauthorized = await requireAdminApi(request)
+    if (unauthorized) return unauthorized
 
     const range = request.nextUrl.searchParams.get('range')
     const exhibitorId = request.nextUrl.searchParams.get('exhibitorId')
@@ -158,7 +152,8 @@ export async function GET(request: NextRequest) {
       ),
       generatedLinkButNeverExported: item.generatedLinkButNeverExported ? 'yes' : 'no',
       pngLinkedInCount: item.formats['png-linkedin'] ?? 0,
-      pngSquareCount: item.formats['png-square'] ?? 0,
+      // The full-size card PNG is tracked as 'png-square'.
+      pngFullSizeCount: item.formats['png-square'] ?? 0,
       pngEmailCount: item.formats['png-email'] ?? 0,
       pngPrintCount: item.formats['png-print'] ?? 0,
       pdfCount: item.formats['pdf'] ?? 0,

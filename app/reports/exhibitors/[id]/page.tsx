@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { requireAdminPage } from '@/lib/admin-guard'
 import { getAnalyticsSummary } from '@/lib/analytics'
 import ExhibitorReportDetailClient from './ExhibitorReportDetailClient'
 
@@ -55,10 +56,29 @@ function getReturnFlow(
   }
 }
 
+function buildReturnPath(
+  rawId: string,
+  searchParams: Record<string, string | undefined>
+): string {
+  const query = new URLSearchParams()
+
+  for (const [key, value] of Object.entries(searchParams)) {
+    if (typeof value === 'string' && value) query.set(key, value)
+  }
+
+  const queryString = query.toString()
+  return `/reports/exhibitors/${encodeURIComponent(decodeId(rawId))}${queryString ? `?${queryString}` : ''}`
+}
+
 export default async function ExhibitorReportDetailPage(props: Props) {
+  const params = await props.params
+  const searchParams = props.searchParams ? await props.searchParams : {}
+
+  // Outside the try/catch below: redirect() works by throwing, and the catch
+  // would otherwise turn "not signed in" into the error card.
+  await requireAdminPage(buildReturnPath(params?.id ?? '', searchParams ?? {}))
+
   try {
-    const params = await props.params
-    const searchParams = props.searchParams ? await props.searchParams : {}
 
     const exhibitorId = params?.id ? decodeId(params.id).trim() : undefined
     const range = searchParams?.range ?? 'all'

@@ -1,13 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { requireAdminApi } from '@/lib/admin-guard'
 import { getExhibitorById } from '@/lib/exhibitors'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
+  // Returns the full exhibitor record (invitation code, registration URL).
+  // Only the admin /tools page calls it.
+  const unauthorized = await requireAdminApi(request)
+  if (unauthorized) return unauthorized
+
   try {
     const { id } = await context.params
 

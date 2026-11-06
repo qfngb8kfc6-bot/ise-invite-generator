@@ -3,11 +3,13 @@
 import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { FormEvent, useState } from 'react'
+import { safeRedirectTarget } from '@/lib/admin-auth'
 
 export default function AdminLoginClient() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const redirectTo = searchParams.get('redirect') || '/reports'
+  // Only same-site admin paths; ?redirect=https://evil.example falls back to /reports.
+  const redirectTo = safeRedirectTarget(searchParams.get('redirect'))
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -24,12 +26,13 @@ export default function AdminLoginClient() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password, redirect: redirectTo }),
       })
 
       const payload = (await response.json()) as {
         ok?: boolean
         error?: string
+        redirect?: string
       }
 
       if (!response.ok || !payload.ok) {
@@ -37,7 +40,7 @@ export default function AdminLoginClient() {
         return
       }
 
-      router.replace(redirectTo)
+      router.replace(safeRedirectTarget(payload.redirect ?? redirectTo))
       router.refresh()
     } catch {
       setError('Unable to sign in. Please try again.')
