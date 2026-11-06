@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 
 type DownloadFormat = 'csv' | 'xlsx'
 
+const LOGIN_URL = '/admin/login?redirect=%2Fadmin%2Flinks'
+
 type ExportMeta = {
   ok: boolean
   showCode: string
@@ -34,6 +36,13 @@ export default function AdminLinksClient() {
           method: 'GET',
           cache: 'no-store',
         })
+
+        // Signed out or session expired (the server guard normally redirects
+        // before this page renders; this covers an expired session or a stale copy).
+        if (response.status === 401) {
+          window.location.assign(LOGIN_URL)
+          return
+        }
 
         if (!response.ok) {
           throw new Error('Failed to load export environment info')
@@ -84,6 +93,11 @@ export default function AdminLinksClient() {
         method: 'GET',
         cache: 'no-store',
       })
+
+      if (response.status === 401) {
+        window.location.assign(LOGIN_URL)
+        return
+      }
 
       if (!response.ok) {
         let message =
