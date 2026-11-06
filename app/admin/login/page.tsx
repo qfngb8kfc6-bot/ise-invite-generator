@@ -1,6 +1,11 @@
 import { Suspense } from 'react'
 import AdminLoginClient from './AdminLoginClient'
 
+// Rendered per request so it's sent as "private, no-store". As a prerendered
+// page it went out with "s-maxage=31536000", which lets a shared cache keep an
+// old build's HTML (whose JS no longer exists) after a deploy.
+export const dynamic = 'force-dynamic'
+
 function AdminLoginFallback() {
   return (
     <main className="relative flex h-[calc(100vh-128px)] items-center justify-center overflow-hidden px-4 py-8 text-white">

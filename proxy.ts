@@ -14,6 +14,8 @@ import {
  *
  * /admin/login and /api/admin/login|logout are deliberately not matched.
  */
+const NO_STORE = 'private, no-cache, no-store, max-age=0, must-revalidate'
+
 export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl
   const signedIn = await verifyAdminSessionCookieValue(
@@ -27,7 +29,7 @@ export async function proxy(request: NextRequest) {
         {
           status: 401,
           headers: {
-            'Cache-Control': 'no-store',
+            'Cache-Control': NO_STORE,
             'X-Robots-Tag': 'noindex, nofollow',
           },
         }
@@ -36,12 +38,15 @@ export async function proxy(request: NextRequest) {
 
     const login = new URL('/admin/login', request.url)
     login.searchParams.set('redirect', `${pathname}${search}`)
-    return NextResponse.redirect(login)
+    const redirect = NextResponse.redirect(login)
+    redirect.headers.set('Cache-Control', NO_STORE)
+    redirect.headers.set('X-Robots-Tag', 'noindex, nofollow')
+    return redirect
   }
 
   const response = NextResponse.next()
   response.headers.set('X-Robots-Tag', 'noindex, nofollow')
-  response.headers.set('Cache-Control', 'no-store')
+  response.headers.set('Cache-Control', NO_STORE)
   return response
 }
 
@@ -53,6 +58,7 @@ export const config = {
     '/tools',
     '/tools/:path*',
     '/admin/links',
+    '/admin/links/:path*',
     '/api/admin/launch-links',
     '/api/admin/launch-links/:path*',
     '/api/exhibitor/:path*',
